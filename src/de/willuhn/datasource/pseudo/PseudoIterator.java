@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/pseudo/PseudoIterator.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/08/18 23:14:00 $
+ * $Revision: 1.4 $
+ * $Date: 2004/08/30 15:02:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.datasource.pseudo;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import de.willuhn.datasource.GenericObject;
  * implementiert, jedoch kein Datenbank-Backend benutzt sondern
  * Listen/Maps aus java.util. 
  */
-public class PseudoIterator implements GenericIterator
+public class PseudoIterator extends UnicastRemoteObject implements GenericIterator
 {
 
 	private List list = null;
@@ -34,7 +35,7 @@ public class PseudoIterator implements GenericIterator
    * Der Konstruktor ist private, damit Instanzen nur
    * ueber die statischen Methoden fromFoo erzeugt werden.
    */
-  private PseudoIterator()
+  private PseudoIterator() throws RemoteException
 	{
 	}
 
@@ -43,7 +44,7 @@ public class PseudoIterator implements GenericIterator
    * @param objects das Array, aus dem der Iterator aufgebaut werden soll.
    * @return
    */
-  public static GenericIterator fromArray(GenericObject[] objects)
+  public static GenericIterator fromArray(GenericObject[] objects) throws RemoteException
 	{
 		PseudoIterator i = new PseudoIterator();
 		i.list = Arrays.asList(objects);
@@ -114,6 +115,9 @@ public class PseudoIterator implements GenericIterator
 
 /**********************************************************************
  * $Log: PseudoIterator.java,v $
+ * Revision 1.4  2004/08/30 15:02:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/08/18 23:14:00  willuhn
  * @D Javadoc
  *
