@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/10/25 17:58:37 $
+ * $Revision: 1.20 $
+ * $Date: 2004/10/31 18:46:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,8 +61,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	private transient DBServiceImpl service = null;
 	private transient Connection conn = null;
 
-	private ArrayList deleteListeners = null;
-	private ArrayList storeListeners  = null;
+	private transient ArrayList deleteListeners = null;
+	private transient ArrayList storeListeners  = null;
 
   /**
    * Attribute dieses Typs werden als java.util.Date erkannt.
@@ -1072,6 +1072,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.20  2004/10/31 18:46:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/10/25 17:58:37  willuhn
  * @N Delete/Store-Listeners
  *
