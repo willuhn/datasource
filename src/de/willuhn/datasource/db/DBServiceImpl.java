@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/08/26 23:19:33 $
+ * $Revision: 1.18 $
+ * $Date: 2004/08/31 17:33:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,7 +20,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
@@ -85,7 +84,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
 	protected Connection getConnection() throws RemoteException
 	{
-		open();
+		init();
 		return conn;
 	}
 
@@ -107,20 +106,20 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   }
 
   /**
-   * @see de.willuhn.datasource.Service#open()
+   * @see de.willuhn.datasource.Service#init()
    */
-  public synchronized void open() throws RemoteException
+  public synchronized void init() throws RemoteException
   {
-    if (!available)
-      throw new RemoteException("server shut down. service no longer available.");
+		if (open) return;
+		
+		if (!available)
+			throw new RemoteException("reinitialization not allowed");
 
     try {
-			Logger.info("opening db connection. request from host: " + getClientHost());
+			Logger.info("opening dbservice. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
     
-    if (open) return;
-
 		// Ob es hier Sinn macht, vorher nochmal close() aufzurufen?
 		try {
 			Class.forName(jdbcDriver);
@@ -147,17 +146,24 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 
   /**
-   * @see de.willuhn.datasource.Service#close()
+   * @see de.willuhn.datasource.Service#shutDown(boolean)
    */
-  public synchronized void close() throws RemoteException
+  public synchronized void shutDown(boolean reinitAllowed) throws RemoteException
   {
+
+		// Wir wurden schon auf "not available" gesetzt, das ist nicht mehr
+		// Rueckgaengig zu machen.
     if (!available)
       return;
 
+		available = reinitAllowed;
+
     try {
-			Logger.info("closing db connection. request from host: " + getClientHost());
+			Logger.info("closing dbservice. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
+
+		Logger.debug("dbservice: object cache matches: " + ObjectMetaCache.getStats() + " %");
 
     try {
       open = false;
@@ -199,9 +205,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   }
 
   /**
-   * @see de.willuhn.datasource.Service#createObject(java.lang.Class, java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBService#createObject(java.lang.Class, java.lang.String)
    */
-  public GenericObject createObject(Class c, String identifier) throws RemoteException
+  public DBObject createObject(Class c, String identifier) throws RemoteException
   {
     try {
 			Logger.debug("try to create new DBObject. request from host: " + getClientHost());
@@ -257,23 +263,13 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   {
     return available;
   }
-
-
-  /**
-   * @see de.willuhn.datasource.Service#shutDown()
-   */
-  public synchronized void shutDown() throws RemoteException
-  {
-    available = false;
-    close();
-    
-    // print chache stats
-		Logger.debug("object cache matches: " + ObjectMetaCache.getStats() + " %");
-  }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.18  2004/08/31 17:33:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/08/26 23:19:33  willuhn
  * @N added ObjectNotFoundException
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/Service.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/08/31 17:33:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,34 +23,13 @@ public interface Service extends Remote
 {
 
   /**
-   * Oeffnet den Service. (Initialisiert ihn).
+   * Initialisiert den Service.
    * @throws RemoteException
    */
-  public void open() throws RemoteException;
+  public void init() throws RemoteException;
 	
   /**
-   * Schliesst den Service.
-   * @throws RemoteException
-   */
-  public void close() throws RemoteException;
-
-	/**
-	 * Erzeugt ein neues Objekt des angegebenen Typs.
-	 * @param clazz Name der Klasse des zu erzeugenden Objektes.
-	 * @param identifier der eindeutige Identifier des Objektes.
-	 * Kann null sein, wenn ein neues Objekt erzeugt werden soll.
-	 * Andernfalls wird das mit dem genannten Identifier geladen.
-	 * @return Das erzeugte Objekt
-	 * @throws RemoteException
-	 */
-	public GenericObject createObject(Class clazz, String identifier) throws RemoteException;
-
-  /**
    * Prueft, ob dieser Service auf dem Server noch verfuegbar ist.
-   * Wenn diese Funktion false liefert, kann der Service auch via open()
-   * nicht mehr geoeffnet werden. Heisst: Der Service ist nicht
-   * nur geschlossen worden sondern der gesamte Server ist heruntergefahren
-   * worden.
    * @throws RemoteException
    * @return true wenn er verfuegbar ist, sonst false.
    */
@@ -58,15 +37,18 @@ public interface Service extends Remote
 
 
   /**
-   * Faehrt den Service herunter. Er kann danach nicht mehr genutzt werden.
-   * Diese Funktion wird vom Shutdown-Prozess des Servers aufgerufen.
+   * Faehrt den Service herunter.
+   * @param reinitAllowed legt fest, ob der Service bei Bedarf neu initialisiert werden darf.
    * @throws RemoteException
    */
-  public void shutDown() throws RemoteException;
+  public void shutDown(boolean reinitAllowed) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.2  2004/08/31 17:33:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *

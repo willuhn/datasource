@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.8 $
+ * $Date: 2004/08/31 17:33:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -31,10 +31,24 @@ public interface DBService extends Service
    */
   public DBIterator createList(Class clazz) throws RemoteException;
 
+	/**
+	 * Erzeugt ein neues Objekt des angegebenen Typs.
+	 * @param clazz Name der Klasse des zu erzeugenden Objektes.
+	 * @param identifier der eindeutige Identifier des Objektes.
+	 * Kann null sein, wenn ein neues Objekt erzeugt werden soll.
+	 * Andernfalls wird das mit dem genannten Identifier geladen.
+	 * @return Das erzeugte Objekt
+	 * @throws RemoteException
+	 */
+	public DBObject createObject(Class clazz, String identifier) throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.8  2004/08/31 17:33:10  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *
