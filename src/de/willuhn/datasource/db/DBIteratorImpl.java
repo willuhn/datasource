@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/23 20:31:26 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -91,7 +91,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#setOrder(java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBIterator#setOrder(java.lang.String)
    */
   public void setOrder(String order) throws RemoteException {
     if (this.initialized)
@@ -101,7 +101,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#addFilter(java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBIterator#addFilter(java.lang.String)
    */
   public void addFilter(String filter) throws RemoteException {
     if (this.initialized)
@@ -186,7 +186,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
 
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#hasNext()
+   * @see de.willuhn.datasource.rmi.DBIterator#hasNext()
    */
   public boolean hasNext() throws RemoteException
 	{
@@ -195,7 +195,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
 
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#next()
+   * @see de.willuhn.datasource.rmi.DBIterator#next()
    */
   public DBObject next() throws RemoteException
 	{
@@ -210,7 +210,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
   
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#previous()
+   * @see de.willuhn.datasource.rmi.DBIterator#previous()
    */
   public DBObject previous() throws RemoteException
   {
@@ -225,7 +225,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#size()
+   * @see de.willuhn.datasource.rmi.DBIterator#size()
    */
   public int size() throws RemoteException
   {
@@ -234,7 +234,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#begin()
+   * @see de.willuhn.datasource.rmi.DBIterator#begin()
    */
   public void begin() throws RemoteException
   {
@@ -242,7 +242,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBIterator#contains(de.willuhn.jameica.rmi.DBObject)
+   * @see de.willuhn.datasource.rmi.DBIterator#contains(de.willuhn.datasource.rmi.DBObject)
    */
   public DBObject contains(DBObject o) throws RemoteException
   {
@@ -271,7 +271,8 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBIterator#getType()
+   * @return
+   * @throws RemoteException
    */
   public Class getType() throws RemoteException {
     return object.getClass();
@@ -281,6 +282,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.4  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.3  2004/02/23 20:31:26  willuhn
  * @C refactoring in AbstractDialog
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/02/27 01:09:51 $
+ * $Revision: 1.6 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   
 
   /**
-   * @see de.willuhn.jameica.rmi.Service#open()
+   * @see de.willuhn.datasource.rmi.Service#open()
    */
   public void open() throws RemoteException
   {
@@ -102,7 +102,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 
   /**
-   * @see de.willuhn.jameica.rmi.Service#close()
+   * @see de.willuhn.datasource.rmi.Service#close()
    */
   public void close() throws RemoteException
   {
@@ -150,7 +150,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBService#createObject(java.lang.Class, java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBService#createObject(java.lang.Class, java.lang.String)
    */
   public DBObject createObject(Class c, String id) throws RemoteException
   {
@@ -173,7 +173,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBService#createList(java.lang.Class)
+   * @see de.willuhn.datasource.rmi.DBService#createList(java.lang.Class)
    */
   public DBIterator createList(Class c) throws RemoteException
 	{
@@ -196,7 +196,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 
   /**
-   * @see de.willuhn.jameica.rmi.Service#isAvailable()
+   * @see de.willuhn.datasource.rmi.Service#isAvailable()
    */
   public boolean isAvailable() throws RemoteException
   {
@@ -205,7 +205,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 
   /**
-   * @see de.willuhn.jameica.rmi.Service#shutDown()
+   * @see de.willuhn.datasource.rmi.Service#shutDown()
    */
   public void shutDown() throws RemoteException
   {
@@ -218,7 +218,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 
   /**
-   * @see de.willuhn.jameica.rmi.DBService#ping()
+   * @see de.willuhn.datasource.rmi.DBService#ping()
    */
   public boolean ping() throws RemoteException
   {
@@ -247,6 +247,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.6  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.5  2004/02/27 01:09:51  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,12 +25,39 @@ import de.willuhn.util.ApplicationException;
 public interface DBObject extends Remote
 {
 
+  /**
+   * Felder dieses Typs werden als java.util.Date erkannt.
+   */
   public final static String FIELDTYPE_DATE      = "date";
+
+  /**
+   * Felder dieses Typs werden als java.util.Date erkannt.
+   */
   public final static String FIELDTYPE_TIMESTAMP = "timestamp";
+
+  /**
+   * Felder dieses Typs werden als java.util.Date erkannt.
+   */
   public final static String FIELDTYPE_DATETIME  = "datetime";
+
+  /**
+   * Felder dieses Typs werden als java.lang.Integer erkannt.
+   */
   public final static String FIELDTYPE_INT       = "int";
+
+  /**
+   * Felder dieses Typs werden als java.lang.Double erkannt.
+   */
   public final static String FIELDTYPE_DOUBLE    = "double";
+
+  /**
+   * Felder dieses Typs werden als java.lang.Double erkannt.
+   */
   public final static String FIELDTYPE_DECIMAL   = "decimal";
+
+  /**
+   * Felder dieses Typs werden als java.lang.String erkannt.
+   */
   public final static String FIELDTYPE_VARCHAR   = "varchar";
   
   /**
@@ -171,6 +198,9 @@ public interface DBObject extends Remote
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.2  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *

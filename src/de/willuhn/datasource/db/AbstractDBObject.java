@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/02/23 20:31:26 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -168,7 +168,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#load(java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBObject#load(java.lang.String)
    */
   public final void load(String id) throws RemoteException
 	{
@@ -221,7 +221,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	}
   
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#store()
+   * @see de.willuhn.datasource.rmi.DBObject#store()
    */
   public void store() throws RemoteException, ApplicationException
   {
@@ -233,7 +233,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#clear()
+   * @see de.willuhn.datasource.rmi.DBObject#clear()
    */
   public final void clear() throws RemoteException
   {
@@ -249,7 +249,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
   
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#delete()
+   * @see de.willuhn.datasource.rmi.DBObject#delete()
    */
   public void delete() throws RemoteException, ApplicationException
   {
@@ -303,7 +303,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getID()
+   * @see de.willuhn.datasource.rmi.DBObject#getID()
    */
   public final String getID() throws RemoteException
   {
@@ -325,7 +325,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getField(java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBObject#getField(java.lang.String)
    */
   public Object getField(String fieldName) throws RemoteException
   {
@@ -368,7 +368,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getFieldType(java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBObject#getFieldType(java.lang.String)
    */
   public final String getFieldType(String fieldName) throws RemoteException
   {
@@ -731,8 +731,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * Gibt an, ob das Objekt neu ist und somit ein Insert statt einem Update gemacht werden muss.
-   * @return true, wenn es ein neues Objekt ist, andernfalls false.
+   * @see de.willuhn.datasource.rmi.DBObject#isNewObject()
    */
   public final boolean isNewObject() throws  RemoteException
   {
@@ -757,7 +756,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   protected abstract String getTableName();
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
    */
   public abstract String getPrimaryField() throws RemoteException;
 
@@ -800,7 +799,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   protected abstract Class getForeignObject(String field) throws RemoteException;
   
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#transactionBegin()
+   * @see de.willuhn.datasource.rmi.DBObject#transactionBegin()
    */
   public final void transactionBegin() throws RemoteException
   {
@@ -813,7 +812,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#transactionRollback()
+   * @see de.willuhn.datasource.rmi.DBObject#transactionRollback()
    */
   public final void transactionRollback() throws RemoteException
   {
@@ -834,7 +833,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }  
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#transactionCommit()
+   * @see de.willuhn.datasource.rmi.DBObject#transactionCommit()
    */
   public final void transactionCommit() throws RemoteException
   {
@@ -862,7 +861,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#getList()
+   * @see de.willuhn.datasource.rmi.DBObject#getList()
    */
   public DBIterator getList() throws RemoteException
   {
@@ -870,7 +869,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#overwrite(de.willuhn.jameica.rmi.DBObject)
+   * @see de.willuhn.datasource.rmi.DBObject#overwrite(de.willuhn.datasource.rmi.DBObject)
    */
   public void overwrite(DBObject object) throws RemoteException
   {
@@ -899,7 +898,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObject#equals(de.willuhn.jameica.rmi.DBObject)
+   * @see de.willuhn.datasource.rmi.DBObject#equals(de.willuhn.datasource.rmi.DBObject)
    */
   public boolean equals(DBObject o) throws RemoteException
   {
@@ -920,6 +919,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.4  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.3  2004/02/23 20:31:26  willuhn
  * @C refactoring in AbstractDialog
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/02/09 13:04:34 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -161,6 +161,7 @@ public class EmbeddedDatabase
 	 * Plugin also bei der Installation seine SQL-Tabellen erstellen will,
 	 * kann es das am besten hier machen.
    * @param file das auszufuehrende SQL-Script.
+	 * @throws IOException Wenn beim Lesen des SQL-Scripts Fehler auftraten.
    * @throws SQLException Wenn beim Ausfuehren Fehler auftraten.
    */
   public void executeSQLScript(File file) throws IOException, SQLException
@@ -269,6 +270,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.9  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.8  2004/02/09 13:04:34  willuhn
  * @C misc
  *

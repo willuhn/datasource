@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/23 00:25:52 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -43,6 +43,7 @@ public interface DBService extends Service
 
   /**
    * Pingt die Datenbank an.
+   * @return true, wenn der Service erreichbar ist.
    * @throws RemoteException
    */
   public boolean ping() throws RemoteException;
@@ -51,6 +52,9 @@ public interface DBService extends Service
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.3  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.2  2004/01/23 00:25:52  willuhn
  * *** empty log message ***
  *

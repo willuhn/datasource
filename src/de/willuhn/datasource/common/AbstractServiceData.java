@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/common/Attic/AbstractServiceData.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/11 00:10:55 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,7 +21,7 @@ public abstract class AbstractServiceData implements ServiceData {
   private String description;
 
   /**
-   * @see de.willuhn.jameica.rmi.ServiceData#getClassName()
+   * @see de.willuhn.datasource.rmi.ServiceData#getClassName()
    */
   public String getClassName()
   {
@@ -29,7 +29,7 @@ public abstract class AbstractServiceData implements ServiceData {
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.ServiceData#getType()
+   * @see de.willuhn.datasource.rmi.ServiceData#getType()
    */
   public String getType()
 	{
@@ -37,7 +37,7 @@ public abstract class AbstractServiceData implements ServiceData {
 	}
 
   /**
-   * @see de.willuhn.jameica.rmi.ServiceData#getName()
+   * @see de.willuhn.datasource.rmi.ServiceData#getName()
    */
   public String getName()
   {
@@ -94,6 +94,9 @@ public abstract class AbstractServiceData implements ServiceData {
 
 /*********************************************************************
  * $Log: AbstractServiceData.java,v $
+ * Revision 1.3  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.2  2004/02/11 00:10:55  willuhn
  * *** empty log message ***
  *

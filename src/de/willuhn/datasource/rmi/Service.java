@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/Service.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,8 +42,8 @@ public interface Service extends Remote
    * nicht mehr geoeffnet werden. Heisst: Der Service ist nicht
    * nur geschlossen worden sondern der gesamte Server ist heruntergefahren
    * worden.
-   * @return true wenn er verfuegbar ist, sonst false.
    * @throws RemoteException
+   * @return true wenn er verfuegbar ist, sonst false.
    */
   public boolean isAvailable() throws RemoteException;
 
@@ -66,6 +66,9 @@ public interface Service extends Remote
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.2  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *

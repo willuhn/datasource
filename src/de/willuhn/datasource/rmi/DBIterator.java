@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,6 +28,8 @@ public interface DBIterator extends Remote {
    * addFilter("kontonummer='2020'");
    * Bewirkt, dass eine zusaetzliche Where-Klausel "where kontonummer='2020'"
    * hinzugefuegt wird.
+   * @param filter ein zusaetzlicher SQL-Filter.
+   * Z.Bsp.: "konto_id = 20".
    * @throws RemoteException
    */
   public void addFilter(String filter) throws RemoteException;
@@ -86,6 +88,9 @@ public interface DBIterator extends Remote {
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
+ * Revision 1.2  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *

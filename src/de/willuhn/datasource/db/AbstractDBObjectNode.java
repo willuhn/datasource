@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/06 18:24:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -52,7 +52,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObjectNode#getChilds()
+   * @see de.willuhn.datasource.rmi.DBObjectNode#getChilds()
    */
   public DBIterator getChilds() throws RemoteException
   {
@@ -62,7 +62,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObjectNode#getTopLevelList()
+   * @see de.willuhn.datasource.rmi.DBObjectNode#getTopLevelList()
    */
   public DBIterator getTopLevelList() throws RemoteException
   {
@@ -72,7 +72,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObjectNode#hasChild(de.willuhn.jameica.rmi.DBObjectNode)
+   * @see de.willuhn.datasource.rmi.DBObjectNode#hasChild(de.willuhn.datasource.rmi.DBObjectNode)
    */
   public boolean hasChild(DBObjectNode object) throws RemoteException
   {
@@ -93,9 +93,8 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     return false;
   }
 
-
   /**
-   * @see de.willuhn.jameica.rmi.DBObjectNode#getParent()
+   * @see de.willuhn.datasource.rmi.DBObjectNode#getParent()
    */
   public DBObjectNode getParent() throws RemoteException
   {
@@ -107,7 +106,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObjectNode#getPossibleParents()
+   * @see de.willuhn.datasource.rmi.DBObjectNode#getPossibleParents()
    */
   public DBIterator getPossibleParents() throws RemoteException
   {
@@ -129,7 +128,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.jameica.rmi.DBObjectNode#getPath()
+   * @see de.willuhn.datasource.rmi.DBObjectNode#getPath()
    */
   public DBIterator getPath() throws RemoteException
   {
@@ -181,6 +180,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.2  2004/03/06 18:24:34  willuhn
+ * @D javadoc
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *
