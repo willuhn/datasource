@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2004/11/12 18:21:56 $
+ * $Revision: 1.26 $
+ * $Date: 2004/12/07 01:27:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,6 +44,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   private boolean startable		= true;
   
   private ClassFinder finder  = null;
+  private ClassLoader loader  = null;
 
   /**
    * Erzeugt eine neue Instanz.
@@ -104,6 +105,16 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   }
 
 	/**
+	 * Definiert einen optionalen benutzerdefinierten Classloader.
+	 * Wird er nicht gesetzt, wird <code>Class.forName()</code> benutzt.
+   * @param loader Benutzerdefinierter Classloader.
+   */
+  protected void setClassloader(ClassLoader loader)
+	{
+		this.loader = loader;
+	}
+
+	/**
    * @see de.willuhn.datasource.Service#isStartable()
    */
   public synchronized boolean isStartable() throws RemoteException
@@ -129,11 +140,26 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     
 		// Ob es hier Sinn macht, vorher nochmal close() aufzurufen?
 		try {
-			Class.forName(jdbcDriver);
+			if (loader != null)
+			{
+				try
+				{
+					DriverManager.registerDriver(new MyDriver(jdbcDriver,loader));
+					// Class.forName(jdbcDriver,true,loader);
+				}
+				catch (Throwable t)
+				{
+					throw new RemoteException("unable to load jdbc driver",t);
+				}
+			}
+			else
+			{
+				Class.forName(jdbcDriver);
+			}
 		}
 		catch (ClassNotFoundException e2)
 		{
-			Logger.error("unable to load jb driver " + jdbcDriver,e2);
+			Logger.error("unable to load jdbc driver " + jdbcDriver,e2);
 			throw new RemoteException("unable to load jdbc driver " + jdbcDriver,e2);
 		}
 
@@ -296,6 +322,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.26  2004/12/07 01:27:58  willuhn
+ * @N Dummy Driver
+ *
  * Revision 1.25  2004/11/12 18:21:56  willuhn
  * *** empty log message ***
  *
