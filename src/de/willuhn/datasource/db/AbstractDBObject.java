@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/08/03 21:46:16 $
+ * $Revision: 1.13 $
+ * $Date: 2004/08/03 22:11:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -30,6 +30,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.Logger;
 
 /**
  * Basisklasse fuer alle Business-Objekte 
@@ -150,7 +151,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 			while (meta.next())
 			{
 				field = meta.getString("COLUMN_NAME");
-				if (field == null) // skip empty fields
+				if (field == null || field.equalsIgnoreCase(this.getIDField())) // skip empty fields and primary key
 					continue;
 				properties.put(field,null);
         types.put(field,meta.getString("TYPE_NAME"));
@@ -351,9 +352,19 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     if (!isInitialized())
       throw new RemoteException("object not initialized.");
 
+		if (fieldName == null)
+			return null;
+
     Object o = properties.get(fieldName);
     if (o == null)
-      return null;
+    {
+    	// Mhh, wir haben keinen Wert hierfuer.
+    	// Aber vielleicht ist es ja der Primary-Key
+    	if (fieldName.equalsIgnoreCase(getPrimaryAttribute()))
+    		return getID();
+    	else
+				return null;
+    }
 
     // wir checken erstmal, ob es sich um ein Objekt aus einer Fremdtabelle
     // handelt. Wenn das der Fall ist, liefern wir das statt der
@@ -599,6 +610,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         Object value = properties.get(attributes[i]);
         setStmtValue(stmt,i,type,value);
       }
+			Logger.debug("executing sql statement: " + stmt.toString());
       return stmt;
     }
     catch (Exception e)
@@ -662,6 +674,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         Object value = properties.get(attributes[i]);
         setStmtValue(stmt,i,type,value);
       }
+			Logger.debug("executing sql statement: " + stmt.toString());
       return stmt;
     }
     catch (Exception e)
@@ -957,6 +970,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.13  2004/08/03 22:11:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2004/08/03 21:46:16  willuhn
  * @C Speichern des Primaer-Schluessels als regulaeres Feld wieder erlaubt
  *
