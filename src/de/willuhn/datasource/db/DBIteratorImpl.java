@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/06/17 22:06:29 $
+ * $Revision: 1.11 $
+ * $Date: 2004/06/18 19:47:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -65,7 +65,6 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * @param list eine vorgefertigte Liste.
    * @param service der Datenbank-Service.
    * @throws RemoteException
-   * @deprecated
    */
   public DBIteratorImpl(AbstractDBObject object, ArrayList list, DBService service) throws RemoteException
   {
@@ -277,6 +276,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.11  2004/06/18 19:47:43  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/06/17 22:06:29  willuhn
  * @N PseudoIterator
  *
