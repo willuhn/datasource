@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/03/18 01:24:17 $
+ * $Revision: 1.8 $
+ * $Date: 2004/03/19 18:56:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,9 @@ public class DBServiceImpl extends AbstractService implements DBService
   private Connection conn;
 
   private boolean available = true;
-
+  
+  private boolean open = false;
+  
   /**
 	 * Erzeugt eine neue Instanz.
    * @param initParams HashMap mit Initialisierungsparametern.
@@ -82,10 +84,7 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
     catch (ServerNotActiveException soe) {}
     
-		if (ping()) return; // test connection
-
-		// mhh, entweder die Verbindung wurde noch nie geoeffnet
-		// oder sie ist im Eimer. Wir oeffnen sie neu
+    if (open) return;
 
 		// Ob es hier Sinn macht, vorher nochmal close() aufzurufen?
 		try {
@@ -99,6 +98,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 		try {
 			conn = DriverManager.getConnection(jdbcUrl);    
+      open = true;
 		}
 		catch (SQLException e2)
 		{
@@ -122,6 +122,7 @@ public class DBServiceImpl extends AbstractService implements DBService
     catch (ServerNotActiveException soe) {}
 
     try {
+      open = false;
       conn.close();
     }
     catch (NullPointerException ne)
@@ -253,6 +254,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.8  2004/03/19 18:56:47  willuhn
+ * @R removed ping() from within open()
+ *
  * Revision 1.7  2004/03/18 01:24:17  willuhn
  * @C refactoring
  *
