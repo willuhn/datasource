@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/08/18 23:14:00 $
+ * $Revision: 1.20 $
+ * $Date: 2004/11/12 18:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,7 +38,7 @@ import com.mckoi.database.control.DefaultDBConfig;
 import com.mckoi.util.UserTerminal;
 
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.util.Logger;
+import de.willuhn.logging.Logger;
 
 /**
  * Embedded Datenbank die man jederzeit gut gebrauchen kann.
@@ -380,6 +380,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.20  2004/11/12 18:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/08/18 23:14:00  willuhn
  * @D Javadoc
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/08/31 18:14:00 $
+ * $Revision: 1.18 $
+ * $Date: 2004/11/12 18:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,7 +23,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.util.Logger;
+import de.willuhn.logging.Logger;
 
 /**
  * @author willuhn
@@ -269,6 +269,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.18  2004/11/12 18:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.17  2004/08/31 18:14:00  willuhn
  * *** empty log message ***
  *

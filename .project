@@ -3,6 +3,7 @@
 	<name>datasource</name>
 	<comment></comment>
 	<projects>
+		<project>util</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

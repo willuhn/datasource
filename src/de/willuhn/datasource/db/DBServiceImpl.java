@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/11/04 17:48:04 $
+ * $Revision: 1.25 $
+ * $Date: 2004/11/12 18:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,8 +23,8 @@ import java.sql.SQLException;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
-import de.willuhn.util.Logger;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
@@ -296,6 +296,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.25  2004/11/12 18:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.24  2004/11/04 17:48:04  willuhn
  * *** empty log message ***
  *

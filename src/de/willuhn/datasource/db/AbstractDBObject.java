@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/11/05 19:48:24 $
+ * $Revision: 1.23 $
+ * $Date: 2004/11/12 18:21:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -33,8 +33,8 @@ import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.Event;
 import de.willuhn.datasource.rmi.Listener;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
-import de.willuhn.util.Logger;
 
 /**
  * Basisklasse fuer alle Business-Objekte 
@@ -1081,6 +1081,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.23  2004/11/12 18:21:56  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2004/11/05 19:48:24  willuhn
  * *** empty log message ***
  *
