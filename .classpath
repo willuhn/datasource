@@ -4,6 +4,6 @@
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry exported="true" kind="lib" path="lib/mckoidb.jar"/>
     <classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-3.0.8-stable-bin.jar"/>
-    <classpathentry kind="lib" path="lib/de_willuhn_util.jar"/>
+    <classpathentry kind="src" path="/util"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
