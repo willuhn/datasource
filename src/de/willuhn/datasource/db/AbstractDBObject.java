@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/06/30 21:58:12 $
+ * $Revision: 1.9 $
+ * $Date: 2004/07/13 22:19:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -213,10 +213,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         return; // record not found.
       }
 
-			String[] fields = getFields();
-			for (int i=0;i<fields.length;++i)
+			String[] attributes = getAttributes();
+			for (int i=0;i<attributes.length;++i)
 			{
-				setField(fields[i],data.getObject(fields[i]));
+				setAttribute(attributes[i],data.getObject(attributes[i]));
 			}
 		}
 		catch (SQLException e)
@@ -253,10 +253,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       throw new RemoteException("object not initialized.");
 
     this.id = null;
-    String fields[] = this.getFields();
-    for (int i=0;i<fields.length;++i)
+    String attributes[] = this.getAttributes();
+    for (int i=0;i<attributes.length;++i)
     {
-      this.setField(fields[i],null);
+      this.setAttribute(attributes[i],null);
     }
   }
   
@@ -379,19 +379,19 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getFieldType(java.lang.String)
+   * @see de.willuhn.datasource.rmi.DBObject#getAttributeType(java.lang.String)
    */
-  public final String getFieldType(String fieldName) throws RemoteException
+  public final String getAttributeType(String attributeName) throws RemoteException
   {
     if (!isInitialized())
       throw new RemoteException("object not initialized.");
 
     try {
-      return (String) types.get(fieldName);
+      return (String) types.get(attributeName);
     }
     catch (Exception e)
     {
-      throw new RemoteException("unable to determine filed type of field " + fieldName);
+      throw new RemoteException("unable to determine filed type of attribute " + attributeName);
     }
   }
 
@@ -399,14 +399,25 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Speichert einen neuen Wert in den Properties
    * und liefert den vorherigen zurueck.
    * @param fieldName Name des Feldes.
-   * @param value neuer Wert des Feldes. Muss vom Typ String, Date, Timestamp, Double oder Integer sein.
+   * @param value neuer Wert des Feldes.
+   * Muss vom Typ String, Date, Timestamp, Double, Integer oder DBObject sein.<br>
+   * Ist der Parameter vom Typ <code>dbObject</code> nimmt die Funktion an, dass
+   * es sich um einen Fremdschluessel handelt und speichert automatisch statt
+   * des Objektes selbst nur dessen ID mittels <code>new Integer(((DBObject)value).getID())</code>.
    * @return vorheriger Wert des Feldes.
+   * @throws RemoteException
    */
-  protected final Object setField(String fieldName, Object value)
+  protected final Object setAttribute(String fieldName, Object value) throws RemoteException
   {
     if (fieldName == null)
       return null;
 
+		// Null-Werte fischen wir uns vorher raus, damit wir uns beim folgenden Code NPEs ersparen
+		if (value == null)
+			return properties.put(fieldName, null);
+		
+		if (value instanceof DBObject)
+			value = new Integer(((DBObject)value).getID());
     return properties.put(fieldName, value);
   }
 
@@ -414,7 +425,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Liefert ein String-Array mit allen Feldnamen dieses Objektes. 
    * @return String-Array mit allen Feldnamen.
    */
-  protected final String[] getFields()
+  protected final String[] getAttributes()
   {
     Set s = properties.keySet();
     return (String[]) s.toArray(new String[s.size()]);
@@ -557,13 +568,13 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     checkConnection();
 
     String sql = "update " + getTableName() + " set ";
-    String[] fields = getFields();
+    String[] attributes = getAttributes();
 
-    for (int i=0;i<fields.length;++i)
+    for (int i=0;i<attributes.length;++i)
     {
-			if (fields[i].equalsIgnoreCase(this.getIDField()))
+			if (attributes[i].equalsIgnoreCase(this.getIDField()))
 				continue; // skip the id field
-      sql += fields[i] + "=?,";
+      sql += attributes[i] + "=?,";
     }
     sql = sql.substring(0,sql.length()-1); // remove last ","
     try {
@@ -575,10 +586,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     try {
       PreparedStatement stmt = getConnection().prepareStatement(sql);
-      for (int i=0;i<fields.length;++i)
+      for (int i=0;i<attributes.length;++i)
       {
-        String type  = (String) types.get(fields[i]);
-        Object value = properties.get(fields[i]);
+        String type  = (String) types.get(attributes[i]);
+        Object value = properties.get(attributes[i]);
         setStmtValue(stmt,i,type,value);
       }
       return stmt;
@@ -601,16 +612,16 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     checkConnection();
 
     String sql = "insert into " + getTableName() + " ";
-    String[] fields = getFields();
+    String[] attributes = getAttributes();
 
     String names = "(";
     String values = " values (";
 
-    for (int i=0;i<fields.length;++i)
+    for (int i=0;i<attributes.length;++i)
     {
-      if (fields[i] == null || fields[i].equals("")) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
+      if (attributes[i] == null || attributes[i].equals("")) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
         continue; // skip empty fields
-      names += fields[i] + ",";
+      names += attributes[i] + ",";
       values += "?,";
     }
 
@@ -638,10 +649,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
     try {
       PreparedStatement stmt = getConnection().prepareStatement(sql + names + values);
-      for (int i=0;i<fields.length;++i)
+      for (int i=0;i<attributes.length;++i)
       {
-        String type  = (String) types.get(fields[i]);
-        Object value = properties.get(fields[i]);
+        String type  = (String) types.get(attributes[i]);
+        Object value = properties.get(attributes[i]);
         setStmtValue(stmt,i,type,value);
       }
       return stmt;
@@ -719,16 +730,16 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (type == null || value == null)
         stmt.setNull(index,Types.NULL);
 
-      else if (FIELDTYPE_DATE.equalsIgnoreCase(type) || FIELDTYPE_DATETIME.equalsIgnoreCase(type))
+      else if (ATTRIBUTETYPE_DATE.equalsIgnoreCase(type) || ATTRIBUTETYPE_DATETIME.equalsIgnoreCase(type))
         stmt.setDate(index,new java.sql.Date(((Date) value).getTime()));
 
-      else if (FIELDTYPE_TIMESTAMP.equalsIgnoreCase(type))
+      else if (ATTRIBUTETYPE_TIMESTAMP.equalsIgnoreCase(type))
         stmt.setTimestamp(index,new Timestamp(((Date) value).getTime()));
 
-      else if (FIELDTYPE_INT.equalsIgnoreCase(type))
+      else if (ATTRIBUTETYPE_INT.equalsIgnoreCase(type))
         stmt.setInt(index,((Integer) value).intValue());
 
-      else if (FIELDTYPE_DOUBLE.equalsIgnoreCase(type) || FIELDTYPE_DECIMAL.equalsIgnoreCase(type))
+      else if (ATTRIBUTETYPE_DOUBLE.equalsIgnoreCase(type) || ATTRIBUTETYPE_DECIMAL.equalsIgnoreCase(type))
         stmt.setDouble(index,((Double) value).doubleValue());
 
       else stmt.setString(index,(String) value);
@@ -890,21 +901,21 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     if (!object.getClass().equals(this.getClass()))
       return;
 
-    String[] fields = getFields();
+    String[] attributes = getAttributes();
     
-    for (int i=0;i<fields.length;++i)
+    for (int i=0;i<attributes.length;++i)
     {
-      Class foreign = getForeignObject(fields[i]);
+      Class foreign = getForeignObject(attributes[i]);
       if (foreign != null)
       {
         // Fremdschluessel. Also ID holen
-        DBObject fObject = (DBObject) object.getAttribute(fields[i]);
+        DBObject fObject = (DBObject) object.getAttribute(attributes[i]);
         if (fObject == null)
           continue;
-        setField(fields[i],fObject.getID());
+        setAttribute(attributes[i],fObject.getID());
       }
       else {
-        setField(fields[i],object.getAttribute(fields[i]));
+        setAttribute(attributes[i],object.getAttribute(attributes[i]));
       }
     }
   }
@@ -939,6 +950,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.9  2004/07/13 22:19:30  willuhn
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.8  2004/06/30 21:58:12  willuhn
  * @N md5 check for database
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/06/17 00:05:50 $
+ * $Revision: 1.5 $
+ * $Date: 2004/07/13 22:19:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,39 +23,39 @@ public interface DBObject extends GenericObject
 {
 
   /**
-   * Felder dieses Typs werden als java.util.Date erkannt.
+   * Attribute dieses Typs werden als java.util.Date erkannt.
    */
-  public final static String FIELDTYPE_DATE      = "date";
+  public final static String ATTRIBUTETYPE_DATE      = "date";
 
   /**
-   * Felder dieses Typs werden als java.util.Date erkannt.
+   * Attribute dieses Typs werden als java.util.Date erkannt.
    */
-  public final static String FIELDTYPE_TIMESTAMP = "timestamp";
+  public final static String ATTRIBUTETYPE_TIMESTAMP = "timestamp";
 
   /**
-   * Felder dieses Typs werden als java.util.Date erkannt.
+   * Attribute dieses Typs werden als java.util.Date erkannt.
    */
-  public final static String FIELDTYPE_DATETIME  = "datetime";
+  public final static String ATTRIBUTETYPE_DATETIME  = "datetime";
 
   /**
-   * Felder dieses Typs werden als java.lang.Integer erkannt.
+   * Attribute dieses Typs werden als java.lang.Integer erkannt.
    */
-  public final static String FIELDTYPE_INT       = "int";
+  public final static String ATTRIBUTETYPE_INT       = "int";
 
   /**
-   * Felder dieses Typs werden als java.lang.Double erkannt.
+   * Attribute dieses Typs werden als java.lang.Double erkannt.
    */
-  public final static String FIELDTYPE_DOUBLE    = "double";
+  public final static String ATTRIBUTETYPE_DOUBLE    = "double";
 
   /**
-   * Felder dieses Typs werden als java.lang.Double erkannt.
+   * Attribute dieses Typs werden als java.lang.Double erkannt.
    */
-  public final static String FIELDTYPE_DECIMAL   = "decimal";
+  public final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
 
   /**
-   * Felder dieses Typs werden als java.lang.String erkannt.
+   * Attribute dieses Typs werden als java.lang.String erkannt.
    */
-  public final static String FIELDTYPE_VARCHAR   = "varchar";
+  public final static String ATTRIBUTETYPE_VARCHAR   = "varchar";
   
   /**
    * Damit kann man manuell eine Transaktion starten.
@@ -135,13 +135,13 @@ public interface DBObject extends GenericObject
   public Object getAttribute(String name) throws RemoteException;
 
   /**
-   * Liefert den Feldtyp des uebergebenen Feldes.
-   * Siehe DBObject.FIELDTYPE_*.
-   * @param fieldname Name des Feldes.
-   * @return Konstante fuer den Feldtype. Siehe DBObject.FIELDTYPE_*.
+   * Liefert den Attributtyp des uebergebenen Feldes.
+   * Siehe DBObject.ATTRIBUTETYPE_*.
+   * @param attributename Name des Attributes.
+   * @return Konstante fuer den Attributtyp. Siehe DBObject.ATTRIBUTETYPE_*.
    * @throws RemoteException im Fehlerfall.
    */
-  public String getFieldType(String fieldname) throws RemoteException;
+  public String getAttributeType(String attributeName) throws RemoteException;
 
 	/**
 	 * Prueft, ob es sich um ein neues Objekt oder ein bereits in der Datenbank existierendes handelt.
@@ -185,6 +185,9 @@ public interface DBObject extends GenericObject
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.5  2004/07/13 22:19:30  willuhn
+ * @C paar Funktionsnamen umbenannt
+ *
  * Revision 1.4  2004/06/17 00:05:50  willuhn
  * @N GenericObject, GenericIterator
  *
