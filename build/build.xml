@@ -64,7 +64,7 @@
 				<attribute name="Implementation-Title" value="${define.jarfilename}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
 				<attribute name="Implementation-Buildnumber" value="${build.number}"/>
-				<attribute name="Class-Path" value="lib/mckoidb.jar lib/mysql-connector-java-3.0.8-stable-bin.jar" />
+				<attribute name="Class-Path" value="mckoidb.jar mysql-connector-java-3.0.8-stable-bin.jar" />
 	        </manifest>
     	    <fileset dir="${class.dir}"/>
 	    </jar>
