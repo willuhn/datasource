@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/08/03 22:11:09 $
+ * $Revision: 1.14 $
+ * $Date: 2004/08/03 22:42:57 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -360,7 +360,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     {
     	// Mhh, wir haben keinen Wert hierfuer.
     	// Aber vielleicht ist es ja der Primary-Key
-    	if (fieldName.equalsIgnoreCase(getPrimaryAttribute()))
+    	if (fieldName.equalsIgnoreCase(getIDField()))
     		return getID();
     	else
 				return null;
@@ -503,7 +503,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (!this.inTransaction) {
         try {
           getConnection().rollback();
-          throw new RemoteException("delete failed, rollback successful",e);
+          throw new RemoteException("insert failed, rollback successful",e);
         }
         catch (SQLException e2)
         {
@@ -970,6 +970,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.14  2004/08/03 22:42:57  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/08/03 22:11:09  willuhn
  * *** empty log message ***
  *
