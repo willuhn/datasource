@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/07/04 17:08:09 $
+ * $Revision: 1.16 $
+ * $Date: 2004/07/09 00:04:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,7 @@ import de.willuhn.util.MultipleClassLoader;
  * Einfach eine Instanz mit User, Passwort und Pfad im Konstruktor
  * erzeugen, die Datenbank wird geladen oder (wenn sie noch nicht existiert)
  * automatisch im genannten Verzeichnis angelegt.
+ * TODO: Nicht RMI-tauglich
  */
 public class EmbeddedDatabase
 {
@@ -391,6 +392,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.16  2004/07/09 00:04:19  willuhn
+ * @C Redesign
+ *
  * Revision 1.15  2004/07/04 17:08:09  willuhn
  * *** empty log message ***
  *

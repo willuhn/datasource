@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/07/04 17:08:09 $
+ * $Revision: 1.13 $
+ * $Date: 2004/07/09 00:04:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,7 +187,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    */
   public boolean hasNext() throws RemoteException
 	{
-    if (!initialized) init();
+    init();
 		return (index < list.size() && list.size() > 0);
 	}
 
@@ -196,7 +196,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    */
   public GenericObject next() throws RemoteException
 	{
-    if (!initialized) init();
+    init();
     try {
       return (GenericObject) list.get(index++);
     }
@@ -211,7 +211,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    */
   public GenericObject previous() throws RemoteException
   {
-    if (!initialized) init();
+    init();
     try {
       return (GenericObject) list.get(index--);
     }
@@ -226,7 +226,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    */
   public int size() throws RemoteException
   {
-    if (!initialized) init();
+    init();
     return list.size();
   }
 
@@ -243,7 +243,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    */
   public GenericObject contains(GenericObject other) throws RemoteException
   {
-    if (!initialized) init();
+    init();
 
     if (other == null)
       return null;
@@ -267,6 +267,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.13  2004/07/09 00:04:19  willuhn
+ * @C Redesign
+ *
  * Revision 1.12  2004/07/04 17:08:09  willuhn
  * *** empty log message ***
  *
