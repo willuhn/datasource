@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/06/17 00:05:51 $
+ * $Revision: 1.8 $
+ * $Date: 2004/06/30 21:58:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -144,11 +144,11 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 			String field;
 			while (meta.next())
 			{
-				field = meta.getString(4);
+				field = meta.getString("COLUMN_NAME");
 				if (field == null || field.equalsIgnoreCase(this.getIDField())) // skip empty fields and primary key
 					continue;
 				properties.put(field,null);
-        types.put(field,meta.getString(6));
+        types.put(field,meta.getString("TYPE_NAME"));
 			}
       ObjectMetaCache.addMetaData(this.getClass(),types);
 		}
@@ -939,6 +939,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.8  2004/06/30 21:58:12  willuhn
+ * @N md5 check for database
+ *
  * Revision 1.7  2004/06/17 00:05:51  willuhn
  * @N GenericObject, GenericIterator
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/06/30 20:58:07 $
+ * $Revision: 1.14 $
+ * $Date: 2004/06/30 21:58:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,10 +20,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
+import java.security.MessageDigest;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+
+import sun.misc.BASE64Encoder;
 
 import com.mckoi.database.TableDataConglomerate;
 import com.mckoi.database.TransactionSystem;
@@ -87,6 +92,12 @@ public class EmbeddedDatabase
 		this.username = username;
 		this.password = password;
 
+		if (!this.path.exists())
+		{
+			Logger.info("creating directory " + this.path.getAbsolutePath());
+			this.path.mkdir();
+		}
+
 		if (!this.path.canWrite())
 			throw new IOException("write permission failed in " + this.path.getAbsolutePath());
 
@@ -124,12 +135,6 @@ public class EmbeddedDatabase
 	{
 		if (control.databaseExists(config))
 			return;
-
-		if (!this.path.exists())
-		{
-			Logger.info("creating directory " + path.getAbsolutePath());
-			path.mkdir();
-		}
 
 		// Config-Datei kopieren
 		Logger.info("creating database config file");
@@ -281,6 +286,51 @@ public class EmbeddedDatabase
 		return db;
 	}
 
+	/**
+	 * Liefert eine MD5-Checksumme (BASE64-encoded) der Datenbank-Eigenschaften.
+	 * Diese kann gegen eine gespeicherte Version verglichen werden, um zu pruefen,
+	 * ob die Datenbank den erwarteten Eigenschaften entspricht. Das ist z.Bsp.
+	 * sinnvoll, wenn man pruefen will, ob das Datenbank-Modell zur Software-Version
+	 * passt.<br>
+	 * Szenario: Eine Anwendung moechte seine embedded Datenbank auf den aktuellen
+	 * Stand bringen, weiss jedoch nicht, welche SQL-Statements hierfuer noetig sind,
+	 * da das momentane Datenbank-Layout nicht bekannt ist.<br>
+	 * Loesung: Die Anwendung haelt fuer alle moeglichen Versionsstaende der Datenbank
+	 * je eine MD5-Summe bereit und vergleicht diese mit der aktuellen. Somit kann
+	 * sie herausfinden, welche SQL-Befehle noch noetig sind, um die Anwendung
+	 * auf den aktuellen Stand zu bringen.<br>
+	 * Eine weitere Einsatzmoeglichkeit ist das Detektieren von Datenbank-Manipulationen.
+	 * Sprich: Wurde die Datenbank von einem Dritten geaendert, laesst sich dies durch
+	 * Pruefen der Checksumme herausfinden.
+   * @return MD5-Checksumme.
+   * @throws Exception
+   */
+  public String getMD5Sum() throws Exception
+	{
+		StringBuffer sum = new StringBuffer();
+		ResultSet rs = null;
+		try {
+			Connection conn = getDBService().getConnection();
+			DatabaseMetaData dmd = conn.getMetaData();
+			rs = dmd.getColumns(null,"APP",null,null);
+			while (rs.next())
+			{
+				sum.append(rs.getString("TABLE_NAME") + ":" + rs.getString("COLUMN_NAME") + ":" + rs.getString("TYPE_NAME") + "\n");
+			}
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] hash = md.digest(sum.toString().getBytes());
+			BASE64Encoder encoder = new BASE64Encoder();
+			return encoder.encode(hash);
+		}
+		finally
+		{
+			try {
+				rs.close();
+			}
+			catch (Exception e) { /*useless*/ }
+		}
+	}
+
   /**
    * Repariert die Datenbank.
    * @param terminal Terminal, welches zur Ausgabe und Interaktion verwendet werden soll.
@@ -310,6 +360,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.14  2004/06/30 21:58:12  willuhn
+ * @N md5 check for database
+ *
  * Revision 1.13  2004/06/30 20:58:07  willuhn
  * @C some refactoring
  *
