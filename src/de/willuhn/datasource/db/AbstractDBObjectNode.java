@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/08/02 11:53:59 $
+ * $Revision: 1.9 $
+ * $Date: 2004/08/11 23:36:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -31,7 +32,7 @@ import de.willuhn.util.ApplicationException;
  * befinden, muessen den Wert "0" im Feld fuer das Eltern-Objekt besitzen.
  * @author willuhn
  */
-public abstract class AbstractDBObjectNode extends AbstractDBObject implements GenericObjectNode
+public abstract class AbstractDBObjectNode extends AbstractDBObject implements DBObjectNode
 {
 
   /**
@@ -53,7 +54,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObjectNode#getChilds()
+   * @see de.willuhn.datasource.GenericObjectNode#getChilds()
    */
   public GenericIterator getChilds() throws RemoteException
   {
@@ -63,7 +64,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObjectNode#getTopLevelList()
+   * @see de.willuhn.datasource.rmi.DBObjectNode#getTopLevelList()
    */
   public GenericIterator getTopLevelList() throws RemoteException
   {
@@ -73,7 +74,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObjectNode#hasChild(de.willuhn.datasource.rmi.GenericObjectNode)
+   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
    */
   public boolean hasChild(GenericObjectNode object) throws RemoteException
   {
@@ -95,7 +96,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObjectNode#getParent()
+   * @see de.willuhn.datasource.GenericObjectNode#getParent()
    */
   public GenericObjectNode getParent() throws RemoteException
   {
@@ -106,10 +107,8 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
     return (GenericObjectNode) list.next();
   }
 
-
-
   /**
-   * @see de.willuhn.datasource.rmi.GenericObjectNode#getPossibleParents()
+   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
    */
   public GenericIterator getPossibleParents() throws RemoteException
   {
@@ -131,7 +130,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObjectNode#getPath()
+   * @see de.willuhn.datasource.GenericObjectNode#getPath()
    */
   public GenericIterator getPath() throws RemoteException
   {
@@ -223,6 +222,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.9  2004/08/11 23:36:34  willuhn
+ * @N Node Objekte in GenericObjectNode und DBObjectNode aufgeteilt
+ *
  * Revision 1.8  2004/08/02 11:53:59  willuhn
  * *** empty log message ***
  *

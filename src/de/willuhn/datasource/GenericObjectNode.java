@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/GenericObjectNode.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/08/11 23:36:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,20 +14,11 @@ package de.willuhn.datasource;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.rmi.DBObject;
-
 /**
- * Diese Klasse ist die ideale Basis-Klasse, wenn es gilt, Baum-Strukturen abzubilden.
- * In einer Datenbank wuerde das wie folgt gehen: Man nehme eine SQL-Tabelle und erweitere
- * sie um eine Spalte fuer das Eltern-Objekt. Diese heisst z.Bsp. "parent_id".
- * Dieser Fremd-Schluessel zeigt auf die selbe Tabelle und dort auf das
- * uebergeordnete Objekt. Ein solches Objekt laesst sich dann prima mit
- * der GUI-Komponente "Tree" darstellen.
- * Hinweis: Objekte, die sich bereits auf der obersten Ebene des Baumes
- * befinden, muessen den Wert "0" im Feld fuer das Eltern-Objekt besitzen.
- * @author willuhn
- */
-public interface GenericObjectNode extends DBObject
+ * Generisches RMI-faehiges Objekt, welches von genericObject
+ * abgeleitet ist, jedoch noch Funktionen zur Abbildung einer Baumstruktur mitbringt.
+ */ 
+public interface GenericObjectNode extends GenericObject
 {
 
   /**
@@ -38,13 +29,6 @@ public interface GenericObjectNode extends DBObject
    */
   public GenericIterator getChilds() throws RemoteException;
 
-  /**
-   * Liefert einen Iterator mit allen Root-Objekten.
-   * Das sind all die, welche sich auf oberster Ebene befinden.
-   * @return Iterator mit den Root-Objekten.
-   * @throws RemoteException
-   */
-  public GenericIterator getTopLevelList() throws RemoteException;
 
   /**
    * Prueft, ob das uebergeben Node-Objekt ein Kind des aktuellen
@@ -91,6 +75,9 @@ public interface GenericObjectNode extends DBObject
 
 /*********************************************************************
  * $Log: GenericObjectNode.java,v $
+ * Revision 1.2  2004/08/11 23:36:34  willuhn
+ * @N Node Objekte in GenericObjectNode und DBObjectNode aufgeteilt
+ *
  * Revision 1.1  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *
