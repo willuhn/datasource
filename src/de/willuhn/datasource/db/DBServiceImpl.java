@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/08/31 17:33:10 $
+ * $Revision: 1.19 $
+ * $Date: 2004/08/31 18:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -267,6 +267,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.19  2004/08/31 18:14:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.18  2004/08/31 17:33:10  willuhn
  * *** empty log message ***
  *

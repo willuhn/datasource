@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/08/18 23:21:38 $
+ * $Revision: 1.9 $
+ * $Date: 2004/08/31 18:13:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -80,6 +80,9 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.9  2004/08/31 18:13:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/08/18 23:21:38  willuhn
  * *** empty log message ***
  *

@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/GenericIterator.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/08/31 18:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -70,6 +70,9 @@ public interface GenericIterator extends Remote {
 
 /*********************************************************************
  * $Log: GenericIterator.java,v $
+ * Revision 1.2  2004/08/31 18:14:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *

@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Transactionable.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/08/18 23:14:00 $
+ * $Revision: 1.2 $
+ * $Date: 2004/08/31 18:13:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -51,6 +51,9 @@ public interface Transactionable
 
 /*********************************************************************
  * $Log: Transactionable.java,v $
+ * Revision 1.2  2004/08/31 18:13:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/08/18 23:14:00  willuhn
  * @D Javadoc
  *

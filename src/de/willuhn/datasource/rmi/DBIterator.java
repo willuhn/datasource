@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.5 $
+ * $Date: 2004/08/31 18:13:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -48,6 +48,9 @@ public interface DBIterator extends GenericIterator
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
+ * Revision 1.5  2004/08/31 18:13:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *

@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/08/18 23:14:00 $
+ * $Revision: 1.17 $
+ * $Date: 2004/08/31 18:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -269,6 +269,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.17  2004/08/31 18:14:00  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/08/18 23:14:00  willuhn
  * @D Javadoc
  *

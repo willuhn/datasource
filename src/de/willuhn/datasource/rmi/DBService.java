@@ -1,12 +1,12 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/08/31 17:33:10 $
+ * $Revision: 1.9 $
+ * $Date: 2004/08/31 18:13:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
- * Copyright (c) by  bbv AG
+ * Copyright (c) by willuhn.webdesign
  * All rights reserved
  *
  **********************************************************************/
@@ -46,6 +46,9 @@ public interface DBService extends Service
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.9  2004/08/31 18:13:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/08/31 17:33:10  willuhn
  * *** empty log message ***
  *
