@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/08 20:46:44 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/10 14:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,8 +24,7 @@ import com.mckoi.database.control.DBController;
 import com.mckoi.database.control.DBSystem;
 import com.mckoi.database.control.DefaultDBConfig;
 
-import de.willuhn.datasource.db.rmi.DBService;
-import de.willuhn.datasource.db.server.DBServiceImpl;
+import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.util.Logger;
 
 /**
@@ -251,6 +250,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.2  2004/01/10 14:52:19  willuhn
+ * @C package removings
+ *
  * Revision 1.1  2004/01/08 20:46:44  willuhn
  * @N database stuff separated from jameica
  *

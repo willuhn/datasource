@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/server/Attic/ObjectMetaCache.java,v $
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/ObjectMetaCache.java,v $
  * $Revision: 1.1 $
- * $Date: 2004/01/08 20:46:43 $
+ * $Date: 2004/01/10 14:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.datasource.db.server;
+package de.willuhn.datasource.db;
 
 import java.util.HashMap;
 
@@ -74,6 +74,9 @@ public class ObjectMetaCache
 
 /*********************************************************************
  * $Log: ObjectMetaCache.java,v $
+ * Revision 1.1  2004/01/10 14:52:19  willuhn
+ * @C package removings
+ *
  * Revision 1.1  2004/01/08 20:46:43  willuhn
  * @N database stuff separated from jameica
  *

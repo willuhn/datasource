@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/server/Attic/AbstractDBObjectNode.java,v $
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
  * $Revision: 1.1 $
- * $Date: 2004/01/08 20:46:43 $
+ * $Date: 2004/01/10 14:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,13 +10,13 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.datasource.db.server;
+package de.willuhn.datasource.db;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import de.willuhn.datasource.db.rmi.DBIterator;
-import de.willuhn.datasource.db.rmi.DBObjectNode;
+import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -181,6 +181,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.1  2004/01/10 14:52:19  willuhn
+ * @C package removings
+ *
  * Revision 1.1  2004/01/08 20:46:43  willuhn
  * @N database stuff separated from jameica
  *

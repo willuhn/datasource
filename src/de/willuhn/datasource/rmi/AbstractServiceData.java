@@ -1,12 +1,12 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/rmi/Attic/AbstractServiceData.java,v $
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/AbstractServiceData.java,v $
  * $Revision: 1.1 $
- * $Date: 2004/01/08 20:46:44 $
+ * $Date: 2004/01/10 14:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  **********************************************************************/
-package de.willuhn.datasource.db.rmi;
+package de.willuhn.datasource.rmi;
 
 /**
  * Basis-Klasse fuer Service-Datencontainer.
@@ -42,7 +42,7 @@ public abstract class AbstractServiceData implements ServiceData {
   }
 
   /**
-   * @see de.willuhn.datasource.db.rmi.ServiceData#setClassName(java.lang.String)
+   * @see de.willuhn.datasource.rmi.ServiceData#setClassName(java.lang.String)
    */
   public void setClassName(String className)
   {
@@ -50,7 +50,7 @@ public abstract class AbstractServiceData implements ServiceData {
   }
 
   /**
-   * @see de.willuhn.datasource.db.rmi.ServiceData#setName(java.lang.String)
+   * @see de.willuhn.datasource.rmi.ServiceData#setName(java.lang.String)
    */
   public void setName(String name)
   {
@@ -58,7 +58,7 @@ public abstract class AbstractServiceData implements ServiceData {
   }
 
   /**
-   * @see de.willuhn.datasource.db.rmi.ServiceData#setType(java.lang.String)
+   * @see de.willuhn.datasource.rmi.ServiceData#setType(java.lang.String)
    */
   public void setType(String type)
   {
@@ -70,6 +70,9 @@ public abstract class AbstractServiceData implements ServiceData {
 
 /*********************************************************************
  * $Log: AbstractServiceData.java,v $
+ * Revision 1.1  2004/01/10 14:52:19  willuhn
+ * @C package removings
+ *
  * Revision 1.1  2004/01/08 20:46:44  willuhn
  * @N database stuff separated from jameica
  *

@@ -1,12 +1,12 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/rmi/Attic/LocalServiceData.java,v $
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/LocalServiceData.java,v $
  * $Revision: 1.1 $
- * $Date: 2004/01/08 20:46:44 $
+ * $Date: 2004/01/10 14:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  **********************************************************************/
-package de.willuhn.datasource.db.rmi;
+package de.willuhn.datasource.rmi;
 
 import java.util.HashMap;
 
@@ -82,6 +82,9 @@ public class LocalServiceData extends AbstractServiceData {
 
 /*********************************************************************
  * $Log: LocalServiceData.java,v $
+ * Revision 1.1  2004/01/10 14:52:19  willuhn
+ * @C package removings
+ *
  * Revision 1.1  2004/01/08 20:46:44  willuhn
  * @N database stuff separated from jameica
  *

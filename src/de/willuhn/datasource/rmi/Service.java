@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/rmi/Attic/Service.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/08 21:38:47 $
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/Service.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2004/01/10 14:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,7 +10,7 @@
  * All rights reserved
  *
  **********************************************************************/
-package de.willuhn.datasource.db.rmi;
+package de.willuhn.datasource.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -66,6 +66,9 @@ public interface Service extends Remote
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.1  2004/01/10 14:52:19  willuhn
+ * @C package removings
+ *
  * Revision 1.2  2004/01/08 21:38:47  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/server/Attic/AbstractService.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/08 21:38:47 $
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/Attic/AbstractService.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2004/01/10 14:52:19 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -11,12 +11,12 @@
  *
  **********************************************************************/
 
-package de.willuhn.datasource.db.server;
+package de.willuhn.datasource.db;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import de.willuhn.datasource.db.rmi.Service;
+import de.willuhn.datasource.rmi.Service;
 import de.willuhn.util.Logger;
 
 /**
@@ -38,7 +38,7 @@ public abstract class AbstractService
   }
 
   /**
-   * @see de.willuhn.datasource.db.rmi.Service#setLogger(de.willuhn.util.Logger)
+   * @see de.willuhn.datasource.rmi.Service#setLogger(de.willuhn.util.Logger)
    */
   public void setLogger(Logger l) throws RemoteException
   {
@@ -51,6 +51,9 @@ public abstract class AbstractService
 
 /**********************************************************************
  * $Log: AbstractService.java,v $
+ * Revision 1.1  2004/01/10 14:52:19  willuhn
+ * @C package removings
+ *
  * Revision 1.2  2004/01/08 21:38:47  willuhn
  * *** empty log message ***
  *
