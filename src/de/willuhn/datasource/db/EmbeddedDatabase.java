@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/04/13 23:13:09 $
+ * $Revision: 1.12 $
+ * $Date: 2004/04/22 23:48:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,16 +13,24 @@
 
 package de.willuhn.datasource.db;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import com.mckoi.database.TableDataConglomerate;
+import com.mckoi.database.TransactionSystem;
 import com.mckoi.database.control.DBController;
 import com.mckoi.database.control.DBSystem;
 import com.mckoi.database.control.DefaultDBConfig;
+import com.mckoi.util.UserTerminal;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.util.Logger;
@@ -267,6 +275,15 @@ public class EmbeddedDatabase
 		}
 		
 	}
+	
+	/**
+	 * Liefert den Verzeichnis-Pfad, in dem sich die Datenbank befindet.
+   * @return Pfad zur Datenbank.
+   */
+  public File getPath()
+	{
+		return this.path;
+	}
 
   /**
 	 * Liefert einen DBService zu dieser Datenbank.
@@ -286,11 +303,39 @@ public class EmbeddedDatabase
 		db.setClassLoader(classLoader);
 		return db;
 	}
+
+  /**
+   * Repariert die Datenbank.
+   * @param terminal Terminal, welches zur Ausgabe und Interaktion verwendet werden soll.
+   * <code>UserTerminal</code> ist ein Interface und muss vom Benutzer implementiert werden.
+   */
+  public void repair(UserTerminal terminal)
+	{
+		TransactionSystem system = new TransactionSystem();
+		DefaultDBConfig config = new DefaultDBConfig();
+		config.setDatabasePath(path.getAbsolutePath());
+		config.setLogPath("");
+		config.setMinimumDebugLevel(50000);
+		// We do not use the NIO API for repairs for safety.
+		config.setValue("do_not_use_nio_api", "enabled");
+		system.setDebugOutput(new StringWriter());
+		system.init(config);
+		final TableDataConglomerate conglomerate =
+										 new TableDataConglomerate(system, system.storeSystem());
+		// Check it.
+		conglomerate.fix("DefaultDatabase", terminal);
+
+		// Dispose the transaction system
+		system.dispose();
+	}
 }
 
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.12  2004/04/22 23:48:04  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/04/13 23:13:09  willuhn
  * *** empty log message ***
  *
