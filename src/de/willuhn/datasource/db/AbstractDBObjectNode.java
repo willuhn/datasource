@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.7 $
+ * $Date: 2004/08/02 10:31:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -106,13 +106,15 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
     return (GenericObjectNode) list.next();
   }
 
+
+
   /**
    * @see de.willuhn.datasource.rmi.GenericObjectNode#getPossibleParents()
    */
   public GenericIterator getPossibleParents() throws RemoteException
   {
     DBIterator list = this.getList();
-    list.addFilter(getIDField() + " != "+this.getID()); // an object cannot have itself as parent
+    list.addFilter(getIDField() + " != "+this.getID()); // Objekt darf nicht sich selbst als Eltern-Objekt haben
     ArrayList array = new ArrayList();
 
 		GenericObjectNode element = null;
@@ -121,7 +123,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
       element = (GenericObjectNode) list.next();
 
       if (!this.hasChild(element)) {
-        // only objects which are not childs of this can be possible parents
+        // Kinder duerfen keine Eltern sein
         array.add(element.getID());
       }
     }
@@ -177,10 +179,51 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
       throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
     }
   }
+
+  /**
+   * Prueft, ob das angegebene Eltern-Objekt (insofern vorhanden) erlaubt ist.
+   * Sprich: Es wird geprueft, ob es nicht auf sich selbst zurueckzeigt
+   * und ob das Eltern-Element nicht gleichzeitig ein Kind-Element ist. 
+   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
+   */
+  protected void insertCheck() throws ApplicationException
+  {
+    // Wir pruefen, ob das Objekt an gueltiger Stelle eingehaengt wurde.
+    try {
+      if (getParent() == null)
+        return;
+
+      GenericIterator parents = getPossibleParents();
+      while (parents.hasNext())
+      {
+        GenericObjectNode node = (GenericObjectNode) parents.next();
+        if (node.equals(getParent()))
+          return; // Angegebenes Eltern-Objekt ist eines der erlaubten Eltern
+      }
+      throw new ApplicationException("Angegebenes Eltern-Objekt nicht erlaubt");
+    }
+    catch (RemoteException e)
+    {
+      throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
+    }
+    
+  }
+
+  /**
+   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
+   */
+  protected void updateCheck() throws ApplicationException
+  {
+    insertCheck();
+  }
+
 }
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.7  2004/08/02 10:31:41  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *
