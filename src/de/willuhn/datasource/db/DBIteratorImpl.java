@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/06/18 19:47:43 $
+ * $Revision: 1.12 $
+ * $Date: 2004/07/04 17:08:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -262,20 +262,14 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     return null;
     
   }
-
-//  /**
-//   * Liefert den aktuellen Typ der Iteration.
-//   * @return Klasse der Iterations-Elemente.
-//   * @throws RemoteException
-//   */
-//  public Class getType() throws RemoteException {
-//    return object.getClass();
-//  }
 }
 
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.12  2004/07/04 17:08:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2004/06/18 19:47:43  willuhn
  * *** empty log message ***
  *

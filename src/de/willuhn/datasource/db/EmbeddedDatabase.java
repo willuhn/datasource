@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/06/30 21:58:12 $
+ * $Revision: 1.15 $
+ * $Date: 2004/07/04 17:08:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,7 +108,7 @@ public class EmbeddedDatabase
 
 		control = DBController.getDefault();
 
-		if (!control.databaseExists(config))
+		if (!exists())
 			create();
 	}
 
@@ -127,13 +127,22 @@ public class EmbeddedDatabase
 			this.classLoader = loader;
 	}
 
+	/**
+	 * Prueft, ob die Datenbank existiert.
+   * @return true, wenn sie existiert.
+   */
+  public synchronized boolean exists()
+	{
+		return control.databaseExists(config);
+	}
+
   /**
    * Erstellt eine neue Datenbank, falls sie noch nicht existiert.
    * @throws IOException Wenn ein Fehler bei der Erstellung auftrat.
    */
-  private synchronized void create() throws IOException
+  public synchronized void create() throws IOException
 	{
-		if (control.databaseExists(config))
+		if (exists())
 			return;
 
 		// Config-Datei kopieren
@@ -170,6 +179,25 @@ public class EmbeddedDatabase
 	}
 
 	/**
+	 * Loescht die Datenbank gnadenlos.
+	 * <b>Diese Funktion bitte MIT BEDACHT verwenden!</b>.
+   * @throws IOException
+   */
+  public synchronized void delete() throws IOException
+	{
+		Logger.warn("deleting database in " + path.getAbsolutePath());
+		if (!exists())
+		{
+			Logger.warn("database does not exist, skipping");
+			return;
+		}
+		DBSystem system = control.startDatabase(config);
+		system.setDeleteOnClose(true);
+		system.close();
+		Logger.warn("database deleted");
+	}
+
+	/**
 	 * Fuehrt das uebergebene File mit SQL-Kommandos auf der Datenbank aus.
 	 * Die Funktion liefert kein DBIteratorImpl zurueck, weil sie typischerweise
 	 * fuer die Erstellung der Tabellen verwendet werden sollte. Wenn das
@@ -181,6 +209,9 @@ public class EmbeddedDatabase
    */
   public void executeSQLScript(File file) throws IOException, SQLException
 	{
+		if (file == null)
+			throw new NullPointerException("sql file not given");
+		Logger.debug("executing " + file.getAbsolutePath());
 		if (!file.canRead() || !file.exists())
 			throw new IOException("SQL file does not exist or is not readable");
 		
@@ -360,6 +391,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.15  2004/07/04 17:08:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2004/06/30 21:58:12  willuhn
  * @N md5 check for database
  *
