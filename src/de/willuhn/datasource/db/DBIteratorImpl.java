@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/18 01:24:17 $
+ * $Revision: 1.6 $
+ * $Date: 2004/03/29 20:36:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -62,7 +62,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * Erzeugt einen neuen Iterator mit der uebergebenen Liste von IDs.
    * @param object Objekt, fuer welches die Liste erzeugt werden soll.
    * @param list eine vorgefertigte Liste.
-   * @param conn die Connection.
+   * @param service der Datenbank-Service.
    * @throws RemoteException
    */
   public DBIteratorImpl(AbstractDBObject object, ArrayList list, DBService service) throws RemoteException
@@ -266,7 +266,8 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @return
+   * Liefert den aktuellen Typ der Iteration.
+   * @return Klasse der Iterations-Elemente.
    * @throws RemoteException
    */
   public Class getType() throws RemoteException {
@@ -277,6 +278,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.6  2004/03/29 20:36:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/03/18 01:24:17  willuhn
  * @C refactoring
  *

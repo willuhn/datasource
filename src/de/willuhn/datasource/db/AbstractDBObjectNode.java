@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/18 01:24:16 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/29 20:36:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -162,7 +162,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
    * Checks koennen wir bereits hier durchfuehren. Zum Beispiel
    * ist es nicht moeglich, ein Objekt zu loeschen, wenn es
    * Kind-Objekte hat.
-   * @see de.willuhn.jameica.server.AbstractDBObject#deleteCheck()
+   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
   protected void deleteCheck() throws ApplicationException
   {
@@ -180,6 +180,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.4  2004/03/29 20:36:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/03/18 01:24:16  willuhn
  * @C refactoring
  *
