@@ -74,10 +74,6 @@
 		<copy file="${lib.dir}/mysql-connector-java-3.0.8-stable-bin.jar"
 			tofile="${project.release}/mysql-connector-java-3.0.8-stable-bin.jar" />
 			
-		<exec executable="ln" failonerror="true" dir="releases">
-			<arg line="-f -s ${version}-${build.number} latest"/>
-		</exec>
-
 	</target>
 
 
