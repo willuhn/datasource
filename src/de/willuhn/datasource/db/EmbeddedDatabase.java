@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.18 $
+ * $Date: 2004/07/23 15:51:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -27,7 +27,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 
 import sun.misc.BASE64Encoder;
 
@@ -47,7 +46,6 @@ import de.willuhn.util.MultipleClassLoader;
  * Einfach eine Instanz mit User, Passwort und Pfad im Konstruktor
  * erzeugen, die Datenbank wird geladen oder (wenn sie noch nicht existiert)
  * automatisch im genannten Verzeichnis angelegt.
- * TODO: Nicht RMI-tauglich
  */
 public class EmbeddedDatabase
 {
@@ -308,13 +306,10 @@ public class EmbeddedDatabase
    */
   public DBService getDBService() throws RemoteException
 	{
-		if (db != null)
-			return db;
+    if (db != null)
+      return db;
 
-		HashMap map = new HashMap();
-		map.put("driver","com.mckoi.JDBCDriver");
-		map.put("url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
-		db = new DBServiceImpl(map);
+		db = new DBServiceImpl("com.mckoi.JDBCDriver",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
 		return db;
 	}
 
@@ -403,6 +398,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.18  2004/07/23 15:51:07  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.17  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *

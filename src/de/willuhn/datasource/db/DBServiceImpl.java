@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.13 $
+ * $Date: 2004/07/23 15:51:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,12 +19,12 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
 
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.util.ClassFinder;
 import de.willuhn.util.Logger;
 
 /**
@@ -34,34 +34,29 @@ import de.willuhn.util.Logger;
 public class DBServiceImpl extends UnicastRemoteObject implements DBService
 {
 
-  private String driverClass = null;
+  private String jdbcDriver   = null;
 
-  private String jdbcUrl = null;
+  private String jdbcUrl      = null;
   
-  private Connection conn;
+  private Connection conn     = null;
 
-  private boolean available = true;
+  private boolean available   = true;
   
-  private boolean open = false;
+  private boolean open        = false;
   
+  private ClassFinder finder  = null;
+
   /**
 	 * Erzeugt eine neue Instanz.
    * @param initParams HashMap mit Initialisierungsparametern.
    * @throws RemoteException im Fehlerfall.
 	 */
-	public DBServiceImpl(HashMap initParams) throws RemoteException
+	public DBServiceImpl(String jdbcDriver, String jdbcURL) throws RemoteException
 	{
 		super();
     
-    jdbcUrl = (String) initParams.get("url");
-    if (jdbcUrl == null || "".equals(jdbcUrl)) {
-      throw new RemoteException("url not set");
-    }
-
-    driverClass = (String) initParams.get("driver");
-    if (driverClass == null || "".equals(driverClass)) {
-      throw new RemoteException("driver not set");
-    }
+    this.jdbcUrl    = jdbcURL;
+    this.jdbcDriver = jdbcDriver;
 	}
   
 	/**
@@ -76,7 +71,24 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 	}
 
   /**
-   * @see de.willuhn.datasource.rmi.Service#open()
+   * Definiert einen optionalen Classfinder, der von dem Service
+   * zum Laden von Objekten genommen werden soll.
+   * Konkret wird er in <code>creatObject</code> und  <code>createList</code>
+   * verwendet, um zum uebergebenen Interface eine passende Implementierung
+   * zu finden. Dabei wird die Funktion <code>findImplementor()</code> im
+   * ClassFinder befragt.<br>
+   * Wurde kein ClassFinder angegeben, versucht der Service direkt die
+   * uebergebene Klasse zu instanziieren. Ist dies der Fall, koennen den
+   * beiden create-Methoden natuerliche keine Interfaces-Klassen uebergeben werden.
+   * @param finder zu verwendender ClassFinder.
+   */
+  void setClassFinder(ClassFinder finder)
+  {
+    this.finder = finder;
+  }
+
+  /**
+   * @see de.willuhn.datasource.Service#open()
    */
   public synchronized void open() throws RemoteException
   {
@@ -92,12 +104,12 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 		// Ob es hier Sinn macht, vorher nochmal close() aufzurufen?
 		try {
-			Class.forName(driverClass);
+			Class.forName(jdbcDriver);
 		}
 		catch (ClassNotFoundException e2)
 		{
-			Logger.error("unable to load jb driver " + driverClass,e2);
-			throw new RemoteException("unable to load jdbc driver " + driverClass,e2);
+			Logger.error("unable to load jb driver " + jdbcDriver,e2);
+			throw new RemoteException("unable to load jdbc driver " + jdbcDriver,e2);
 		}
 
 		try {
@@ -113,7 +125,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 
   /**
-   * @see de.willuhn.datasource.rmi.Service#close()
+   * @see de.willuhn.datasource.Service#close()
    */
   public synchronized void close() throws RemoteException
   {
@@ -149,8 +161,12 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   private DBObject create(Class c) throws Exception
   {
-    Class[] found = getClassLoder().getClassFinder().findImplementors(c);
-    Class clazz = found[found.length-1]; // wir nehmen das letzte Element. Das ist am naehesten dran.
+    Class clazz = c;
+    if (this.finder != null)
+    {
+      Class[] found = finder.findImplementors(c);
+      clazz = found[found.length-1]; // wir nehmen das letzte Element. Das ist am naehesten dran.
+    }
     Constructor ct = clazz.getConstructor(new Class[]{});
     ct.setAccessible(true);
 
@@ -161,7 +177,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.Service#createObject(java.lang.Class, java.lang.String)
+   * @see de.willuhn.datasource.Service#createObject(java.lang.Class, java.lang.String)
    */
   public GenericObject createObject(Class c, String identifier) throws RemoteException
   {
@@ -205,7 +221,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 
   /**
-   * @see de.willuhn.datasource.rmi.Service#isAvailable()
+   * @see de.willuhn.datasource.Service#isAvailable()
    */
   public boolean isAvailable() throws RemoteException
   {
@@ -214,7 +230,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 
   /**
-   * @see de.willuhn.datasource.rmi.Service#shutDown()
+   * @see de.willuhn.datasource.Service#shutDown()
    */
   public synchronized void shutDown() throws RemoteException
   {
@@ -228,6 +244,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.13  2004/07/23 15:51:07  willuhn
+ * @C Rest des Refactorings
+ *
  * Revision 1.12  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *
