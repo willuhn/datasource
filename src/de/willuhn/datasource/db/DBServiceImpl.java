@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/08/18 23:14:00 $
+ * $Revision: 1.17 $
+ * $Date: 2004/08/26 23:19:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -213,6 +213,10 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
       o.load(identifier);
       return o;
     }
+    catch (RemoteException re)
+    {
+    	throw re;
+    }
     catch (Exception e)
     {
 			Logger.error("unable to create object " + (c == null ? "unknown" : c.getName()),e);
@@ -233,6 +237,10 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		try {
       DBObject o = create(c);
 			return new DBIteratorImpl((AbstractDBObject)o,this);
+		}
+		catch (RemoteException re)
+		{
+			throw re;
 		}
 		catch (Exception e)
 		{
@@ -266,6 +274,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.17  2004/08/26 23:19:33  willuhn
+ * @N added ObjectNotFoundException
+ *
  * Revision 1.16  2004/08/18 23:14:00  willuhn
  * @D Javadoc
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.17 $
- * $Date: 2004/08/18 23:21:38 $
+ * $Revision: 1.18 $
+ * $Date: 2004/08/26 23:19:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,6 +29,7 @@ import java.util.Set;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
 
@@ -116,7 +117,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Liefert die Exception, die dieses Objekt gerade benutzt.
    * @return die Connection dieses Objektes.
    */
-  Connection getConnection()
+  private Connection getConnection()
   {
   	return conn;
   }
@@ -125,7 +126,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	 * Liefert den Service-Provider.
    * @return Service.
    */
-  DBServiceImpl getService()
+  protected DBServiceImpl getService()
 	{
 		return service;  
 	}
@@ -238,8 +239,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       data = stmt.executeQuery(getLoadQuery());
 			if (!data.next())
       {
-        this.id = null;
-        return; // record not found.
+      	throw new ObjectNotFoundException("object [id: " + id + ", type: " + this.getClass().getName() + "] not found");
+//        this.id = null;
+//        return; // record not found.
       }
 
 			String[] attributes = getAttributes();
@@ -407,6 +409,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         {
           cachedObject = (DBObject) service.createObject(foreign,o.toString());
 					foreignObjectCache.put(foreign,cachedObject);
+        }
+        catch (RemoteException re)
+        {
+					throw re;
         }
         catch (Exception e)
         {
@@ -1014,6 +1020,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.18  2004/08/26 23:19:33  willuhn
+ * @N added ObjectNotFoundException
+ *
  * Revision 1.17  2004/08/18 23:21:38  willuhn
  * *** empty log message ***
  *
