@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/06/17 00:05:50 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,9 +15,9 @@ package de.willuhn.datasource.db;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.GenericIterator;
-import de.willuhn.datasource.rmi.GenericObjectNode;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -181,6 +181,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.6  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.5  2004/06/17 00:05:50  willuhn
  * @N GenericObject, GenericIterator
  *

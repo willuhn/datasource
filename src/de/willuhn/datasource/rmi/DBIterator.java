@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/06/17 00:05:50 $
+ * $Revision: 1.4 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.datasource.rmi;
 
 import java.rmi.RemoteException;
+
+import de.willuhn.datasource.*;
 
 /**
  * Iterator fuer Datenbanktabellen auf Objekt-Ebene.
@@ -46,6 +48,9 @@ public interface DBIterator extends GenericIterator
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
+ * Revision 1.4  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.3  2004/06/17 00:05:50  willuhn
  * @N GenericObject, GenericIterator
  *

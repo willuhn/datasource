@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/07/13 22:19:30 $
+ * $Revision: 1.10 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,16 +14,21 @@ package de.willuhn.datasource.db;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
-import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -48,7 +53,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   // ein Cache fuer ForeignObjects
   private HashMap foreignObjectCache = new HashMap();
 
-	private transient DBService service = null;
+	private transient DBServiceImpl service = null;
 	private transient Connection conn = null;
 
   /**
@@ -65,7 +70,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * @param service
    * @throws Exception
    */
-  void setService(DBService service) throws Exception
+  void setService(DBServiceImpl service) throws Exception
   {
   	this.service = service;
   	conn = service.getConnection();
@@ -79,7 +84,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Liefert die Exception, die dieses Objekt gerade benutzt.
    * @return die Connection dieses Objektes.
    */
-  protected Connection getConnection()
+  Connection getConnection()
   {
   	return conn;
   }
@@ -88,7 +93,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	 * Liefert den Service-Provider.
    * @return Service.
    */
-  protected DBService getService()
+  DBServiceImpl getService()
 	{
 		return service;  
 	}
@@ -950,6 +955,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.10  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.9  2004/07/13 22:19:30  willuhn
  * @C paar Funktionsnamen umbenannt
  *

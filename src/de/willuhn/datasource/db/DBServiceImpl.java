@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/06/30 20:58:07 $
+ * $Revision: 1.12 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,24 +15,23 @@ package de.willuhn.datasource.db;
 import java.lang.reflect.Constructor;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 
-import de.willuhn.datasource.common.AbstractService;
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.util.Logger;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
  * @author willuhn
  */
-public class DBServiceImpl extends AbstractService implements DBService
+public class DBServiceImpl extends UnicastRemoteObject implements DBService
 {
 
   private String driverClass = null;
@@ -52,7 +51,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 	 */
 	public DBServiceImpl(HashMap initParams) throws RemoteException
 	{
-		super(initParams);
+		super();
     
     jdbcUrl = (String) initParams.get("url");
     if (jdbcUrl == null || "".equals(jdbcUrl)) {
@@ -66,9 +65,12 @@ public class DBServiceImpl extends AbstractService implements DBService
 	}
   
 	/**
-	 * @see de.willuhn.datasource.rmi.DBService#getConnection()
-	 */
-	public Connection getConnection() throws RemoteException {
+	 * Liefert die Connection, die dieser Service gerade verwendet.
+   * @return Connection.
+   * @throws RemoteException
+   */
+	Connection getConnection() throws RemoteException
+	{
 		open();
 		return conn;
 	}
@@ -222,43 +224,13 @@ public class DBServiceImpl extends AbstractService implements DBService
     // print chache stats
 		Logger.debug("object cache matches: " + ObjectMetaCache.getStats() + " %");
   }
-
-
-  /**
-   * @see de.willuhn.datasource.rmi.DBService#ping()
-   */
-  public boolean ping() throws RemoteException
-  {
-    if (!available)
-      return false;
-
-		Statement stmt = null;
-    try {
-			Logger.debug("sending ping to database");
-      stmt = conn.createStatement();
-      boolean b = stmt.execute("select 1");
-
-      if (b)
-			Logger.debug("ok");
-      else
-				Logger.debug("failed");
-
-      stmt.close();
-      return b;
-    }
-    catch (Exception e) {}
-    finally
-    {
-    	try {
-    		stmt.close();
-    	}	catch (Exception ee) {/*useless*/}
-    }
-		return false;
-  }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.12  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.11  2004/06/30 20:58:07  willuhn
  * @C some refactoring
  *

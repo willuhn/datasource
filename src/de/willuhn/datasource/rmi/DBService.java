@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/06/17 00:05:50 $
+ * $Revision: 1.7 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,8 @@
 package de.willuhn.datasource.rmi;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
+
+import de.willuhn.datasource.Service;
 
 /**
  * Basisklasse fuer alle DBServices.
@@ -30,26 +31,13 @@ public interface DBService extends Service
    */
   public DBIterator createList(Class clazz) throws RemoteException;
 
-  /**
-   * Pingt die Datenbank an.
-   * @return true, wenn der Service erreichbar ist.
-   * @throws RemoteException Muss leider in der Signatur stehen,
-   * damit die Funktion remote-faehig ist. Die Exception wird jedoch
-   * nicht geworfen, wenn z.Bsp. das Ping fehlschlaegt.
-   */
-  public boolean ping() throws RemoteException;
-
-	/**
-	 * Liefert die Connection des Services.
-   * @return Connection.
-   * @throws RemoteException
-   */
-  public Connection getConnection() throws RemoteException;
-
 }
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.7  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.6  2004/06/17 00:05:50  willuhn
  * @N GenericObject, GenericIterator
  *

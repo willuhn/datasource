@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/07/09 00:04:19 $
+ * $Revision: 1.17 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -314,7 +315,6 @@ public class EmbeddedDatabase
 		map.put("driver","com.mckoi.JDBCDriver");
 		map.put("url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
 		db = new DBServiceImpl(map);
-		db.setClassLoader(classLoader);
 		return db;
 	}
 
@@ -342,7 +342,7 @@ public class EmbeddedDatabase
 		StringBuffer sum = new StringBuffer();
 		ResultSet rs = null;
 		try {
-			Connection conn = getDBService().getConnection();
+			Connection conn = getConnection();
 			DatabaseMetaData dmd = conn.getMetaData();
 			rs = dmd.getColumns(null,"APP",null,null);
 			while (rs.next())
@@ -387,11 +387,25 @@ public class EmbeddedDatabase
 		// Dispose the transaction system
 		system.dispose();
 	}
+	
+  /**
+	 * Liefert eine Connection zu dieser Datenbank.
+   * @return Connection.
+   * @throws Exception
+   */
+  public Connection getConnection() throws Exception
+	{
+		Class.forName("com.mckoi.JDBCDriver");
+		return DriverManager.getConnection(":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
+	}
 }
 
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.17  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.16  2004/07/09 00:04:19  willuhn
  * @C Redesign
  *

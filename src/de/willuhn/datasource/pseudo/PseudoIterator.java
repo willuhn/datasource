@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/pseudo/PseudoIterator.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/06/17 22:06:29 $
+ * $Revision: 1.2 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,8 +16,8 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
 
-import de.willuhn.datasource.rmi.GenericIterator;
-import de.willuhn.datasource.rmi.GenericObject;
+import de.willuhn.datasource.GenericIterator;
+import de.willuhn.datasource.GenericObject;
 
 /**
  * Ein Pseudo-Iterator, der zwar das GenericIterator-Interface
@@ -114,6 +114,9 @@ public class PseudoIterator implements GenericIterator
 
 /**********************************************************************
  * $Log: PseudoIterator.java,v $
+ * Revision 1.2  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.1  2004/06/17 22:06:29  willuhn
  * @N PseudoIterator
  *

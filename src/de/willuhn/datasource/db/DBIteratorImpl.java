@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/07/09 00:04:19 $
+ * $Revision: 1.14 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,10 +19,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.datasource.rmi.GenericObject;
 
 /**
  * @author willuhn
@@ -45,7 +45,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * @param service der Datenbankservice.
    * @throws RemoteException
    */
-  DBIteratorImpl(AbstractDBObject object, DBService service) throws RemoteException
+  DBIteratorImpl(AbstractDBObject object, DBServiceImpl service) throws RemoteException
 	{
 		if (object == null)
 			throw new RemoteException("given object type is null");
@@ -66,7 +66,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * @param service der Datenbank-Service.
    * @throws RemoteException
    */
-  public DBIteratorImpl(AbstractDBObject object, ArrayList list, DBService service) throws RemoteException
+  DBIteratorImpl(AbstractDBObject object, ArrayList list, DBServiceImpl service) throws RemoteException
   {
 		this(object,service);
 
@@ -267,6 +267,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.14  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.13  2004/07/09 00:04:19  willuhn
  * @C Redesign
  *

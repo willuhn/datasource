@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/07/13 22:19:30 $
+ * $Revision: 1.6 $
+ * $Date: 2004/07/21 23:53:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.datasource.rmi;
 
 import java.rmi.RemoteException;
 
+import de.willuhn.datasource.*;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -185,6 +186,9 @@ public interface DBObject extends GenericObject
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.6  2004/07/21 23:53:56  willuhn
+ * @C massive Refactoring ;)
+ *
  * Revision 1.5  2004/07/13 22:19:30  willuhn
  * @C paar Funktionsnamen umbenannt
  *
