@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/pseudo/PseudoIterator.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/08/30 15:02:47 $
+ * $Revision: 1.5 $
+ * $Date: 2004/11/05 19:48:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,10 +39,11 @@ public class PseudoIterator extends UnicastRemoteObject implements GenericIterat
 	{
 	}
 
-	/**
+  /**
 	 * Erzeugt einen GenericIterator aus einem Array von GenericObjects.
    * @param objects das Array, aus dem der Iterator aufgebaut werden soll.
-   * @return
+   * @return der generierte Iterator.
+   * @throws RemoteException
    */
   public static GenericIterator fromArray(GenericObject[] objects) throws RemoteException
 	{
@@ -115,6 +116,9 @@ public class PseudoIterator extends UnicastRemoteObject implements GenericIterat
 
 /**********************************************************************
  * $Log: PseudoIterator.java,v $
+ * Revision 1.5  2004/11/05 19:48:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/08/30 15:02:47  willuhn
  * *** empty log message ***
  *

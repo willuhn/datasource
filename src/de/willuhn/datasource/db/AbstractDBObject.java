@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/11/05 01:50:38 $
+ * $Revision: 1.22 $
+ * $Date: 2004/11/05 19:48:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -1010,7 +1010,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#equals(de.willuhn.datasource.rmi.DBObject)
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
    */
   public boolean equals(GenericObject other) throws RemoteException
   {
@@ -1081,6 +1081,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.22  2004/11/05 19:48:24  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/11/05 01:50:38  willuhn
  * *** empty log message ***
  *
