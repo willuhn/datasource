@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/03/18 01:24:17 $
+ * $Revision: 1.11 $
+ * $Date: 2004/04/13 23:13:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,6 +145,7 @@ public class EmbeddedDatabase
 		try {
 			FileOutputStream fos = new FileOutputStream(this.path + "/db.conf");
 			fos.write(defaultConfig.getBytes());
+			fos.close();
 		}
 		catch (IOException e)
 		{
@@ -290,6 +291,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.11  2004/04/13 23:13:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/03/18 01:24:17  willuhn
  * @C refactoring
  *
