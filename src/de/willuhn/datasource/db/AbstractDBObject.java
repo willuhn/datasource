@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/08/03 22:42:57 $
+ * $Revision: 1.15 $
+ * $Date: 2004/08/11 22:23:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -204,15 +204,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		ResultSet data = null;
 		try {
 			stmt = getConnection().createStatement();
-      String sql = "";
-      try {
-        sql = "select * from " + tableName + " where " + this.getIDField() + " = "+Integer.parseInt(this.id);
-      }
-      catch (NumberFormatException e)
-      {
-        sql = "select * from " + tableName + " where " + this.getIDField() + " = '"+this.id+"'";
-      }
-      data = stmt.executeQuery(sql);
+      data = stmt.executeQuery(getLoadQuery());
 			if (!data.next())
       {
         this.id = null;
@@ -718,7 +710,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * dieses Typs.
    * ACHTUNG: Das Statement muss ein Feld mit der Bezeichnung zurueckgeben,
    * die <code>getIDField</code> auch liefert, da das von DBIteratorImpl gelesen wird.
-   * Also z.Bsp. "select " + getIDField() + " from kunde".
+   * Also z.Bsp. "select " + getIDField() + " from " + getTableName().
    * Kann bei Bedarf überschrieben um ein abweichendes Statement zu verwenden.
    * Die Funktion muss das Statement nur dewegen als String zurueckliefern,
    * weil es typischerweise von DBIterator weiterverwendet wird und dort eventuell
@@ -730,6 +722,27 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   {
     return "select " + getIDField() + " from " + getTableName();
   }
+
+	/**
+	 * Liefert das automatisch erzeugte SQL-Statement zum Laden des Objektes.
+	 * Hierbei werden die Eigenschaften des Objektes geladen, dessen ID aktuell
+	 * von <code>getID()</code> geliefert wird.
+	 * ACHTUNG: Das Statement muss alle Felder selecten (*).
+	 * Also z.Bsp. "select * from " + getTableName() + " where " + getIDField() + " = " + getID();
+	 * Kann bei Bedarf überschrieben um ein abweichendes Statement zu verwenden.
+	 * @return das erzeugte SQL-Statement.
+	 * @throws RemoteException Wenn beim Erzeugen des Statements ein Fehler auftrat.
+	 */
+	protected String getLoadQuery() throws RemoteException
+	{
+		try {
+			return "select * from " + getTableName() + " where " + this.getIDField() + " = "+Integer.parseInt(this.getID());
+		}
+		catch (NumberFormatException e)
+		{
+			return "select * from " + getTableName() + " where " + this.getIDField() + " = '"+this.getID()+"'";
+		}
+	}
 
   /**
    * Macht sozusagen das Typ-Mapping bei Insert und Update.
@@ -970,6 +983,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.15  2004/08/11 22:23:51  willuhn
+ * @N AbstractDBObject.getLoadQuery
+ *
  * Revision 1.14  2004/08/03 22:42:57  willuhn
  * *** empty log message ***
  *
