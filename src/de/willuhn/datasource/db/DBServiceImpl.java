@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2004/09/15 22:31:20 $
+ * $Revision: 1.23 $
+ * $Date: 2004/11/04 17:47:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -203,6 +203,8 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
       Class[] found = finder.findImplementors(c);
       clazz = found[found.length-1]; // wir nehmen das letzte Element. Das ist am naehesten dran.
     }
+    if (c.isInterface())
+      throw new Exception("no classfinder defined: unable to find implementor for interface " + c.getName());
     Constructor ct = clazz.getConstructor(new Class[]{});
     ct.setAccessible(true);
 
@@ -294,6 +296,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.23  2004/11/04 17:47:09  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.22  2004/09/15 22:31:20  willuhn
  * *** empty log message ***
  *
