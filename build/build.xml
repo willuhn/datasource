@@ -6,7 +6,7 @@
         <property environment="env"/>
 
 		<property name="define.jarfilename"  value="de_willuhn_ds.jar"/>
-		<property name="define.package"      value="de.willuhn.datasources"/>
+		<property name="define.package"      value="de.willuhn.datasource"/>
 
         <property name="build.dir" 			 value="build"/>
 		<buildnumber file="${build.dir}/BUILD"/>
