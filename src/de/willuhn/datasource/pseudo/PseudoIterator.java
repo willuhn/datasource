@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/pseudo/PseudoIterator.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.3 $
+ * $Date: 2004/08/18 23:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -51,7 +51,7 @@ public class PseudoIterator implements GenericIterator
 	}
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#hasNext()
+   * @see de.willuhn.datasource.GenericIterator#hasNext()
    */
   public boolean hasNext() throws RemoteException
   {
@@ -59,7 +59,7 @@ public class PseudoIterator implements GenericIterator
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#next()
+   * @see de.willuhn.datasource.GenericIterator#next()
    */
   public GenericObject next() throws RemoteException
   {
@@ -67,7 +67,7 @@ public class PseudoIterator implements GenericIterator
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#previous()
+   * @see de.willuhn.datasource.GenericIterator#previous()
    */
   public GenericObject previous() throws RemoteException
   {
@@ -75,7 +75,7 @@ public class PseudoIterator implements GenericIterator
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#begin()
+   * @see de.willuhn.datasource.GenericIterator#begin()
    */
   public void begin() throws RemoteException
   {
@@ -83,7 +83,7 @@ public class PseudoIterator implements GenericIterator
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#size()
+   * @see de.willuhn.datasource.GenericIterator#size()
    */
   public int size() throws RemoteException
   {
@@ -91,7 +91,7 @@ public class PseudoIterator implements GenericIterator
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#contains(de.willuhn.datasource.rmi.GenericObject)
+   * @see de.willuhn.datasource.GenericIterator#contains(de.willuhn.datasource.GenericObject)
    */
   public GenericObject contains(GenericObject o) throws RemoteException
   {
@@ -114,6 +114,9 @@ public class PseudoIterator implements GenericIterator
 
 /**********************************************************************
  * $Log: PseudoIterator.java,v $
+ * Revision 1.3  2004/08/18 23:14:00  willuhn
+ * @D Javadoc
+ *
  * Revision 1.2  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *

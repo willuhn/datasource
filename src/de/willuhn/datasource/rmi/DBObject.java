@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.7 $
+ * $Date: 2004/08/18 23:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,13 +14,12 @@ package de.willuhn.datasource.rmi;
 
 import java.rmi.RemoteException;
 
-import de.willuhn.datasource.*;
-import de.willuhn.util.ApplicationException;
+import de.willuhn.datasource.GenericObject;
 
 /**
  * Erweiterung des GenericObjects um Datenbank-Funktionalitaet.
  */
-public interface DBObject extends GenericObject
+public interface DBObject extends GenericObject, Transactionable, Changeable
 {
 
   /**
@@ -59,65 +58,12 @@ public interface DBObject extends GenericObject
   public final static String ATTRIBUTETYPE_VARCHAR   = "varchar";
   
   /**
-   * Damit kann man manuell eine Transaktion starten.
-   * Normalerweise wir bei store() oder delete() sofort
-   * bei Erfolg ein commit gemacht. Wenn man aber von
-   * aussen das Transaktionsverhalten beeinflussen will,
-   * kann man diese Methode aufrufen. Hat man dies
-   * getan, werden store() und delete() erst dann in
-   * der Datenbank ausgefuehrt, wenn man anschliessend
-   * transactionCommit() aufruft.
-   * @throws RemoteException im Fehlerfall.
-   */
-  public void transactionBegin() throws RemoteException;
-  
-  /**
    * Laedt die Eigenschaften des Datensatzes mit der angegebenen
    * ID aus der Datenbank.
    * @param id ID des zu ladenden Objektes.
    * @throws RemoteException im Fehlerfall.
    */
   public void load(String id) throws RemoteException;
-
-  /**
-   * Beendet eine manuell gestartete Transaktion.
-   * Wenn vorher kein <code>transactionBegin()</code> aufgerufen wurde,
-   * wird dieser Aufruf ignoriert.
-   * @throws RemoteException im Fehlerfall.
-   */
-  public void transactionCommit() throws RemoteException;
-
-  /**
-   * Rollt die angefangene Transaktion manuell zurueck.
-   * @throws RemoteException im Fehlerfall.
-   */
-  public void transactionRollback() throws RemoteException;
-
-	/**
-	 * Speichert das Objekt in der Datenbank.
-   * Die Funktion prueft selbst, ob es sich um ein neues Objekt handelt
-   * und entscheidet, ob ein insert oder update durchgefuehrt werden muss.
-	 * @throws RemoteException im Fehlerfall.
-   * @throws ApplicationException Wenn das Objekt nicht gespeichert werden darf.
-   * Der Grund hierfuer findet sich im Fehlertext der Exception.
-	 */
-	public void store() throws RemoteException, ApplicationException;
-
-	/**
-	 * Loescht das Objekt aus der Datenbank.
-	 * @throws RemoteException im Fehlerfall.
-   * @throws ApplicationException Wenn das Objekt nicht geloescht werden darf.
-   * Der Grund hierfuer findet sich im Fehlertext der Exception.
-	 */
-	public void delete() throws RemoteException, ApplicationException;
-
-  /**
-   * Loescht alle Eigenschaften (incl. ID) aus dem Objekt.
-   * Es kann nun erneut befuellt und als neues Objekt in der Datenbank
-   * gespeichert werden.
-   * @throws RemoteException im Fehlerfall.
-   */
-  public void clear() throws RemoteException;
 
   /**
    * Liefert den Wert des angegebenen Attributes.
@@ -131,41 +77,24 @@ public interface DBObject extends GenericObject
    * @param name Name des Feldes.
    * @return Wert des Feldes.
    * @throws RemoteException im Fehlerfall.
-   * @see de.willuhn.datasource.rmi.GenericObject#getAttribute(java.lang.String)
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
   public Object getAttribute(String name) throws RemoteException;
 
   /**
    * Liefert den Attributtyp des uebergebenen Feldes.
    * Siehe DBObject.ATTRIBUTETYPE_*.
-   * @param attributename Name des Attributes.
+   * @param attributeName Name des Attributes.
    * @return Konstante fuer den Attributtyp. Siehe DBObject.ATTRIBUTETYPE_*.
    * @throws RemoteException im Fehlerfall.
    */
   public String getAttributeType(String attributeName) throws RemoteException;
 
-	/**
-	 * Prueft, ob es sich um ein neues Objekt oder ein bereits in der Datenbank existierendes handelt.
-	 * @return true, wenn es neu ist, andernfalls false.
-	 * @throws RemoteException im Fehlerfall.
-	 */
-	public boolean isNewObject() throws RemoteException;
-
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public String getPrimaryAttribute() throws RemoteException;
 
-  /**
-   * Ueberschreibt dieses Objekt mit den Eigenschaften des uebergebenen.
-   * Dabei werden nur die Werte der Eigenschaften ueberschrieben - nichts anderes.
-   * Also auch keine Meta-Daten oder aehnliches.
-   * Handelt es sich bei der Quelle um ein Objekt fremden Typs, wird nichts ueberschrieben.
-   * @param object das Objekt, welches als Quelle verwendet werden soll.
-   * @throws RemoteException im Fehlerfall.
-   */
-  public void overwrite(DBObject object) throws RemoteException;
-  
   /**
    * Liefert eine Liste aller Objekte des aktuellen Types.
    * @return Liste mit allen Objekten dieser Tabelle.
@@ -179,13 +108,16 @@ public interface DBObject extends GenericObject
    * @param other das zu vergleichende Objekt.
    * @return true, wenn sie vom gleichen Typ sind und die selbe ID haben.
    * @throws RemoteException
-   * @see de.willuhn.datasource.rmi.GenericObject#equals(de.willuhn.datasource.rmi.GenericObject)
+   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
    */
   public boolean equals(GenericObject other) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.7  2004/08/18 23:14:00  willuhn
+ * @D Javadoc
+ *
  * Revision 1.6  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *

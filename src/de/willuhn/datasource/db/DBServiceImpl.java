@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/08/11 22:23:51 $
+ * $Revision: 1.16 $
+ * $Date: 2004/08/18 23:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -58,6 +58,14 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     this(jdbcDriver,jdbcURL,null,null);
 	}
   
+  /**
+   * Erzeugt eine neue Instanz.
+   * @param jdbcDriver JDBC-Treiber-Klasse.
+   * @param jdbcURL JDBC-URL.
+   * @param jdbcUsername Username.
+   * @param jdbcPassword Passwort.
+   * @throws RemoteException
+   */
   public DBServiceImpl(String jdbcDriver, String jdbcURL, String jdbcUsername, String jdbcPassword) throws RemoteException
   {
     super();
@@ -258,6 +266,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.16  2004/08/18 23:14:00  willuhn
+ * @D Javadoc
+ *
  * Revision 1.15  2004/08/11 22:23:51  willuhn
  * @N AbstractDBObject.getLoadQuery
  *

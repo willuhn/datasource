@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/08/11 22:23:51 $
+ * $Revision: 1.16 $
+ * $Date: 2004/08/18 23:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -315,7 +315,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getID()
+   * @see de.willuhn.datasource.GenericObject#getID()
    */
   public final String getID() throws RemoteException
   {
@@ -337,7 +337,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getAttribute(java.lang.String)
+   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
    */
   public Object getAttribute(String fieldName) throws RemoteException
   {
@@ -812,7 +812,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   protected abstract String getTableName();
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
+   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
    */
   public abstract String getPrimaryAttribute() throws RemoteException;
 
@@ -983,6 +983,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.16  2004/08/18 23:14:00  willuhn
+ * @D Javadoc
+ *
  * Revision 1.15  2004/08/11 22:23:51  willuhn
  * @N AbstractDBObject.getLoadQuery
  *

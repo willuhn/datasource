@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/07/23 15:51:07 $
+ * $Revision: 1.19 $
+ * $Date: 2004/08/18 23:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,7 +39,6 @@ import com.mckoi.util.UserTerminal;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.util.Logger;
-import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Embedded Datenbank die man jederzeit gut gebrauchen kann.
@@ -61,8 +60,6 @@ public class EmbeddedDatabase
 	private static String defaultConfig =
 		"database_path=.\n" +		"log_path=./log\n" +		"root_path=configuration\n" +		"jdbc_server_port=9157\n" +		"ignore_case_for_identifiers=disabled\n" +		"data_cache_size=4194304\n" +		"max_cache_entry_size=8192\n" +		"maximum_worker_threads=4\n" +		"debug_log_file=debug.log\n" +		"debug_level=30\n";
 
-	private MultipleClassLoader classLoader = null;
-	
   /**
 	 * Erzeugt eine neue Instanz der Datenbank.
 	 * Existiert sie noch nicht, wird sie automatisch angelegt.
@@ -110,21 +107,6 @@ public class EmbeddedDatabase
 
 		if (!exists())
 			create();
-	}
-
-	/**
-	 * Definiert den zu verwendenden ClassLoader.
-	 * Die Funktion ist ein Zugestaendnis an die Plugin-Funktionalitaet
-	 * von Jameica. Da dort Jars zur Laufzeit geladen und zum Classpath
-	 * hinzugefuegt werden und der Service (momentan nur DBService)
-	 * die Fach-Klassen kennen muss, fuer die er die Daten aus der
-	 * Datenbank lesen soll, braucht er einen Classloader, der auch
-	 * die Klassen der Plugins kennt.
-	 * @param loader
-	 */
-  public void setClassLoader(MultipleClassLoader loader)
-	{
-			this.classLoader = loader;
 	}
 
 	/**
@@ -398,6 +380,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.19  2004/08/18 23:14:00  willuhn
+ * @D Javadoc
+ *
  * Revision 1.18  2004/07/23 15:51:07  willuhn
  * @C Rest des Refactorings
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.15 $
- * $Date: 2004/08/11 20:55:53 $
+ * $Revision: 1.16 $
+ * $Date: 2004/08/18 23:14:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -185,7 +185,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#hasNext()
+   * @see de.willuhn.datasource.GenericIterator#hasNext()
    */
   public boolean hasNext() throws RemoteException
 	{
@@ -194,7 +194,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#next()
+   * @see de.willuhn.datasource.GenericIterator#next()
    */
   public GenericObject next() throws RemoteException
 	{
@@ -209,7 +209,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
   
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#previous()
+   * @see de.willuhn.datasource.GenericIterator#previous()
    */
   public GenericObject previous() throws RemoteException
   {
@@ -224,7 +224,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#size()
+   * @see de.willuhn.datasource.GenericIterator#size()
    */
   public int size() throws RemoteException
   {
@@ -233,7 +233,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#begin()
+   * @see de.willuhn.datasource.GenericIterator#begin()
    */
   public void begin() throws RemoteException
   {
@@ -241,7 +241,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.GenericIterator#contains(de.willuhn.datasource.rmi.GenericObject)
+   * @see de.willuhn.datasource.GenericIterator#contains(de.willuhn.datasource.GenericObject)
    */
   public GenericObject contains(GenericObject other) throws RemoteException
   {
@@ -269,6 +269,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.16  2004/08/18 23:14:00  willuhn
+ * @D Javadoc
+ *
  * Revision 1.15  2004/08/11 20:55:53  willuhn
  * @N debug out
  *
