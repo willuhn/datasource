@@ -57,10 +57,10 @@
 
 
     <target depends="compile" name="jar" description="generates the jar file">
-		<mkdir dir="${project.release}/lib/de_willuhn"/>
+		<mkdir dir="${project.release}/lib/de_willuhn_ds"/>
 		<mkdir dir="${project.release}/lib/mckoi"/>
 		<mkdir dir="${project.release}/lib/mysql"/>
-		<jar destfile="${project.release}/lib/de_willuhn/${define.jarfilename}">
+		<jar destfile="${project.release}/lib/de_willuhn_ds/${define.jarfilename}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Implementation-Title" value="${define.jarfilename}"/>
