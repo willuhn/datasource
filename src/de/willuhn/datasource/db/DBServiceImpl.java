@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2004/08/31 18:14:00 $
+ * $Revision: 1.20 $
+ * $Date: 2004/09/13 23:26:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -115,8 +115,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		if (!available)
 			throw new RemoteException("reinitialization not allowed");
 
+		Logger.info("opening dbservice");
     try {
-			Logger.info("opening dbservice. request from host: " + getClientHost());
+			Logger.info("request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
     
@@ -158,8 +159,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 		available = reinitAllowed;
 
+		Logger.info("closing dbservice");
     try {
-			Logger.info("closing dbservice. request from host: " + getClientHost());
+			Logger.info("request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -171,7 +173,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     }
     catch (NullPointerException ne)
 		{
-			Logger.info("  allready closed");
+			Logger.info("  allready closed or never opened");
 		}
     catch (SQLException e)
     {
@@ -261,12 +263,15 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public boolean isAvailable() throws RemoteException
   {
-    return available;
+    return open;
   }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.20  2004/09/13 23:26:54  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.19  2004/08/31 18:14:00  willuhn
  * *** empty log message ***
  *
