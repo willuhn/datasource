@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/common/Attic/AbstractService.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/06/17 00:05:51 $
+ * $Revision: 1.4 $
+ * $Date: 2004/06/30 20:58:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 import de.willuhn.datasource.rmi.Service;
-import de.willuhn.util.Logger;
 import de.willuhn.util.MultipleClassLoader;
 
 /**
@@ -29,7 +28,6 @@ public abstract class AbstractService
   implements Service
 {
 
-	private Logger log = null;
 	private MultipleClassLoader classLoader = null;
 	private HashMap initParams = null;
 
@@ -43,23 +41,10 @@ public abstract class AbstractService
     super();
 		this.initParams = initParams;
 
-		// Wir definieren erstmal nen Default-Logger
-		this.log = new Logger("Service");
-		this.log.addTarget(System.out);
-		
 		// und nen Default-ClassLoader
 		this.classLoader = new MultipleClassLoader();
   }
   
-	/**
-	 * Liefert den Logger.
-   * @return Logger.
-   */
-  protected Logger getLogger()
-	{
-		return log;
-	}
-
 	/**
 	 * Liefert den ClassLoader.
    * @return ClassLoader.
@@ -79,15 +64,6 @@ public abstract class AbstractService
 	}
 
   /**
-   * @see de.willuhn.datasource.rmi.Service#setLogger(de.willuhn.util.Logger)
-   */
-  public void setLogger(Logger l) throws RemoteException
-  {
-  	if (l != null)
-  		log = l;
-  }
-
-  /**
    * @see de.willuhn.datasource.rmi.Service#setClassLoader(de.willuhn.util.MultipleClassLoader)
    */
   public void setClassLoader(MultipleClassLoader loader)
@@ -100,6 +76,9 @@ public abstract class AbstractService
 
 /**********************************************************************
  * $Log: AbstractService.java,v $
+ * Revision 1.4  2004/06/30 20:58:07  willuhn
+ * @C some refactoring
+ *
  * Revision 1.3  2004/06/17 00:05:51  willuhn
  * @N GenericObject, GenericIterator
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/06/17 00:05:50 $
+ * $Revision: 1.11 $
+ * $Date: 2004/06/30 20:58:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.GenericObject;
+import de.willuhn.util.Logger;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
@@ -81,7 +82,7 @@ public class DBServiceImpl extends AbstractService implements DBService
       throw new RemoteException("server shut down. service no longer available.");
 
     try {
-      getLogger().info("opening db connection. request from host: " + getClientHost());
+			Logger.info("opening db connection. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
     
@@ -93,7 +94,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 		}
 		catch (ClassNotFoundException e2)
 		{
-			getLogger().error("unable to load jb driver " + driverClass,e2);
+			Logger.error("unable to load jb driver " + driverClass,e2);
 			throw new RemoteException("unable to load jdbc driver " + driverClass,e2);
 		}
 
@@ -103,7 +104,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 		}
 		catch (SQLException e2)
 		{
-			getLogger().error("connection to database " + jdbcUrl + " failed",e2);
+			Logger.error("connection to database " + jdbcUrl + " failed",e2);
 			throw new RemoteException("connection to database." + jdbcUrl + " failed",e2);
 		}
   }
@@ -118,7 +119,7 @@ public class DBServiceImpl extends AbstractService implements DBService
       return;
 
     try {
-			getLogger().info("closing db connection. request from host: " + getClientHost());
+			Logger.info("closing db connection. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -128,11 +129,11 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
     catch (NullPointerException ne)
 		{
-			getLogger().info("  allready closed");
+			Logger.info("  allready closed");
 		}
     catch (SQLException e)
     {
-			getLogger().error("  unable to close database connection",e);
+			Logger.error("  unable to close database connection",e);
       throw new RemoteException("  unable to close database connection",e);
     }
   }
@@ -163,7 +164,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   public GenericObject createObject(Class c, String identifier) throws RemoteException
   {
     try {
-			getLogger().debug("try to create new DBObject. request from host: " + getClientHost());
+			Logger.debug("try to create new DBObject. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -174,7 +175,7 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
     catch (Exception e)
     {
-			getLogger().error("unable to create object " + (c == null ? "unknown" : c.getName()),e);
+			Logger.error("unable to create object " + (c == null ? "unknown" : c.getName()),e);
       throw new RemoteException("unable to create object " + (c == null ? "unknown" : c.getName()),e);
     }
   }
@@ -185,7 +186,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   public DBIterator createList(Class c) throws RemoteException
 	{
     try {
-			getLogger().debug("try to create new DBIterator. request from host: " + getClientHost());
+			Logger.debug("try to create new DBIterator. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -195,7 +196,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 		}
 		catch (Exception e)
 		{
-			getLogger().error("unable to create list for object " + c.getName(),e);
+			Logger.error("unable to create list for object " + c.getName(),e);
 			throw new RemoteException("unable to create list for object " + c.getName(),e);
 		}
 	}
@@ -219,7 +220,7 @@ public class DBServiceImpl extends AbstractService implements DBService
     close();
     
     // print chache stats
-		getLogger().debug("object cache matches: " + ObjectMetaCache.getStats() + " %");
+		Logger.debug("object cache matches: " + ObjectMetaCache.getStats() + " %");
   }
 
 
@@ -233,13 +234,15 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 		Statement stmt = null;
     try {
-			getLogger().debug("sending ping to database");
+			Logger.debug("sending ping to database");
       stmt = conn.createStatement();
       boolean b = stmt.execute("select 1");
+
       if (b)
-				getLogger().debug("ok");
+			Logger.debug("ok");
       else
-				getLogger().debug("failed");
+				Logger.debug("failed");
+
       stmt.close();
       return b;
     }
@@ -256,6 +259,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.11  2004/06/30 20:58:07  willuhn
+ * @C some refactoring
+ *
  * Revision 1.10  2004/06/17 00:05:50  willuhn
  * @N GenericObject, GenericIterator
  *

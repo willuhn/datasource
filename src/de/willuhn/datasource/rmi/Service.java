@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/Service.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/06/17 00:05:50 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/30 20:58:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,6 @@ package de.willuhn.datasource.rmi;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import de.willuhn.util.Logger;
 import de.willuhn.util.MultipleClassLoader;
 
 /**
@@ -67,14 +66,6 @@ public interface Service extends Remote
    */
   public void shutDown() throws RemoteException;
 
-
-	/**
-	 * Definiert den zu verwendenden Logger.
-	 * @param l der Logger.
-	 * @throws RemoteException
-	 */
-	public void setLogger(Logger l) throws RemoteException;
-
 	/**
 	 * Definiert den zu verwendenden ClassLoader.
 	 * Ist genau der ClassLoader, welchen der Service fuer die Erzeugung von Object
@@ -89,6 +80,9 @@ public interface Service extends Remote
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.5  2004/06/30 20:58:07  willuhn
+ * @C some refactoring
+ *
  * Revision 1.4  2004/06/17 00:05:50  willuhn
  * @N GenericObject, GenericIterator
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.12 $
- * $Date: 2004/04/22 23:48:04 $
+ * $Revision: 1.13 $
+ * $Date: 2004/06/30 20:58:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,7 +37,10 @@ import de.willuhn.util.Logger;
 import de.willuhn.util.MultipleClassLoader;
 
 /**
- * Embedded Datenbank.
+ * Embedded Datenbank die man jederzeit gut gebrauchen kann.
+ * Einfach eine Instanz mit User, Passwort und Pfad im Konstruktor
+ * erzeugen, die Datenbank wird geladen oder (wenn sie noch nicht existiert)
+ * automatisch im genannten Verzeichnis angelegt.
  */
 public class EmbeddedDatabase
 {
@@ -53,35 +56,51 @@ public class EmbeddedDatabase
 	private static String defaultConfig =
 		"database_path=.\n" +		"log_path=./log\n" +		"root_path=configuration\n" +		"jdbc_server_port=9157\n" +		"ignore_case_for_identifiers=disabled\n" +		"data_cache_size=4194304\n" +		"max_cache_entry_size=8192\n" +		"maximum_worker_threads=4\n" +		"debug_log_file=debug.log\n" +		"debug_level=30\n";
 
-	private Logger logger = null;
 	private MultipleClassLoader classLoader = null;
 	
-	/**
-	 * ct.
-   * @param path Pfad zur Datenbank.
+  /**
+	 * Erzeugt eine neue Instanz der Datenbank.
+	 * Existiert sie noch nicht, wird sie automatisch angelegt.
+   * @param path Verzeichnis, in dem sich die Datenbank befindet bzw angelegt werden soll.
    * @param username Username.
    * @param password Passwort.
+   * @throws Exception
    */
-  public EmbeddedDatabase(String path, String username, String password)
+  public EmbeddedDatabase(String path, String username, String password) throws Exception
 	{
+		if (username == null || username.length() == 0)
+		{
+			throw new Exception("please enter a username");
+		}
+
+		if (password == null || password.length() == 0)
+		{
+			throw new Exception("please enter a password");
+		}
+
+		if (path == null || path.length() == 0)
+		{
+			throw new IOException("please enter a path");
+		}
+
 		this.path = new File(path);
 		this.username = username;
 		this.password = password;
-		this.logger = new Logger("Embedded Database");
-		this.logger.addTarget(System.out);
+
+		if (!this.path.canWrite())
+			throw new IOException("write permission failed in " + this.path.getAbsolutePath());
+
+
+		config = new DefaultDBConfig(this.path);
+		config.setDatabasePath(this.path.getAbsolutePath());
+		config.setLogPath(this.path.getAbsolutePath() + "/log");
+
+		control = DBController.getDefault();
+
+		if (!control.databaseExists(config))
+			create();
 	}
 
-	/**
-	 * Definiert den zu verwendenden Logger.
-   * @param l der Logger.
-   */
-  public void setLogger(Logger l)
-	{
-		if (l == null)
-			return;
-		this.logger = l;
-	}
-	
 	/**
 	 * Definiert den zu verwendenden ClassLoader.
 	 * Die Funktion ist ein Zugestaendnis an die Plugin-Funktionalitaet
@@ -97,67 +116,31 @@ public class EmbeddedDatabase
 			this.classLoader = loader;
 	}
 
-	/**
-	 * Prueft ob die Datenbank existiert.
-   * @return true, wenn sie existiert.
-   */
-  public boolean exists()
-	{
-		init();
-		return control.databaseExists(config);
-	}
-	
-	/**
-   * Initialisiert die Embedded Datenbank.
-   */
-  private void init()
-	{
-		config = new DefaultDBConfig(this.path);
-		config.setDatabasePath(this.path.getAbsolutePath());
-		config.setLogPath(this.path.getAbsolutePath() + "/log");
-
-		control = DBController.getDefault();
-	}
-
   /**
-   * Erstellt eine neue Datenbank fuer das Plugin, falls sie noch nicht existiert.
+   * Erstellt eine neue Datenbank, falls sie noch nicht existiert.
    * @throws IOException Wenn ein Fehler bei der Erstellung auftrat.
    */
-  public void create() throws IOException
+  private synchronized void create() throws IOException
 	{
+		if (control.databaseExists(config))
+			return;
 
-		if (username == null || password == null)
+		if (!this.path.exists())
 		{
-			throw new IOException("please enter username and password");
-		}
-
-    init();
-
-		if (!path.canWrite())
-			throw new IOException("write permission failed in " + path.getAbsolutePath());
-
-		if (!path.exists())
-		{
-			logger.info("creating directory " + path.getAbsolutePath());
+			Logger.info("creating directory " + path.getAbsolutePath());
 			path.mkdir();
 		}
 
-		if (exists()) return;
-
-		// DB-Verzeichnis erstellen
-		if (!this.path.exists())
-			this.path.mkdir();
-		
 		// Config-Datei kopieren
-		logger.info("creating database config file");
+		Logger.info("creating database config file");
 		try {
-			FileOutputStream fos = new FileOutputStream(this.path + "/db.conf");
+			FileOutputStream fos = new FileOutputStream(this.path.getAbsolutePath() + "/db.conf");
 			fos.write(defaultConfig.getBytes());
 			fos.close();
 		}
 		catch (IOException e)
 		{
-			logger.error("failed",e);
+			Logger.error("failed",e);
 			throw new IOException(e.getMessage());
 		}
 
@@ -165,18 +148,18 @@ public class EmbeddedDatabase
 
 		  DBSystem session = null;
 
-			logger.info("creating database");
+			Logger.info("creating database");
 			session = control.createDatabase(config,username,password);
 			session.close();
 	  }
 		catch (Error error)
 		{
-			logger.error("error while creating database",error);
+			Logger.error("error while creating database",error);
 			throw new IOException(error.getMessage());
 		}
 		catch (Exception e)
 		{
-			logger.error("error while creating database",e);
+			Logger.error("error while creating database",e);
 			throw new IOException(e.getMessage());
 		}
 	}
@@ -193,11 +176,6 @@ public class EmbeddedDatabase
    */
   public void executeSQLScript(File file) throws IOException, SQLException
 	{
-    init();
-
-		if (!exists())
-			throw new IOException("Database does not exist. Please create it first");
-
 		if (!file.canRead() || !file.exists())
 			throw new IOException("SQL file does not exist or is not readable");
 		
@@ -247,7 +225,7 @@ public class EmbeddedDatabase
 
 			stmt = conn.createStatement();
 
-			logger.info("executing sql commands from " + file.getAbsolutePath());
+			Logger.info("executing sql commands from " + file.getAbsolutePath());
 			String[] tables = all.toString().split(";");
 			for (int i=0;i<tables.length;++i)
 			{
@@ -262,7 +240,7 @@ public class EmbeddedDatabase
 			}
 			catch (Exception e2) { /* useless */ }
 
-			logger.error("error while executing sql script",e);
+			Logger.error("error while executing sql script",e);
 			throw new SQLException("exception while executing sql script: " + e.getMessage());
 		}
 		finally {
@@ -299,7 +277,6 @@ public class EmbeddedDatabase
 		map.put("driver","com.mckoi.JDBCDriver");
 		map.put("url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
 		db = new DBServiceImpl(map);
-		db.setLogger(logger);
 		db.setClassLoader(classLoader);
 		return db;
 	}
@@ -333,6 +310,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.13  2004/06/30 20:58:07  willuhn
+ * @C some refactoring
+ *
  * Revision 1.12  2004/04/22 23:48:04  willuhn
  * *** empty log message ***
  *
