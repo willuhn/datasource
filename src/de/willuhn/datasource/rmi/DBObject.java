@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.3 $
+ * $Date: 2004/04/05 23:28:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -189,6 +189,8 @@ public interface DBObject extends Remote
   /**
    * Vergleicht dieses Objekt mit dem uebergebenen.
    * Hinweis: Es wird nicht der Inhalt verglichen sondern nur die ID und der Typ.
+   * Achtung: Wir ueberschreiben hier nicht die equals-Funktion von <code>Object</code>
+   * da das via RMI nicht geht.
    * @param o das zu vergleichende Objekt.
    * @return true, wenn sie vom gleichen Typ sind und die selbe ID haben.
    * @throws RemoteException
@@ -198,6 +200,9 @@ public interface DBObject extends Remote
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.3  2004/04/05 23:28:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/29 20:36:23 $
+ * $Revision: 1.7 $
+ * $Date: 2004/04/05 23:28:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -247,17 +247,13 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
       return null;
 
     if (!o.getClass().equals(object.getClass()))
-      return null;
+      return null; // wir koennen uns die Iteration sparen.
 
-    String id = null;
     DBObject object = null;
     for (int i=0;i<list.size();++i)
     {
       object = (DBObject) list.get(i);
-      id = object.getID();
-      if (id == null)
-        continue; // das kann eigentlich nie der Fall sein
-      if (id.equals(o.getID()))
+      if (object.equals(o))
         return object;
     }
     
@@ -278,6 +274,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.7  2004/04/05 23:28:30  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.6  2004/03/29 20:36:23  willuhn
  * *** empty log message ***
  *
