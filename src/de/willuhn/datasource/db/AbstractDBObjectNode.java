@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/08/02 10:31:41 $
+ * $Revision: 1.8 $
+ * $Date: 2004/08/02 11:53:59 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -190,14 +190,16 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
   {
     // Wir pruefen, ob das Objekt an gueltiger Stelle eingehaengt wurde.
     try {
-      if (getParent() == null)
+      GenericObjectNode parent = getParent();
+
+      if (parent == null)
         return;
 
       GenericIterator parents = getPossibleParents();
       while (parents.hasNext())
       {
         GenericObjectNode node = (GenericObjectNode) parents.next();
-        if (node.equals(getParent()))
+        if (node.equals(parent))
           return; // Angegebenes Eltern-Objekt ist eines der erlaubten Eltern
       }
       throw new ApplicationException("Angegebenes Eltern-Objekt nicht erlaubt");
@@ -221,6 +223,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements G
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.8  2004/08/02 11:53:59  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/08/02 10:31:41  willuhn
  * *** empty log message ***
  *
