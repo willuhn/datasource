@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.11 $
- * $Date: 2004/08/03 00:44:13 $
+ * $Revision: 1.12 $
+ * $Date: 2004/08/03 21:46:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -150,7 +150,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 			while (meta.next())
 			{
 				field = meta.getString("COLUMN_NAME");
-				if (field == null || field.equalsIgnoreCase(this.getIDField())) // skip empty fields and primary key
+				if (field == null) // skip empty fields
 					continue;
 				properties.put(field,null);
         types.put(field,meta.getString("TYPE_NAME"));
@@ -957,6 +957,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.12  2004/08/03 21:46:16  willuhn
+ * @C Speichern des Primaer-Schluessels als regulaeres Feld wieder erlaubt
+ *
  * Revision 1.11  2004/08/03 00:44:13  willuhn
  * *** empty log message ***
  *
