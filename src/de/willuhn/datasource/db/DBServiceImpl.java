@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/09/13 23:26:54 $
+ * $Revision: 1.21 $
+ * $Date: 2004/09/14 23:27:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,9 +40,8 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   
   private Connection conn     = null;
 
-  private boolean available   = true;
-  
-  private boolean open        = false;
+  private boolean started		  = false;
+  private boolean startable		= true;
   
   private ClassFinder finder  = null;
 
@@ -84,7 +83,6 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
 	protected Connection getConnection() throws RemoteException
 	{
-		init();
 		return conn;
 	}
 
@@ -105,17 +103,25 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     this.finder = finder;
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#init()
+	/**
+   * @see de.willuhn.datasource.Service#isStartable()
    */
-  public synchronized void init() throws RemoteException
-  {
-		if (open) return;
-		
-		if (!available)
-			throw new RemoteException("reinitialization not allowed");
+  public synchronized boolean isStartable() throws RemoteException
+	{
+		return startable;
+	}
 
-		Logger.info("opening dbservice");
+  /**
+   * @see de.willuhn.datasource.Service#start()
+   */
+  public synchronized void start() throws RemoteException
+  {
+		if (isStarted()) return;
+		
+		if (!isStartable())
+			throw new RemoteException("service restart not allowed");
+
+		Logger.info("opening db service");
     try {
 			Logger.info("request from host: " + getClientHost());
     }
@@ -136,7 +142,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
         conn = DriverManager.getConnection(this.jdbcUrl,this.jdbcUsername,this.jdbcPassword);
       else
   			conn = DriverManager.getConnection(jdbcUrl);
-      open = true;
+      started = true;
 		}
 		catch (SQLException e2)
 		{
@@ -147,33 +153,33 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 
   /**
-   * @see de.willuhn.datasource.Service#shutDown(boolean)
+   * @see de.willuhn.datasource.Service#stop(boolean)
    */
-  public synchronized void shutDown(boolean reinitAllowed) throws RemoteException
+  public synchronized void stop(boolean restartAllowed) throws RemoteException
   {
+    if (!started)
+    {
+    	Logger.info("service allready stopped");
+			return;
+    }
 
-		// Wir wurden schon auf "not available" gesetzt, das ist nicht mehr
-		// Rueckgaengig zu machen.
-    if (!available)
-      return;
+		startable = restartAllowed;
 
-		available = reinitAllowed;
-
-		Logger.info("closing dbservice");
+		Logger.info("closing db service");
     try {
 			Logger.info("request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
-		Logger.debug("dbservice: object cache matches: " + ObjectMetaCache.getStats() + " %");
+		Logger.debug("db service: object cache matches: " + ObjectMetaCache.getStats() + " %");
 
     try {
-      open = false;
+      started = false;
       conn.close();
     }
     catch (NullPointerException ne)
 		{
-			Logger.info("  allready closed or never opened");
+			Logger.info("  allready stopped or never started");
 		}
     catch (SQLException e)
     {
@@ -211,6 +217,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public DBObject createObject(Class c, String identifier) throws RemoteException
   {
+		checkStarted();
     try {
 			Logger.debug("try to create new DBObject. request from host: " + getClientHost());
     }
@@ -237,6 +244,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public DBIterator createList(Class c) throws RemoteException
 	{
+		checkStarted();
     try {
 			Logger.debug("try to create new DBIterator. request from host: " + getClientHost());
     }
@@ -257,18 +265,30 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		}
 	}
 
+	/**
+	 * Prueft intern, ob der Service gestartet ist und wirft ggf. eine Exception.
+   * @throws RemoteException
+   */
+  private synchronized void checkStarted() throws RemoteException
+	{
+		if (!isStarted())
+			throw new RemoteException("db service not started");
+	}
 
   /**
-   * @see de.willuhn.datasource.Service#isAvailable()
+   * @see de.willuhn.datasource.Service#isStarted()
    */
-  public boolean isAvailable() throws RemoteException
+  public synchronized boolean isStarted() throws RemoteException
   {
-    return open;
+    return started;
   }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.21  2004/09/14 23:27:32  willuhn
+ * @C redesign of service handling
+ *
  * Revision 1.20  2004/09/13 23:26:54  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/Service.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/08/31 17:33:11 $
+ * $Revision: 1.3 $
+ * $Date: 2004/09/14 23:27:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,29 +23,38 @@ public interface Service extends Remote
 {
 
   /**
-   * Initialisiert den Service.
+   * Startet den Service.
    * @throws RemoteException
    */
-  public void init() throws RemoteException;
+  public void start() throws RemoteException;
 	
   /**
-   * Prueft, ob dieser Service auf dem Server noch verfuegbar ist.
+   * Prueft, ob dieser Service gestartet ist.
    * @throws RemoteException
-   * @return true wenn er verfuegbar ist, sonst false.
+   * @return true wenn er gestartet ist, sonst false.
    */
-  public boolean isAvailable() throws RemoteException;
+  public boolean isStarted() throws RemoteException;
 
+	/**
+	 * Prueft, ob der Service gestartet werden darf.
+   * @return true, wenn er gestartet werden darf, sonst false.
+   * @throws RemoteException
+   */
+  public boolean isStartable() throws RemoteException;
 
   /**
-   * Faehrt den Service herunter.
-   * @param reinitAllowed legt fest, ob der Service bei Bedarf neu initialisiert werden darf.
+   * Stoppt den Service.
+   * @param restartAllowed legt fest, ob der Service im laufenden Betrieb neu gestartet werden kann.
    * @throws RemoteException
    */
-  public void shutDown(boolean reinitAllowed) throws RemoteException;
+  public void stop(boolean restartAllowed) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.3  2004/09/14 23:27:32  willuhn
+ * @C redesign of service handling
+ *
  * Revision 1.2  2004/08/31 17:33:11  willuhn
  * *** empty log message ***
  *
