@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/GenericObject.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/06/17 00:05:50 $
+ * $Revision: 1.2 $
+ * $Date: 2004/06/17 00:28:01 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,8 +17,8 @@ import java.rmi.RemoteException;
 
 /**
  * Generisches RMI-faehiges Objekt, welches Attribute besitzt.
- * Das also so ziemlich alles sein, vom Kalendereintrag bis
- * zum Datensatz in Datenbank. Entscheidendes Merkmal ist,
+ * Das kann also so ziemlich alles sein, vom Kalendereintrag bis
+ * zum Datensatz in einer Datenbank. Entscheidendes Merkmal ist,
  * dass es eine Funktion getAttribute(AliasName) besitzt,
  * mit der die Werte der Attribute ueber Aliasnamen abgefragt
  * werden koennen. 
@@ -28,8 +28,8 @@ public interface GenericObject extends Remote {
 
 	/**
 	 * Liefert den Wert des angegebenen Attributes.
-	 * @param name Name des Feldes.
-	 * @return Wert des Feldes.
+	 * @param name Name des Attributes.
+	 * @return Wert des Attributes.
 	 * @throws RemoteException im Fehlerfall.
 	 */
 	public Object getAttribute(String name) throws RemoteException;
@@ -57,7 +57,7 @@ public interface GenericObject extends Remote {
 	 * Achtung: Wir ueberschreiben hier nicht die equals-Funktion von <code>Object</code>
 	 * da das via RMI nicht geht.
 	 * @param other das zu vergleichende Objekt.
-	 * @return true, wenn sie vom gleichen Typ sind und die selbe ID haben.
+	 * @return true, die Objekte gleiche Eigenschaften besitzen.
 	 * @throws RemoteException
 	 */
 	public boolean equals(GenericObject other) throws RemoteException;
@@ -67,6 +67,9 @@ public interface GenericObject extends Remote {
 
 /**********************************************************************
  * $Log: GenericObject.java,v $
+ * Revision 1.2  2004/06/17 00:28:01  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/06/17 00:05:50  willuhn
  * @N GenericObject, GenericIterator
  *
