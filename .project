@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>datasources</name>
+	<name>datasource</name>
 	<comment></comment>
 	<projects>
+		<project>util</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
