@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.14 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.15 $
+ * $Date: 2004/08/11 20:55:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.util.Logger;
 
 /**
  * @author willuhn
@@ -162,6 +163,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 			stmt = conn.createStatement();
       sql = prepareSQL();
       
+			Logger.debug("executing sql query: " + sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next())
 			{
@@ -267,6 +269,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.15  2004/08/11 20:55:53  willuhn
+ * @N debug out
+ *
  * Revision 1.14  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *
