@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.11 $
+ * $Date: 2004/08/03 00:44:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -231,8 +231,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		finally {
 			try {
 				data.close();
+			} catch (Throwable t) {/*useless*/}
+			try {
 				stmt.close();
-			} catch (SQLException se) {/*useless*/}
+			} catch (Throwable t) {/*useless*/}
 		}
 		 
 	}
@@ -955,6 +957,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.11  2004/08/03 00:44:13  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.10  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *
