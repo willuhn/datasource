@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/server/Attic/AbstractService.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/08 20:46:43 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/08 21:38:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,7 +40,7 @@ public abstract class AbstractService
   /**
    * @see de.willuhn.datasource.db.rmi.Service#setLogger(de.willuhn.util.Logger)
    */
-  public void setLogger(Logger l)
+  public void setLogger(Logger l) throws RemoteException
   {
   	if (l != null)
   		log = l;
@@ -51,6 +51,9 @@ public abstract class AbstractService
 
 /**********************************************************************
  * $Log: AbstractService.java,v $
+ * Revision 1.2  2004/01/08 21:38:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/01/08 20:46:43  willuhn
  * @N database stuff separated from jameica
  *

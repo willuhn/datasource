@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/rmi/Attic/Service.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/08 20:46:44 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/08 21:38:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -55,16 +55,20 @@ public interface Service extends Remote
    */
   public void shutDown() throws RemoteException;
   
-	/**
+  /**
 	 * Definiert den zu verwendenden Logger.
 	 * @param l der Logger.
+   * @throws RemoteException
 	 */
-	public void setLogger(Logger l);
+	public void setLogger(Logger l) throws RemoteException;
 
 }
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.2  2004/01/08 21:38:47  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/01/08 20:46:44  willuhn
  * @N database stuff separated from jameica
  *

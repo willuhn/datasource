@@ -24,6 +24,7 @@
         <property name="project.tmp" 		 value="${project.release}/tmp"/>
         <property name="project.javadoc" 	 value="${project.release}/javadoc"/>
         <property name="src.dir" 			 value="src"/>
+        <property name="lib.dir" 			 value="lib"/>
         <property name="class.dir" 			 value="${project.tmp}/bin"/>
 
 		<path id="compilepath">
