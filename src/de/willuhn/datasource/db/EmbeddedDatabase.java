@@ -1,0 +1,279 @@
+/**********************************************************************
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
+ * $Revision: 1.1 $
+ * $Date: 2004/01/08 20:46:44 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn.webdesign
+ * All rights reserved
+ *
+ **********************************************************************/
+
+package de.willuhn.datasource.db;
+
+import java.io.*;
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+
+import com.mckoi.database.control.DBController;
+import com.mckoi.database.control.DBSystem;
+import com.mckoi.database.control.DefaultDBConfig;
+
+import de.willuhn.datasource.db.rmi.DBService;
+import de.willuhn.datasource.db.server.DBServiceImpl;
+import de.willuhn.util.Logger;
+
+/**
+ * Embedded Datenbank.
+ */
+public class EmbeddedDatabase
+{
+
+	private File path = null;
+	private DefaultDBConfig config = null;
+	private DBController control = null;
+	private DBService db = null;
+	
+	private String username = null;
+	private String password = null;
+
+	private static String defaultConfig =
+		"database_path=.\n" +		"log_path=./log\n" +		"root_path=configuration\n" +		"jdbc_server_port=9157\n" +		"ignore_case_for_identifiers=disabled\n" +		"data_cache_size=4194304\n" +		"max_cache_entry_size=8192\n" +		"maximum_worker_threads=4\n" +		"debug_log_file=debug.log\n" +		"debug_level=30\n";
+
+	private Logger logger = new Logger();
+	
+	/**
+	 * ct.
+   * @param path Pfad zur Datenbank.
+   * @param username Username.
+   * @param password Passwort.
+   */
+  public EmbeddedDatabase(String path, String username, String password)
+	{
+		this.path = new File(path);
+		this.username = username;
+		this.password = password;
+		this.logger.addTarget(System.out);
+	}
+
+	/**
+	 * Definiert den zu verwendenden Logger.
+   * @param l der Logger.
+   */
+  public void setLogger(Logger l)
+	{
+		if (l == null)
+			return;
+		this.logger = l;
+	}
+	
+	/**
+	 * Prueft ob die Datenbank existiert.
+   * @return true, wenn sie existiert.
+   */
+  public boolean exists()
+	{
+		init();
+		return control.databaseExists(config);
+	}
+	
+	/**
+   * Initialisiert die Embedded Datenbank.
+   */
+  private void init()
+	{
+		config = new DefaultDBConfig(this.path);
+		config.setDatabasePath(this.path.getAbsolutePath());
+		config.setLogPath(this.path.getAbsolutePath() + "/log");
+
+		control = DBController.getDefault();
+	}
+
+  /**
+   * Erstellt eine neue Datenbank fuer das Plugin, falls sie noch nicht existiert.
+   * @throws IOException Wenn ein Fehler bei der Erstellung auftrat.
+   */
+  public void create() throws IOException
+	{
+
+		if (username == null || password == null)
+		{
+			throw new IOException("please enter username and password");
+		}
+
+    init();
+
+		if (!path.canWrite())
+			throw new IOException("write permission failed in " + path.getAbsolutePath());
+
+		if (!path.exists())
+		{
+			logger.info("creating directory " + path.getAbsolutePath());
+			path.mkdir();
+			logger.info("done");
+		}
+
+		if (exists()) return;
+
+		// DB-Verzeichnis erstellen
+		if (!this.path.exists())
+			this.path.mkdir();
+		
+		// Config-Datei kopieren
+		logger.info("creating database config file");
+		try {
+			FileOutputStream fos = new FileOutputStream(this.path + "/db.conf");
+			fos.write(defaultConfig.getBytes());
+		}
+		catch (IOException e)
+		{
+			logger.error("failed",e);
+			throw new IOException(e.getMessage());
+		}
+		logger.info("done");
+
+		try {
+
+		  DBSystem session = null;
+
+			logger.info("creating database");
+			session = control.createDatabase(config,username,password);
+			session.close();
+			logger.info("done");
+	  }
+		catch (Error error)
+		{
+			logger.error("error while creating database",error);
+			throw new IOException(error.getMessage());
+		}
+		catch (Exception e)
+		{
+			logger.error("error while creating database",e);
+			throw new IOException(e.getMessage());
+		}
+	}
+
+	/**
+	 * Fuehrt das uebergebene File mit SQL-Kommandos auf der Datenbank aus.
+	 * Die Funktion liefert kein ResultSet zurueck, weil sie typischerweise
+	 * fuer die Erstellung der Tabellen verwendet werden sollte. Wenn das
+	 * Plugin also bei der Installation seine SQL-Tabellen erstellen will,
+	 * kann es das am besten hier machen.
+   * @param file das auszufuehrende SQL-Script.
+   * @throws SQLException Wenn beim Ausfuehren Fehler auftraten.
+   */
+  public void executeSQLScript(File file) throws IOException, SQLException
+	{
+    init();
+
+		if (!exists())
+			throw new IOException("Database does not exist. Please create it first");
+
+		if (!file.canRead() || !file.exists())
+			throw new IOException("SQL file does not exist or is not readable");
+		
+		Connection conn = null;
+		Statement stmt = null;
+		DBSystem session = null;
+		try {
+
+			BufferedReader br =  new BufferedReader(new FileReader(file));
+
+			String thisLine;
+			StringBuffer all = new StringBuffer();
+			while ((thisLine =  br.readLine()) != null)
+			{
+				if (!(thisLine.length() > 0))
+					continue;
+					all.append(thisLine);
+			}
+
+
+			session = control.startDatabase(config);
+
+			conn = session.getConnection(username,password);
+			conn.setAutoCommit(false);
+
+			stmt = conn.createStatement();
+
+			logger.info("executing sql commands from " + file.getAbsolutePath());
+			String[] tables = all.toString().split(";");
+			for (int i=0;i<tables.length;++i)
+			{
+				stmt.executeUpdate(tables[i]);
+        conn.commit();
+			}
+		}
+		catch (Exception e)
+		{
+			try {
+				conn.rollback();
+			}
+			catch (Exception e2) { /* useless */ }
+
+			logger.error("error while executing sql script",e);
+			throw new SQLException("exception while executing sql script: " + e.getMessage());
+		}
+		finally {
+			try {
+				stmt.close();
+				conn.close();
+				session.close();
+			}
+			catch (Exception e2) { /* useless */ }
+		}
+		
+	}
+
+  /**
+	 * Liefert einen DBService zu dieser Datenbank.
+   * @return DBService.
+   * @throws RemoteException
+   */
+  public DBService getDBService() throws RemoteException
+	{
+		if (db == null)
+		{
+			HashMap map = new HashMap();
+			map.put("driver","com.mckoi.JDBCDriver");
+			map.put("jdbc-url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
+			db = new DBServiceImpl(map);
+		}
+		return db;
+	}
+}
+
+
+/**********************************************************************
+ * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.1  2004/01/08 20:46:44  willuhn
+ * @N database stuff separated from jameica
+ *
+ * Revision 1.5  2004/01/06 20:32:59  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.4  2004/01/05 19:14:45  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.3  2004/01/05 18:27:13  willuhn
+ * *** empty log message ***
+ *
+ * Revision 1.2  2004/01/04 18:48:36  willuhn
+ * @N config store support
+ *
+ * Revision 1.1  2004/01/03 18:08:05  willuhn
+ * @N Exception logging
+ * @C replaced bb.util xml parser with nanoxml
+ *
+ * Revision 1.2  2003/12/30 19:11:29  willuhn
+ * @N new splashscreen
+ *
+ * Revision 1.1  2003/12/30 17:44:41  willuhn
+ * @N automatic database create
+ *
+ **********************************************************************/
