@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/08/31 18:13:59 $
+ * $Revision: 1.10 $
+ * $Date: 2004/10/25 17:58:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -76,10 +76,36 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
    * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
    */
   public boolean equals(GenericObject other) throws RemoteException;
+
+	/**
+	 * Fuegt dem Objekt einen Listener hinzu, der ausgeloest wird, wenn
+	 * das Objekt geloescht werden soll.
+	 * Hinweis: Das Event wird unmittelbar <b>vor</b> dem tatsaechlichen Loeschen
+	 * ausgeloest. Wuerde dies <b>nach</b> dem Loeschen geschehen, kann der
+	 * Benachrichtigte mit der Information nicht mehr viel anfangen, weil das
+	 * Objekt dann auch keine ID mehr hat und somit nicht mehr festgestellt
+	 * werden kann, <b>welches</b> Objekt eigentlich geloescht wurde.
+	 * @param l der Listener.
+	 * @throws RemoteException
+	 */
+	public void addDeleteListener(Listener l) throws RemoteException; 
+	
+	/**
+	 * Fuegt dem Objekt einen Listener hinzu, der ausgeloest wird, wenn
+	 * das Objekt gespeichert wurde.
+	 * Hinweis: Das Event wird <b>nach</b> dem Speichern ausgeloest.
+   * @param l der Listener.
+   * @throws RemoteException
+   */
+  public void addStoreListener(Listener l) throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.10  2004/10/25 17:58:37  willuhn
+ * @N Delete/Store-Listeners
+ *
  * Revision 1.9  2004/08/31 18:13:59  willuhn
  * *** empty log message ***
  *

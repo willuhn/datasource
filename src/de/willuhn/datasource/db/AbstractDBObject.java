@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/08/26 23:19:33 $
+ * $Revision: 1.19 $
+ * $Date: 2004/10/25 17:58:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +30,8 @@ import java.util.Set;
 import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.Event;
+import de.willuhn.datasource.rmi.Listener;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.util.ApplicationException;
 import de.willuhn.util.Logger;
@@ -58,6 +61,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	private transient DBServiceImpl service = null;
 	private transient Connection conn = null;
 
+	private ArrayList deleteListeners = null;
+	private ArrayList storeListeners  = null;
 
   /**
    * Attribute dieses Typs werden als java.util.Date erkannt.
@@ -308,6 +313,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
     deleteCheck();
 
+		// Wir benachrichtigen die Listeners.
+		notify(deleteListeners);
+
 		Statement stmt = null;
     try {
     	stmt = getConnection().createStatement();
@@ -526,6 +534,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       setLastId();
       if (!this.inTransaction)
   			getConnection().commit();
+			notify(storeListeners);
     }
     catch (SQLException e)
     {
@@ -580,6 +589,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       }
       if (!this.inTransaction)
         getConnection().commit();
+      notify(storeListeners);
     }
     catch (SQLException e)
     {
@@ -1016,10 +1026,55 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.DBObject#addDeleteListener(de.willuhn.datasource.rmi.Listener)
+   */
+  public synchronized void addDeleteListener(Listener l) throws RemoteException
+  {
+  	if (deleteListeners == null)
+  		deleteListeners = new ArrayList();
+  	deleteListeners.add(l);
+  }
+
+  /**
+   * @see de.willuhn.datasource.rmi.DBObject#addStoreListener(de.willuhn.datasource.rmi.Listener)
+   */
+  public synchronized void addStoreListener(Listener l) throws RemoteException
+  {
+  	if (storeListeners == null)
+  		storeListeners = new ArrayList();
+  	storeListeners.add(l);
+  }
+
+	/**
+	 * Private Hilfs-Funktion, die die Listeners der uebergebenen Liste benachrichtigt.
+   * @param listeners Liste der Listeners.
+   * @throws RemoteException
+   */
+  private synchronized void notify(ArrayList listeners) throws RemoteException
+	{
+		if (listeners == null)
+			return;
+
+		Event e = new Event()
+    {
+      public DBObject getObject() throws RemoteException
+      {
+        return AbstractDBObject.this;
+      }
+    };
+		for (int i=0;i<listeners.size();++i)
+		{
+			((Listener) listeners.get(i)).handleEvent(e);
+		}
+	}
 }
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.19  2004/10/25 17:58:37  willuhn
+ * @N Delete/Store-Listeners
+ *
  * Revision 1.18  2004/08/26 23:19:33  willuhn
  * @N added ObjectNotFoundException
  *

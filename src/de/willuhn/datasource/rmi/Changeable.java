@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Changeable.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/08/31 18:13:59 $
+ * $Revision: 1.3 $
+ * $Date: 2004/10/25 17:58:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,19 +56,25 @@ public interface Changeable
 	public boolean isNewObject() throws RemoteException;
 
   /**
-   * Ueberschreibt dieses Objekt mit den Eigenschaften des uebergebenen.
-   * Dabei werden nur die Werte der Eigenschaften ueberschrieben - nichts anderes.
+   * Ueberschreibt dieses Objekt mit den Attributen des uebergebenen.
+   * Dabei werden nur die Werte der Attribute ueberschrieben - nichts anderes.
    * Also auch keine Meta-Daten oder aehnliches.
    * Handelt es sich bei der Quelle um ein Objekt fremden Typs, wird nichts ueberschrieben.
+   * Hinweis: Es werden nur die Attribute ueberschrieben, es wird jedoch
+   * noch nicht gespeichert. Sollen die Aenderungen also dauerhaft uebernommen
+   * werden, muss anschliessend noch ein <code>store()</code> aufgerufen werden.
    * @param object das Objekt, welches als Quelle verwendet werden soll.
    * @throws RemoteException im Fehlerfall.
    */
   public void overwrite(DBObject object) throws RemoteException;
- 
+
 }
 
 /*********************************************************************
  * $Log: Changeable.java,v $
+ * Revision 1.3  2004/10/25 17:58:37  willuhn
+ * @N Delete/Store-Listeners
+ *
  * Revision 1.2  2004/08/31 18:13:59  willuhn
  * *** empty log message ***
  *
