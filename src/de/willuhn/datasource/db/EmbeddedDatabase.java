@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/11/12 18:21:56 $
+ * $Revision: 1.21 $
+ * $Date: 2005/02/01 17:14:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -20,15 +20,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
-import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import sun.misc.BASE64Encoder;
 
 import com.mckoi.database.TableDataConglomerate;
 import com.mckoi.database.TransactionSystem;
@@ -39,6 +36,7 @@ import com.mckoi.util.UserTerminal;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.logging.Logger;
+import de.willuhn.security.Checksum;
 
 /**
  * Embedded Datenbank die man jederzeit gut gebrauchen kann.
@@ -326,10 +324,7 @@ public class EmbeddedDatabase
 			{
 				sum.append(rs.getString("TABLE_NAME") + ":" + rs.getString("COLUMN_NAME") + ":" + rs.getString("TYPE_NAME") + "\n");
 			}
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] hash = md.digest(sum.toString().getBytes());
-			BASE64Encoder encoder = new BASE64Encoder();
-			return encoder.encode(hash);
+			return Checksum.md5(sum.toString().getBytes());
 		}
 		finally
 		{
@@ -380,6 +375,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.21  2005/02/01 17:14:58  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2004/11/12 18:21:56  willuhn
  * *** empty log message ***
  *
