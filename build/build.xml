@@ -81,11 +81,8 @@
     <target depends="compile" name="jar" description="generates the jar file">
 		<mkdir dir="${project.release}/lib/de_willuhn_ds"/>
 		<mkdir dir="${project.release}/lib/mckoi"/>
-		<mkdir dir="${project.release}/lib/mysql"/>
 		<copy file="${lib.dir}/mckoidb.jar" tofile="${project.release}/lib/mckoi/mckoidb.jar" />
 		<copy file="${lib.dir}/mckoi_license.txt" tofile="${project.release}/lib/mckoi/license.txt" />
-		<copy file="${lib.dir}/mysql-connector-java-3.0.8-stable-bin.jar" tofile="${project.release}/lib/mysql/mysql-connector-java-3.0.8-stable-bin.jar" />
-		<copy file="${lib.dir}/mysql_license.txt" tofile="${project.release}/lib/mysql/license.txt" />
 
 		<jar destfile="${project.release}/lib/de_willuhn_ds/${define.jarfilename}">
 			<manifest>
@@ -93,20 +90,13 @@
 				<attribute name="Implementation-Title" value="${define.jarfilename}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
 				<attribute name="Implementation-Buildnumber" value="${build.number}"/>
-				<attribute name="Class-Path" value="../mckoi/mckoidb.jar ../mysql/mysql-connector-java-3.0.8-stable-bin.jar" />
+				<attribute name="Class-Path" value="../mckoi/mckoidb.jar" />
 	        </manifest>
     	    <fileset dir="${class.dir}"/>
 	    </jar>
 
 	    <copy file="${build.dir}/COPYING"           tofile="${project.release}/COPYING" />
 	    <copy file="${build.dir}/README"            tofile="${project.release}/README" />
-
-	  	<checksum file="${project.release}/lib/de_willuhn_ds/${define.jarfilename}" />
-	  	<echo message="Creating PGP signature" />
-	  	<exec executable="kgpg" failonerror="true" timeout="60000">
-			<arg line="-S ${project.release}/lib/de_willuhn_ds/${define.jarfilename}"/>
-	  	</exec>
-	  	<echo message="done" />
 
 	</target>
 
@@ -124,21 +114,17 @@
 
 
 
-	<target depends="init" name="src" description="build source package, depends compile target to make sure, the code has no errors">
+	<target depends="compile" name="src" description="build source package, depends compile target to make sure, the code has no errors">
 		<mkdir dir="${project.release}"/>
 		<zip casesensitive="true" zipfile="${project.release}/${define.srcfilename}">
 			<fileset dir="." >
+				<include name=".project"/>
+				<include name=".classpath"/>
 				<include name="${src.dir}/**"/>
 				<include name="${build.dir}/**"/>
 				<exclude name="${build.dir}/BUILD"/>
 			</fileset>
 		</zip>
-		<checksum file="${project.release}/${define.srcfilename}" />
-		<echo message="Creating PGP signature" />
-		<exec executable="kgpg" failonerror="true" timeout="60000">
-			<arg line="-S ${project.release}/${define.srcfilename}"/>
-		</exec>
-		<echo message="done" />
 	</target>
 
 
@@ -147,7 +133,21 @@
 		<delete dir="${project.tmp}"/>
 	</target>
 
+	<target name="sign" description="signs the jar/zip file">
+	  	<checksum file="${project.release}/lib/de_willuhn_ds/${define.jarfilename}" />
+		<echo message="Creating PGP signature" />
+	  	<exec executable="kgpg" failonerror="true" timeout="60000">
+			<arg line="-S ${project.release}/lib/de_willuhn_ds/${define.jarfilename}"/>
+	  	</exec>
+	</target>
 
+	<target name="signsrc" description="signs the source zip">
+		<checksum file="${project.release}/${define.srcfilename}" />
+		<echo message="Creating PGP signature" />
+		<exec executable="kgpg" failonerror="true" timeout="60000">
+			<arg line="-S ${project.release}/${define.srcfilename}"/>
+		</exec>
+	</target>
 
     <target depends="init,compile,cvstag,jar,javadoc,src,clean" description="build an official release" name="all" />
 
