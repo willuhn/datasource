@@ -72,7 +72,7 @@
 
 	<target depends="compile" name="cvstag" description="tags the source in the CVS">
 		<exec executable="cvs" failonerror="true" dir="${basedir}">
-			<arg line="tag ${version}_BUILD_${build.number}"/>
+			<arg line="tag ${tag}"/>
 		</exec>
 	</target>
 
