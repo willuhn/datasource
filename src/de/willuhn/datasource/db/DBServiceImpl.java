@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/23 00:25:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import de.willuhn.datasource.common.*;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
@@ -49,12 +50,11 @@ public class DBServiceImpl extends AbstractService implements DBService
 	 */
 	public DBServiceImpl(HashMap initParams) throws RemoteException
 	{
-    if (initParams == null)
-      throw new RemoteException("initParams are null");
+		super(initParams);
     
-    jdbcUrl = (String) initParams.get("jdbc-url");
+    jdbcUrl = (String) initParams.get("url");
     if (jdbcUrl == null || "".equals(jdbcUrl)) {
-      throw new RemoteException("jdbc-url not set");
+      throw new RemoteException("url not set");
     }
 
     driverClass = (String) initParams.get("driver");
@@ -160,7 +160,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   {
 
     String className = clazz.getName();
-    className = className.replaceAll(".rmi.",".server."); 
+    className = className.replaceAll(".rmi.",".db."); 
 
     // Normalerweise wollen wir ja bei der Erstellung nur die Klasse des
     // Interfaces angeben und nicht die der Impl. Deswegen schreiben
@@ -181,11 +181,8 @@ public class DBServiceImpl extends AbstractService implements DBService
    */
   public DBObject createObject(Class c, String id) throws RemoteException
   {
-    if (!available)
-      throw new RemoteException("server shut down. service no longer available.");
-
     try {
-      log.info("try to create new DBObject. request from host: " + getClientHost());
+      log.debug("try to create new DBObject. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -207,11 +204,8 @@ public class DBServiceImpl extends AbstractService implements DBService
    */
   public DBIterator createList(Class c) throws RemoteException
 	{
-    if (!available)
-      throw new RemoteException("server shut down. service no longer available.");
-
     try {
-      log.info("try to create new DBIterator. request from host: " + getClientHost());
+      log.debug("try to create new DBIterator. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -280,6 +274,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.2  2004/01/23 00:25:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *

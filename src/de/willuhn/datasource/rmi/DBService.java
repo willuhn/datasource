@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/23 00:25:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,7 +15,7 @@ package de.willuhn.datasource.rmi;
 import java.rmi.RemoteException;
 
 /**
- * Basisklasse fuer alle DBHubs.
+ * Basisklasse fuer alle DBServices.
  * @author willuhn
  */
 public interface DBService extends Service
@@ -51,6 +51,9 @@ public interface DBService extends Service
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.2  2004/01/23 00:25:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *

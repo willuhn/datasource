@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.3 $
+ * $Date: 2004/01/23 00:25:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -159,7 +159,7 @@ public class EmbeddedDatabase
 
 	/**
 	 * Fuehrt das uebergebene File mit SQL-Kommandos auf der Datenbank aus.
-	 * Die Funktion liefert kein ResultSet zurueck, weil sie typischerweise
+	 * Die Funktion liefert kein DBIteratorImpl zurueck, weil sie typischerweise
 	 * fuer die Erstellung der Tabellen verwendet werden sollte. Wenn das
 	 * Plugin also bei der Installation seine SQL-Tabellen erstellen will,
 	 * kann es das am besten hier machen.
@@ -240,7 +240,7 @@ public class EmbeddedDatabase
 		{
 			HashMap map = new HashMap();
 			map.put("driver","com.mckoi.JDBCDriver");
-			map.put("jdbc-url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
+			map.put("url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
 			db = new DBServiceImpl(map);
 		}
 		return db;
@@ -250,6 +250,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.3  2004/01/23 00:25:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/01/10 14:52:19  willuhn
  * @C package removings
  *

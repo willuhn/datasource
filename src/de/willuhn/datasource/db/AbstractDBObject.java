@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/23 00:25:52 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -46,6 +46,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   // ein Cache fuer ForeignObjects
   private HashMap foreignObjectCache = new HashMap();
 
+	private transient Connection conn = null;
   /**
    * ct
    * @throws RemoteException
@@ -68,7 +69,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       throw new SQLException("connection is null");
 
     conn.setAutoCommit(false); // Auto-Commit schalten wir aus weil wir vorsichtig sind ;)
-    ConnectionPool.setConnection(this,conn);
+		this.conn = conn;
   }
   
   /**
@@ -77,7 +78,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   protected Connection getConnection()
   {
-    return ConnectionPool.getConnection(this);
+  	return this.conn;
   }
   
   /**
@@ -916,6 +917,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.2  2004/01/23 00:25:52  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *
