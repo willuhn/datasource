@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/GenericObject.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/07/21 23:53:56 $
+ * $Revision: 1.2 $
+ * $Date: 2004/12/09 23:22:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,6 +35,13 @@ public interface GenericObject extends Remote {
 	public Object getAttribute(String name) throws RemoteException;
 
 	/**
+	 * Liefert ein String-Array mit allen verfuegbaren Attribut-Namen.
+   * @return Liste aller Attribut-Namen.
+   * @throws RemoteException
+   */
+  public String[] getAttributeNames() throws RemoteException;
+	
+	/**
 	 * Liefert einen Identifier fuer dieses Objekt.
 	 * Dieser muss innerhalb des gesamten Systems/Services fuer diese Objektart eindeutig sein.
    * @return der Identifier des Objektes.
@@ -67,6 +74,9 @@ public interface GenericObject extends Remote {
 
 /**********************************************************************
  * $Log: GenericObject.java,v $
+ * Revision 1.2  2004/12/09 23:22:25  willuhn
+ * @N getAttributeNames nun Bestandteil der API
+ *
  * Revision 1.1  2004/07/21 23:53:56  willuhn
  * @C massive Refactoring ;)
  *

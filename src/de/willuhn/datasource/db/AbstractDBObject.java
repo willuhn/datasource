@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.23 $
- * $Date: 2004/11/12 18:21:56 $
+ * $Revision: 1.24 $
+ * $Date: 2004/12/09 23:22:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -249,7 +249,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 //        return; // record not found.
       }
 
-			String[] attributes = getAttributes();
+			String[] attributes = getAttributeNames();
 			for (int i=0;i<attributes.length;++i)
 			{
 				setAttribute(attributes[i],data.getObject(attributes[i]));
@@ -291,7 +291,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       throw new RemoteException("object not initialized.");
 
     this.id = null;
-    String attributes[] = this.getAttributes();
+    String attributes[] = this.getAttributeNames();
     for (int i=0;i<attributes.length;++i)
     {
       this.setAttribute(attributes[i],null);
@@ -486,10 +486,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * Liefert ein String-Array mit allen Feldnamen dieses Objektes. 
-   * @return String-Array mit allen Feldnamen.
+   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
    */
-  protected final String[] getAttributes()
+  public final String[] getAttributeNames() throws RemoteException
   {
     Set s = properties.keySet();
     return (String[]) s.toArray(new String[s.size()]);
@@ -634,7 +633,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     checkConnection();
 
     String sql = "update " + getTableName() + " set ";
-    String[] attributes = getAttributes();
+    String[] attributes = getAttributeNames();
 
     for (int i=0;i<attributes.length;++i)
     {
@@ -679,7 +678,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     checkConnection();
 
     String sql = "insert into " + getTableName() + " ";
-    String[] attributes = getAttributes();
+    String[] attributes = getAttributeNames();
 
     String names = "(";
     String values = " values (";
@@ -990,7 +989,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     if (!object.getClass().equals(this.getClass()))
       return;
 
-    String[] attributes = getAttributes();
+    String[] attributes = getAttributeNames();
     
     for (int i=0;i<attributes.length;++i)
     {
@@ -1081,6 +1080,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.24  2004/12/09 23:22:25  willuhn
+ * @N getAttributeNames nun Bestandteil der API
+ *
  * Revision 1.23  2004/11/12 18:21:56  willuhn
  * *** empty log message ***
  *
