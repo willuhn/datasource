@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/03/19 18:56:47 $
+ * $Revision: 1.9 $
+ * $Date: 2004/05/04 23:05:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -145,7 +145,8 @@ public class DBServiceImpl extends AbstractService implements DBService
    */
   private DBObject create(Class c) throws Exception
   {
-    Class clazz = classLoader.findImplementor(c);
+    Class[] found = classLoader.getClassFinder().findImplementors(c);
+    Class clazz = found[found.length-1]; // wir nehmen das letzte Element. Das ist am naehesten dran.
     Constructor ct = clazz.getConstructor(new Class[]{});
     ct.setAccessible(true);
 
@@ -254,6 +255,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.9  2004/05/04 23:05:25  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2004/03/19 18:56:47  willuhn
  * @R removed ping() from within open()
  *
