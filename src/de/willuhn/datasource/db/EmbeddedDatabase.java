@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/01/23 00:25:52 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/25 18:39:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -114,7 +114,6 @@ public class EmbeddedDatabase
 		{
 			logger.info("creating directory " + path.getAbsolutePath());
 			path.mkdir();
-			logger.info("done");
 		}
 
 		if (exists()) return;
@@ -134,7 +133,6 @@ public class EmbeddedDatabase
 			logger.error("failed",e);
 			throw new IOException(e.getMessage());
 		}
-		logger.info("done");
 
 		try {
 
@@ -143,7 +141,6 @@ public class EmbeddedDatabase
 			logger.info("creating database");
 			session = control.createDatabase(config,username,password);
 			session.close();
-			logger.info("done");
 	  }
 		catch (Error error)
 		{
@@ -250,6 +247,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.4  2004/01/25 18:39:49  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/01/23 00:25:52  willuhn
  * *** empty log message ***
  *

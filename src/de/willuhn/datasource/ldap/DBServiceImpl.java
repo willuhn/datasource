@@ -1,7 +1,7 @@
 /***************************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/ldap/Attic/DBServiceImpl.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/23 00:25:52 $
+ * $Revision: 1.2 $
+ * $Date: 2004/01/25 18:39:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,7 @@ import de.willuhn.datasource.common.AbstractService;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.util.MultipleClassLoader;
+import de.willuhn.util.ClassFinder;
 
 /**
  * Daten-Service fuer LDAP-Verzeichnisse.
@@ -112,8 +112,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 	 */
 	static DBObject create(DirContext conn, Class c, String dn) throws Exception
 	{
-		String className = findImplementationName(c);
-		Class clazz = MultipleClassLoader.load(className);
+		Class clazz = ClassFinder.findImplementor(c);
 
 		Constructor ct = clazz.getConstructor(new Class[]{});
 		ct.setAccessible(true);
@@ -121,30 +120,6 @@ public class DBServiceImpl extends AbstractService implements DBService
 		AbstractDBObject o = (AbstractDBObject) ct.newInstance(new Object[] {});
 		o.setContext(conn);
 		return o;
-	}
-
-	/**
-	 * Liefert den Klassennamen der Implementierung zum uebergebenen Interface oder RMI-Stub.
-	 * @param clazz Stubs oder Interface.
-	 * @return Name der Implementierung.
-	 */
-	private static String findImplementationName(Class clazz)
-	{
-
-		String className = clazz.getName();
-		className = className.replaceAll(".rmi.",".ldap."); 
-
-		// Normalerweise wollen wir ja bei der Erstellung nur die Klasse des
-		// Interfaces angeben und nicht die der Impl. Deswegen schreiben
-		// wir das "Impl" selbst hinten dran, um es instanziieren zu koennen.
-		if (!className.endsWith("Impl") && ! className.endsWith("_Stub"))
-			className += "Impl";
-
-		// Es sei denn, es ist RMI-Stub. Dann muessen wir das "_Stub" abschneiden.
-		if (className.endsWith("_Stub"))
-			className = className.substring(0,className.length()-5);
-
-		return className;    
 	}
 
   /**
@@ -284,6 +259,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /***************************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.2  2004/01/25 18:39:50  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.1  2004/01/23 00:25:52  willuhn
  * *** empty log message ***
  *
