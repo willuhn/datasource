@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/01/29 00:46:01 $
+ * $Revision: 1.8 $
+ * $Date: 2004/02/09 13:04:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -194,6 +194,8 @@ public class EmbeddedDatabase
 						continue;
 					if (thisLine.startsWith("--")) // Kommentare
 						continue;
+					if (thisLine.startsWith("\n") || thisLine.startsWith("\r")) // Leerzeile
+						continue;
 					all.append(thisLine.trim());
 				}
 			}
@@ -267,6 +269,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.8  2004/02/09 13:04:34  willuhn
+ * @C misc
+ *
  * Revision 1.7  2004/01/29 00:46:01  willuhn
  * *** empty log message ***
  *
