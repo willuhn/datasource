@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.20 $
- * $Date: 2004/10/31 18:46:42 $
+ * $Revision: 1.21 $
+ * $Date: 2004/11/05 01:50:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -471,8 +471,17 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		if (value == null)
 			return properties.put(fieldName, null);
 		
-		if (value instanceof DBObject)
-			value = new Integer(((DBObject)value).getID());
+		if ((value instanceof DBObject) && value != null)
+		{
+			String id = ((DBObject)value).getID();
+			if (id != null && id.length() > 0)
+			try
+			{
+				value = new Integer(id);
+			}
+			catch (Exception e)
+			{/*ignore*/}
+		}
     return properties.put(fieldName, value);
   }
 
@@ -1072,6 +1081,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.21  2004/11/05 01:50:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2004/10/31 18:46:42  willuhn
  * *** empty log message ***
  *
