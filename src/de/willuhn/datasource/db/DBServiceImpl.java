@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.13 $
- * $Date: 2004/07/23 15:51:07 $
+ * $Revision: 1.14 $
+ * $Date: 2004/07/23 16:24:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,8 +35,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 {
 
   private String jdbcDriver   = null;
-
   private String jdbcUrl      = null;
+  private String jdbcUsername = null;
+  private String jdbcPassword = null;
   
   private Connection conn     = null;
 
@@ -47,24 +48,31 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   private ClassFinder finder  = null;
 
   /**
-	 * Erzeugt eine neue Instanz.
-   * @param initParams HashMap mit Initialisierungsparametern.
-   * @throws RemoteException im Fehlerfall.
-	 */
+   * Erzeugt eine neue Instanz.
+   * @param jdbcDriver JDBC-Treiber-Klasse.
+   * @param jdbcURL JDBC-URL.
+   * @throws RemoteException
+   */
 	public DBServiceImpl(String jdbcDriver, String jdbcURL) throws RemoteException
 	{
-		super();
-    
-    this.jdbcUrl    = jdbcURL;
-    this.jdbcDriver = jdbcDriver;
+    this(jdbcDriver,jdbcURL,null,null);
 	}
   
+  public DBServiceImpl(String jdbcDriver, String jdbcURL, String jdbcUsername, String jdbcPassword) throws RemoteException
+  {
+    super();
+    this.jdbcUrl      = jdbcURL;
+    this.jdbcDriver   = jdbcDriver;
+    this.jdbcUsername = jdbcUsername;
+    this.jdbcPassword = jdbcPassword;
+  }
+
 	/**
 	 * Liefert die Connection, die dieser Service gerade verwendet.
    * @return Connection.
    * @throws RemoteException
    */
-	Connection getConnection() throws RemoteException
+	protected Connection getConnection() throws RemoteException
 	{
 		open();
 		return conn;
@@ -82,7 +90,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    * beiden create-Methoden natuerliche keine Interfaces-Klassen uebergeben werden.
    * @param finder zu verwendender ClassFinder.
    */
-  void setClassFinder(ClassFinder finder)
+  protected void setClassFinder(ClassFinder finder)
   {
     this.finder = finder;
   }
@@ -113,7 +121,10 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		}
 
 		try {
-			conn = DriverManager.getConnection(jdbcUrl);    
+      if (this.jdbcUsername != null && this.jdbcUsername.length() > 0 && this.jdbcPassword != null)
+        conn = DriverManager.getConnection(this.jdbcUrl,this.jdbcUsername,this.jdbcPassword);
+      else
+  			conn = DriverManager.getConnection(jdbcUrl);
       open = true;
 		}
 		catch (SQLException e2)
@@ -244,6 +255,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.14  2004/07/23 16:24:05  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.13  2004/07/23 15:51:07  willuhn
  * @C Rest des Refactorings
  *
