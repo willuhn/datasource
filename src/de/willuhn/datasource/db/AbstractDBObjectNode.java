@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/18 01:24:16 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -124,7 +124,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
         array.add(element.getID());
       }
     }
-    return new DBIteratorImpl(this,array,getConnection());
+    return new DBIteratorImpl(this,array,getService());
   }
 
   /**
@@ -138,7 +138,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
     if (currentObject == null) {
       // keine Eltern-Objekte. Also liefern wir eine leere Liste.
-      return new DBIteratorImpl(this,objectArray,getConnection());
+      return new DBIteratorImpl(this,objectArray,getService());
     }
     objectArray.add(currentObject.getID());
 
@@ -153,7 +153,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
         reached = true;
       }
     }
-    return new DBIteratorImpl(this,objectArray,getConnection());
+    return new DBIteratorImpl(this,objectArray,getService());
   }
 
   /**
@@ -180,6 +180,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.3  2004/03/18 01:24:16  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/common/Attic/AbstractService.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/23 00:25:52 $
+ * $Revision: 1.2 $
+ * $Date: 2004/03/18 01:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import de.willuhn.datasource.rmi.Service;
 import de.willuhn.util.Logger;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * 
@@ -28,7 +29,8 @@ public abstract class AbstractService
   implements Service
 {
 
-	protected Logger log = new Logger();
+	protected Logger log = null;
+	protected MultipleClassLoader classLoader = null;
 	protected HashMap initParams = null;
 
   /**
@@ -40,6 +42,8 @@ public abstract class AbstractService
   {
     super();
 		this.initParams = initParams;
+		this.log = new Logger("DBService");
+		this.log.addTarget(System.out);
   }
   
   /**
@@ -61,11 +65,22 @@ public abstract class AbstractService
   		log = l;
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.Service#setClassLoader(de.willuhn.util.MultipleClassLoader)
+   */
+  public void setClassLoader(MultipleClassLoader loader)
+    throws RemoteException {
+    	this.classLoader = loader;
+  }
+
 }
 
 
 /**********************************************************************
  * $Log: AbstractService.java,v $
+ * Revision 1.2  2004/03/18 01:24:17  willuhn
+ * @C refactoring
+ *
  * Revision 1.1  2004/01/23 00:25:52  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.7 $
+ * $Date: 2004/03/18 01:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,6 @@ import de.willuhn.datasource.common.AbstractService;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
@@ -38,7 +37,6 @@ public class DBServiceImpl extends AbstractService implements DBService
 
   private String jdbcUrl = null;
   
-  private boolean connected = false;
   private Connection conn;
 
   private boolean available = true;
@@ -63,11 +61,18 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
 	}
   
+	/**
+	 * @see de.willuhn.datasource.rmi.DBService#getConnection()
+	 */
+	public Connection getConnection() throws RemoteException {
+		open();
+		return conn;
+	}
 
   /**
    * @see de.willuhn.datasource.rmi.Service#open()
    */
-  public void open() throws RemoteException
+  public synchronized void open() throws RemoteException
   {
     if (!available)
       throw new RemoteException("server shut down. service no longer available.");
@@ -77,34 +82,36 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
     catch (ServerNotActiveException soe) {}
     
-    if (connected)
-      return;
-    
-    try {
-      Class.forName(driverClass);
-    }
-    catch (ClassNotFoundException e)
-    {
-			log.error("unable to load jb driver " + driverClass,e);
-      throw new RemoteException("unable to load jdbc driver " + driverClass,e);
-    }
+		if (ping()) return; // test connection
 
-    try {
-      conn = DriverManager.getConnection(jdbcUrl);    
-    }
-    catch (SQLException e2)
-    {
+		// mhh, entweder die Verbindung wurde noch nie geoeffnet
+		// oder sie ist im Eimer. Wir oeffnen sie neu
+
+		// Ob es hier Sinn macht, vorher nochmal close() aufzurufen?
+		try {
+			Class.forName(driverClass);
+		}
+		catch (ClassNotFoundException e2)
+		{
+			log.error("unable to load jb driver " + driverClass,e2);
+			throw new RemoteException("unable to load jdbc driver " + driverClass,e2);
+		}
+
+		try {
+			conn = DriverManager.getConnection(jdbcUrl);    
+		}
+		catch (SQLException e2)
+		{
 			log.error("connection to database " + jdbcUrl + " failed",e2);
-      throw new RemoteException("connection to database." + jdbcUrl + " failed",e2);
-    }
-    connected = true;
+			throw new RemoteException("connection to database." + jdbcUrl + " failed",e2);
+		}
   }
 
 
   /**
    * @see de.willuhn.datasource.rmi.Service#close()
    */
-  public void close() throws RemoteException
+  public synchronized void close() throws RemoteException
   {
     if (!available)
       return;
@@ -115,7 +122,6 @@ public class DBServiceImpl extends AbstractService implements DBService
     catch (ServerNotActiveException soe) {}
 
     try {
-      connected = false;
       conn.close();
     }
     catch (NullPointerException ne)
@@ -132,19 +138,18 @@ public class DBServiceImpl extends AbstractService implements DBService
 
   /**
    * Erzeugt ein neues Objekt aus der angegeben Klasse.
-   * @param conn die Connection, die im Objekt gespeichert werden soll.
    * @param c Klasse des zu erstellenden Objekts.
    * @return das erzeugte Objekt.
    * @throws Exception wenn beim Erzeugen des Objektes ein Fehler auftrat.
    */
-  static DBObject create(Connection conn, Class c) throws Exception
+  private DBObject create(Class c) throws Exception
   {
-    Class clazz = MultipleClassLoader.findImplementor(c);
+    Class clazz = classLoader.findImplementor(c);
     Constructor ct = clazz.getConstructor(new Class[]{});
     ct.setAccessible(true);
 
     AbstractDBObject o = (AbstractDBObject) ct.newInstance(new Object[] {});
-    o.setConnection(conn);
+    o.setService(this);
     o.init();
     return o;
   }
@@ -159,16 +164,15 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
     catch (ServerNotActiveException soe) {}
 
-    open();
     try {
-      DBObject o = create(conn,c);
+      DBObject o = create(c);
       o.load(id);
       return o;
     }
     catch (Exception e)
     {
-      log.error("unable to create object " + c.getName(),e);
-      throw new RemoteException("unable to create object " + c.getName(),e);
+      log.error("unable to create object " + (c == null ? "unknown" : c.getName()),e);
+      throw new RemoteException("unable to create object " + (c == null ? "unknown" : c.getName()),e);
     }
   }
 
@@ -182,10 +186,9 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
     catch (ServerNotActiveException soe) {}
 
-    open();
 		try {
-      DBObject o = create(conn,c);
-			return new DBIteratorImpl((AbstractDBObject)o,conn);
+      DBObject o = create(c);
+			return new DBIteratorImpl((AbstractDBObject)o,this);
 		}
 		catch (Exception e)
 		{
@@ -207,7 +210,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   /**
    * @see de.willuhn.datasource.rmi.Service#shutDown()
    */
-  public void shutDown() throws RemoteException
+  public synchronized void shutDown() throws RemoteException
   {
     available = false;
     close();
@@ -224,29 +227,35 @@ public class DBServiceImpl extends AbstractService implements DBService
   {
     if (!available)
       return false;
-    open();
+
+		Statement stmt = null;
     try {
       log.debug("sending ping to database");
-      Statement stmt = conn.createStatement();
+      stmt = conn.createStatement();
       boolean b = stmt.execute("select 1");
       if (b)
         log.debug("ok");
       else
         log.debug("failed");
+      stmt.close();
       return b;
-      
     }
-    catch (SQLException e)
+    catch (Exception e) {}
+    finally
     {
-      log.error("unable to ping database",e);
-      return false;
+    	try {
+    		stmt.close();
+    	}	catch (Exception ee) {/*useless*/}
     }
+		return false;
   }
-
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.7  2004/03/18 01:24:17  willuhn
+ * @C refactoring
+ *
  * Revision 1.6  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

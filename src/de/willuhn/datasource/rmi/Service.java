@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/Service.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.3 $
+ * $Date: 2004/03/18 01:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import de.willuhn.util.Logger;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Basis-Interface aller Services, die via RMI genutzt werden koennen.
@@ -62,10 +63,25 @@ public interface Service extends Remote
 	 */
 	public void setLogger(Logger l) throws RemoteException;
 
+	/**
+	 * Definiert den zu verwendenden ClassLoader.
+	 * Die Funktion ist ein Zugestaendnis an die Plugin-Funktionalitaet
+	 * von Jameica. Da dort Jars zur Laufzeit geladen und zum Classpath
+	 * hinzugefuegt werden und der Service (momentan nur DBService)
+	 * die Fach-Klassen kennen muss, fuer die er die Daten aus der
+	 * Datenbank lesen soll, braucht er einen Classloader, der auch
+	 * die Klassen der Plugins kennt.
+   * @param loader
+   * @throws RemoteException
+   */
+  public void setClassLoader(MultipleClassLoader loader) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.3  2004/03/18 01:24:17  willuhn
+ * @C refactoring
+ *
  * Revision 1.2  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

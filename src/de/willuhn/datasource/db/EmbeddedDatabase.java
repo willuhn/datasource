@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.10 $
+ * $Date: 2004/03/18 01:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -26,6 +26,7 @@ import com.mckoi.database.control.DefaultDBConfig;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.util.Logger;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Embedded Datenbank.
@@ -44,7 +45,8 @@ public class EmbeddedDatabase
 	private static String defaultConfig =
 		"database_path=.\n" +		"log_path=./log\n" +		"root_path=configuration\n" +		"jdbc_server_port=9157\n" +		"ignore_case_for_identifiers=disabled\n" +		"data_cache_size=4194304\n" +		"max_cache_entry_size=8192\n" +		"maximum_worker_threads=4\n" +		"debug_log_file=debug.log\n" +		"debug_level=30\n";
 
-	private Logger logger = new Logger();
+	private Logger logger = null;
+	private MultipleClassLoader classLoader = null;
 	
 	/**
 	 * ct.
@@ -57,6 +59,7 @@ public class EmbeddedDatabase
 		this.path = new File(path);
 		this.username = username;
 		this.password = password;
+		this.logger = new Logger("Embedded Database");
 		this.logger.addTarget(System.out);
 	}
 
@@ -71,6 +74,21 @@ public class EmbeddedDatabase
 		this.logger = l;
 	}
 	
+	/**
+	 * Definiert den zu verwendenden ClassLoader.
+	 * Die Funktion ist ein Zugestaendnis an die Plugin-Funktionalitaet
+	 * von Jameica. Da dort Jars zur Laufzeit geladen und zum Classpath
+	 * hinzugefuegt werden und der Service (momentan nur DBService)
+	 * die Fach-Klassen kennen muss, fuer die er die Daten aus der
+	 * Datenbank lesen soll, braucht er einen Classloader, der auch
+	 * die Klassen der Plugins kennt.
+	 * @param loader
+	 */
+  public void setClassLoader(MultipleClassLoader loader)
+	{
+			this.classLoader = loader;
+	}
+
 	/**
 	 * Prueft ob die Datenbank existiert.
    * @return true, wenn sie existiert.
@@ -256,13 +274,15 @@ public class EmbeddedDatabase
    */
   public DBService getDBService() throws RemoteException
 	{
-		if (db == null)
-		{
-			HashMap map = new HashMap();
-			map.put("driver","com.mckoi.JDBCDriver");
-			map.put("url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
-			db = new DBServiceImpl(map);
-		}
+		if (db != null)
+			return db;
+
+		HashMap map = new HashMap();
+		map.put("driver","com.mckoi.JDBCDriver");
+		map.put("url",":jdbc:mckoi:local://" + path.getAbsolutePath() + "/db.conf?user=" + username + "&password=" + password);
+		db = new DBServiceImpl(map);
+		db.setLogger(logger);
+		db.setClassLoader(classLoader);
 		return db;
 	}
 }
@@ -270,6 +290,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.10  2004/03/18 01:24:17  willuhn
+ * @C refactoring
+ *
  * Revision 1.9  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

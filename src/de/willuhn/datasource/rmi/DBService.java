@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.4 $
+ * $Date: 2004/03/18 01:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,7 @@
 package de.willuhn.datasource.rmi;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 
 /**
  * Basisklasse fuer alle DBServices.
@@ -48,10 +49,20 @@ public interface DBService extends Service
    */
   public boolean ping() throws RemoteException;
 
+	/**
+	 * Liefert die Connection des Services.
+   * @return Connection.
+   * @throws RemoteException
+   */
+  public Connection getConnection() throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.4  2004/03/18 01:24:17  willuhn
+ * @C refactoring
+ *
  * Revision 1.3  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

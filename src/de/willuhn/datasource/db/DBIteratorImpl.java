@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.5 $
+ * $Date: 2004/03/18 01:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBService;
 
 /**
  * @author willuhn
@@ -28,6 +29,7 @@ import de.willuhn.datasource.rmi.DBObject;
  */
 public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
+	private DBService service;
 	private Connection conn;
 	private AbstractDBObject object;
 	private ArrayList list = new ArrayList();
@@ -42,16 +44,18 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * @param conn die Connection.
    * @throws RemoteException
    */
-  DBIteratorImpl(AbstractDBObject object, Connection conn) throws RemoteException
+  DBIteratorImpl(AbstractDBObject object, DBService service) throws RemoteException
 	{
 		if (object == null)
 			throw new RemoteException("given object type is null");
 
+  	this.object = object;
+		this.service = service;
+		this.conn = service.getConnection();
+
 		if (conn == null)
 			throw new RemoteException("given connection is null");
 
-		this.object = object;
-		this.conn = conn;
   }
 
   /**
@@ -61,25 +65,17 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * @param conn die Connection.
    * @throws RemoteException
    */
-  public DBIteratorImpl(AbstractDBObject object, ArrayList list, Connection conn) throws RemoteException
+  public DBIteratorImpl(AbstractDBObject object, ArrayList list, DBService service) throws RemoteException
   {
-    if (object == null)
-      throw new RemoteException("given object type is null");
+		this(object,service);
 
     if (list == null)
       throw new RemoteException("given list is null");
 
-    if (conn == null)
-      throw new RemoteException("given connection is null");
-
-    this.object = object;
-    this.conn = conn;
-
     try {
       for (int i=0;i<list.size();++i)
       {
-        DBObject o = DBServiceImpl.create(this.conn,object.getClass());
-        o.load((String)list.get(i));
+        DBObject o = service.createObject(object.getClass(),(String)list.get(i));
         this.list.add(o);
       }
     }
@@ -167,8 +163,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 			rs = stmt.executeQuery(sql);
 			while (rs.next())
 			{
-        DBObject o = DBServiceImpl.create(this.conn,object.getClass());
-        o.load(rs.getString(object.getIDField()));
+        DBObject o = service.createObject(object.getClass(),rs.getString(object.getIDField()));
 				list.add(o);
 			}
       this.initialized = true;
@@ -282,6 +277,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.5  2004/03/18 01:24:17  willuhn
+ * @C refactoring
+ *
  * Revision 1.4  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

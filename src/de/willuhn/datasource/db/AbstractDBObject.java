@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.5 $
+ * $Date: 2004/03/18 01:24:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import java.util.Set;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
+import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -46,7 +47,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   // ein Cache fuer ForeignObjects
   private HashMap foreignObjectCache = new HashMap();
 
+	private transient DBService service = null;
 	private transient Connection conn = null;
+
   /**
    * ct
    * @throws RemoteException
@@ -57,19 +60,18 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	}
 
   /**
-   * Speichert die Connection. Die einzelnen Schritte zum Initialisieren
-   * eines Objektes (Connection speichern, Init, Load) sind bewusst auseinandergedroeselt,
-   * damit wir einen Cache mit Meta-Daten fuer Fachobjekte halten koennen, ohne Referenzen
-   * zu den Objekten dort speichern zu muessen. 
-   * @param conn
+   * Speichert den Service-Provider.
+   * @param service
+   * @throws Exception
    */
-  void setConnection(Connection conn) throws SQLException
+  void setService(DBService service) throws Exception
   {
+  	this.service = service;
+  	conn = service.getConnection();
     if (conn == null)
       throw new SQLException("connection is null");
 
     conn.setAutoCommit(false); // Auto-Commit schalten wir aus weil wir vorsichtig sind ;)
-		this.conn = conn;
   }
   
   /**
@@ -78,9 +80,18 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   protected Connection getConnection()
   {
-  	return this.conn;
+  	return conn;
   }
-  
+
+	/**
+	 * Liefert den Service-Provider.
+   * @return Service.
+   */
+  protected DBService getService()
+	{
+		return service;  
+	}
+
   /**
    * Prueft, ob die Datenbankverbindung existiert und funktioniert.
    * @throws RemoteException wird geworfen, wenn die Connection kaputt ist.
@@ -352,16 +363,15 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       else {
         try
         {
-          cachedObject = DBServiceImpl.create(getConnection(),foreign);
+          cachedObject = service.createObject(foreign,o.toString());
+					foreignObjectCache.put(foreign,cachedObject);
         }
         catch (Exception e)
         {
         	throw new RemoteException("unable to create foreign object",e);
         }
-        cachedObject.load(o.toString());
-        foreignObjectCache.put(foreign,cachedObject);
       }
-      return cachedObject;
+			return cachedObject;
     }
 
     return o;
@@ -865,7 +875,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   public DBIterator getList() throws RemoteException
   {
-    return new DBIteratorImpl(this,getConnection());
+    return new DBIteratorImpl(this,service);
   }
 
   /**
@@ -919,6 +929,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.5  2004/03/18 01:24:17  willuhn
+ * @C refactoring
+ *
  * Revision 1.4  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *
