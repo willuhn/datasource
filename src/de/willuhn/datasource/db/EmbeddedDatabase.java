@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/25 18:39:49 $
+ * $Revision: 1.5 $
+ * $Date: 2004/01/27 23:54:32 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -184,9 +184,11 @@ public class EmbeddedDatabase
 			StringBuffer all = new StringBuffer();
 			while ((thisLine =  br.readLine()) != null)
 			{
-				if (!(thisLine.length() > 0))
+				if (!(thisLine.length() > 0)) // Zeile enthaelt nichts
 					continue;
-					all.append(thisLine);
+				if (thisLine.matches(" *?"))	// Zeile enthaelt nur Leerzeichen
+					continue;
+				all.append(thisLine.trim());
 			}
 
 
@@ -247,6 +249,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.5  2004/01/27 23:54:32  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/01/25 18:39:49  willuhn
  * *** empty log message ***
  *
