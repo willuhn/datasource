@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/01/29 00:13:11 $
+ * $Revision: 1.5 $
+ * $Date: 2004/02/27 01:09:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -140,13 +140,6 @@ public class DBServiceImpl extends AbstractService implements DBService
   static DBObject create(Connection conn, Class c) throws Exception
   {
     Class clazz = MultipleClassLoader.findImplementor(c);
-    if (clazz == null)
-    {
-    	// Wenn der Classfinder nichts gefunden hat, versuchen wir mal
-    	// das Ding direkt zu instanziieren.
-    	clazz = c;
-    }
-
     Constructor ct = clazz.getConstructor(new Class[]{});
     ct.setAccessible(true);
 
@@ -254,6 +247,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.5  2004/02/27 01:09:51  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.4  2004/01/29 00:13:11  willuhn
  * *** empty log message ***
  *
