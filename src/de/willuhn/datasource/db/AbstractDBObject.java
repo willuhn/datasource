@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.16 $
- * $Date: 2004/08/18 23:14:00 $
+ * $Revision: 1.17 $
+ * $Date: 2004/08/18 23:21:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -56,6 +56,37 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 	private transient DBServiceImpl service = null;
 	private transient Connection conn = null;
+
+
+  /**
+   * Attribute dieses Typs werden als java.util.Date erkannt.
+   */
+  private final static String ATTRIBUTETYPE_DATE      = "date";
+
+  /**
+   * Attribute dieses Typs werden als java.util.Date erkannt.
+   */
+  private final static String ATTRIBUTETYPE_TIMESTAMP = "timestamp";
+
+  /**
+   * Attribute dieses Typs werden als java.util.Date erkannt.
+   */
+  private final static String ATTRIBUTETYPE_DATETIME  = "datetime";
+
+  /**
+   * Attribute dieses Typs werden als java.lang.Integer erkannt.
+   */
+  private final static String ATTRIBUTETYPE_INT       = "int";
+
+  /**
+   * Attribute dieses Typs werden als java.lang.Double erkannt.
+   */
+  private final static String ATTRIBUTETYPE_DOUBLE    = "double";
+
+  /**
+   * Attribute dieses Typs werden als java.lang.Double erkannt.
+   */
+  private final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
 
   /**
    * ct
@@ -983,6 +1014,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.17  2004/08/18 23:21:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.16  2004/08/18 23:14:00  willuhn
  * @D Javadoc
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/08/18 23:14:00 $
+ * $Revision: 1.8 $
+ * $Date: 2004/08/18 23:21:38 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,41 +21,6 @@ import de.willuhn.datasource.GenericObject;
  */
 public interface DBObject extends GenericObject, Transactionable, Changeable
 {
-
-  /**
-   * Attribute dieses Typs werden als java.util.Date erkannt.
-   */
-  public final static String ATTRIBUTETYPE_DATE      = "date";
-
-  /**
-   * Attribute dieses Typs werden als java.util.Date erkannt.
-   */
-  public final static String ATTRIBUTETYPE_TIMESTAMP = "timestamp";
-
-  /**
-   * Attribute dieses Typs werden als java.util.Date erkannt.
-   */
-  public final static String ATTRIBUTETYPE_DATETIME  = "datetime";
-
-  /**
-   * Attribute dieses Typs werden als java.lang.Integer erkannt.
-   */
-  public final static String ATTRIBUTETYPE_INT       = "int";
-
-  /**
-   * Attribute dieses Typs werden als java.lang.Double erkannt.
-   */
-  public final static String ATTRIBUTETYPE_DOUBLE    = "double";
-
-  /**
-   * Attribute dieses Typs werden als java.lang.Double erkannt.
-   */
-  public final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
-
-  /**
-   * Attribute dieses Typs werden als java.lang.String erkannt.
-   */
-  public final static String ATTRIBUTETYPE_VARCHAR   = "varchar";
   
   /**
    * Laedt die Eigenschaften des Datensatzes mit der angegebenen
@@ -115,6 +80,9 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.8  2004/08/18 23:21:38  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.7  2004/08/18 23:14:00  willuhn
  * @D Javadoc
  *
