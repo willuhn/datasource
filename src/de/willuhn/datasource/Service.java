@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/Service.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/09/14 23:27:32 $
+ * $Revision: 1.4 $
+ * $Date: 2004/09/15 22:31:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -48,10 +48,20 @@ public interface Service extends Remote
    * @throws RemoteException
    */
   public void stop(boolean restartAllowed) throws RemoteException;
+
+	/**
+	 * Liefert den sprechenden Namen des Services.
+   * @return Name des Services.
+   * @throws RemoteException
+   */
+  public String getName() throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.4  2004/09/15 22:31:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/09/14 23:27:32  willuhn
  * @C redesign of service handling
  *

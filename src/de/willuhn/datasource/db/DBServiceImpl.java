@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.21 $
- * $Date: 2004/09/14 23:27:32 $
+ * $Revision: 1.22 $
+ * $Date: 2004/09/15 22:31:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -282,10 +282,21 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   {
     return started;
   }
+
+  /**
+   * @see de.willuhn.datasource.Service#getName()
+   */
+  public String getName() throws RemoteException
+  {
+    return "database service";
+  }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.22  2004/09/15 22:31:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.21  2004/09/14 23:27:32  willuhn
  * @C redesign of service handling
  *
