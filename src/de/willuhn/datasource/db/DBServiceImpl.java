@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/01/25 18:39:49 $
+ * $Revision: 1.4 $
+ * $Date: 2004/01/29 00:13:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,7 +25,7 @@ import de.willuhn.datasource.common.AbstractService;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.util.ClassFinder;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
@@ -139,7 +139,7 @@ public class DBServiceImpl extends AbstractService implements DBService
    */
   static DBObject create(Connection conn, Class c) throws Exception
   {
-    Class clazz = ClassFinder.findImplementor(c);
+    Class clazz = MultipleClassLoader.findImplementor(c);
     if (clazz == null)
     {
     	// Wenn der Classfinder nichts gefunden hat, versuchen wir mal
@@ -254,6 +254,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.4  2004/01/29 00:13:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.3  2004/01/25 18:39:49  willuhn
  * *** empty log message ***
  *

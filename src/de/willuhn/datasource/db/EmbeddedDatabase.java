@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/01/27 23:54:32 $
+ * $Revision: 1.6 $
+ * $Date: 2004/01/29 00:13:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -173,22 +173,38 @@ public class EmbeddedDatabase
 		if (!file.canRead() || !file.exists())
 			throw new IOException("SQL file does not exist or is not readable");
 		
+
 		Connection conn = null;
 		Statement stmt = null;
 		DBSystem session = null;
+
 		try {
 
-			BufferedReader br =  new BufferedReader(new FileReader(file));
-
-			String thisLine;
+			BufferedReader br = null;
+			String thisLine = null;
 			StringBuffer all = new StringBuffer();
-			while ((thisLine =  br.readLine()) != null)
+
+			try {
+				br =  new BufferedReader(new FileReader(file));
+				while ((thisLine =  br.readLine()) != null)
+				{
+					if (!(thisLine.length() > 0)) // Zeile enthaelt nichts
+						continue;
+					if (thisLine.matches(" *?"))	// Zeile enthaelt nur Leerzeichen
+						continue;
+					all.append(thisLine.trim());
+				}
+			}
+			catch (IOException e)
 			{
-				if (!(thisLine.length() > 0)) // Zeile enthaelt nichts
-					continue;
-				if (thisLine.matches(" *?"))	// Zeile enthaelt nur Leerzeichen
-					continue;
-				all.append(thisLine.trim());
+				throw e;
+			}
+			finally
+			{
+				try {
+					br.close();
+				}
+				catch (Exception e) {}
 			}
 
 
@@ -207,7 +223,7 @@ public class EmbeddedDatabase
         conn.commit();
 			}
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			try {
 				conn.rollback();
@@ -249,6 +265,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.6  2004/01/29 00:13:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.5  2004/01/27 23:54:32  willuhn
  * *** empty log message ***
  *

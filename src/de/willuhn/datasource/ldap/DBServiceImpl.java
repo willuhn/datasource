@@ -1,7 +1,7 @@
 /***************************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/ldap/Attic/DBServiceImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/25 18:39:50 $
+ * $Revision: 1.3 $
+ * $Date: 2004/01/29 00:13:11 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -28,7 +28,7 @@ import de.willuhn.datasource.common.AbstractService;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.util.ClassFinder;
+import de.willuhn.util.MultipleClassLoader;
 
 /**
  * Daten-Service fuer LDAP-Verzeichnisse.
@@ -112,7 +112,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 	 */
 	static DBObject create(DirContext conn, Class c, String dn) throws Exception
 	{
-		Class clazz = ClassFinder.findImplementor(c);
+		Class clazz = MultipleClassLoader.findImplementor(c);
 
 		Constructor ct = clazz.getConstructor(new Class[]{});
 		ct.setAccessible(true);
@@ -259,6 +259,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /***************************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.3  2004/01/29 00:13:11  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.2  2004/01/25 18:39:50  willuhn
  * *** empty log message ***
  *
