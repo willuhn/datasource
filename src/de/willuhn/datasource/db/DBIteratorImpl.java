@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/23 00:25:52 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/23 20:31:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -269,11 +269,21 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     return null;
     
   }
+
+  /**
+   * @see de.willuhn.datasource.rmi.DBIterator#getType()
+   */
+  public Class getType() throws RemoteException {
+    return object.getClass();
+  }
 }
 
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.3  2004/02/23 20:31:26  willuhn
+ * @C refactoring in AbstractDialog
+ *
  * Revision 1.2  2004/01/23 00:25:52  willuhn
  * *** empty log message ***
  *

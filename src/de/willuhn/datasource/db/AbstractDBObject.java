@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/01/23 00:25:52 $
+ * $Revision: 1.3 $
+ * $Date: 2004/02/23 20:31:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -276,7 +276,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       }
       stmt.execute(sql);
       if (!this.inTransaction)
-        getConnection().commit();
+      {
+				getConnection().commit();
+      }
+			this.id = null;
     }
     catch (SQLException e)
     {
@@ -917,6 +920,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.3  2004/02/23 20:31:26  willuhn
+ * @C refactoring in AbstractDialog
+ *
  * Revision 1.2  2004/01/23 00:25:52  willuhn
  * *** empty log message ***
  *
