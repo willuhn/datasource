@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/18 01:24:17 $
+ * $Revision: 1.6 $
+ * $Date: 2004/06/10 20:22:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -422,6 +422,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 	/**
    * Wird bei einem Insert aufgerufen, ermittelt die ID des erzeugten Datensatzes und speichert sie in diesem Objekt.
+   * @throws RemoteException
    */
   private void setLastId() throws RemoteException
 	{
@@ -929,6 +930,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.6  2004/06/10 20:22:40  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.5  2004/03/18 01:24:17  willuhn
  * @C refactoring
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.7 $
- * $Date: 2004/04/05 23:28:30 $
+ * $Revision: 1.8 $
+ * $Date: 2004/06/10 20:22:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,10 +38,10 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   private String order = "";
   private boolean initialized = false;
 
-	/**
-	 * Erzeugt einen neuen Iterator.
+  /**
+   * Erzeugt einen neuen Iterator.
    * @param object Objekt, fuer welches die Liste erzeugt werden soll.
-   * @param conn die Connection.
+   * @param service der Datenbankservice.
    * @throws RemoteException
    */
   DBIteratorImpl(AbstractDBObject object, DBService service) throws RemoteException
@@ -119,6 +119,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   /**
    * Baut das SQL-Statement fuer die Liste zusammen.
    * @return das erzeugte Statement.
+   * @throws RemoteException
    */
   private String prepareSQL() throws RemoteException
   {
@@ -274,6 +275,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.8  2004/06/10 20:22:40  willuhn
+ * @D javadoc comments fixed
+ *
  * Revision 1.7  2004/04/05 23:28:30  willuhn
  * *** empty log message ***
  *
