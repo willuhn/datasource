@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2004/12/07 01:27:58 $
- * $Author: willuhn $
+ * $Revision: 1.27 $
+ * $Date: 2005/03/09 01:07:51 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -80,9 +80,8 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 	/**
 	 * Liefert die Connection, die dieser Service gerade verwendet.
    * @return Connection.
-   * @throws RemoteException
    */
-	protected Connection getConnection() throws RemoteException
+	protected Connection getConnection()
 	{
 		return conn;
 	}
@@ -322,6 +321,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.27  2005/03/09 01:07:51  web0
+ * @D javadoc fixes
+ *
  * Revision 1.26  2004/12/07 01:27:58  willuhn
  * @N Dummy Driver
  *

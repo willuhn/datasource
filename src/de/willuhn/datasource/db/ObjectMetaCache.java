@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/ObjectMetaCache.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/01/10 14:52:19 $
- * $Author: willuhn $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/09 01:07:51 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -40,7 +40,7 @@ public class ObjectMetaCache
   /**
    * Liefert die Meta-Daten einer Klasse oder null.
    * @param clazz Klasse.
-   * @return
+   * @return Die Metadaten.
    */
   static HashMap getMetaData(Class clazz)
   {
@@ -74,6 +74,9 @@ public class ObjectMetaCache
 
 /*********************************************************************
  * $Log: ObjectMetaCache.java,v $
+ * Revision 1.2  2005/03/09 01:07:51  web0
+ * @D javadoc fixes
+ *
  * Revision 1.1  2004/01/10 14:52:19  willuhn
  * @C package removings
  *

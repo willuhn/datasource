@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.18 $
- * $Date: 2004/11/12 18:21:56 $
- * $Author: willuhn $
+ * $Revision: 1.19 $
+ * $Date: 2005/03/09 01:07:51 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -121,9 +121,8 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   /**
    * Baut das SQL-Statement fuer die Liste zusammen.
    * @return das erzeugte Statement.
-   * @throws RemoteException
    */
-  private String prepareSQL() throws RemoteException
+  private String prepareSQL()
   {
     String sql = object.getListQuery();
 
@@ -269,6 +268,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.19  2005/03/09 01:07:51  web0
+ * @D javadoc fixes
+ *
  * Revision 1.18  2004/11/12 18:21:56  willuhn
  * *** empty log message ***
  *

@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.21 $
- * $Date: 2005/02/01 17:14:58 $
- * $Author: willuhn $
+ * $Revision: 1.22 $
+ * $Date: 2005/03/09 01:07:51 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -161,9 +161,8 @@ public class EmbeddedDatabase
 	/**
 	 * Loescht die Datenbank gnadenlos.
 	 * <b>Diese Funktion bitte MIT BEDACHT verwenden!</b>.
-   * @throws IOException
    */
-  public synchronized void delete() throws IOException
+  public synchronized void delete()
 	{
 		Logger.warn("deleting database in " + path.getAbsolutePath());
 		if (!exists())
@@ -375,6 +374,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.22  2005/03/09 01:07:51  web0
+ * @D javadoc fixes
+ *
  * Revision 1.21  2005/02/01 17:14:58  willuhn
  * *** empty log message ***
  *

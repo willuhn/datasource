@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.24 $
- * $Date: 2004/12/09 23:22:25 $
- * $Author: willuhn $
+ * $Revision: 1.25 $
+ * $Date: 2005/03/09 01:07:51 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -209,7 +209,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
   /**
    * Prueft, ob das Objekt initialisiert ist.
-   * @return
+   * @return true, wenn es initialisiert ist.
    */
   private boolean isInitialized()
   {
@@ -370,9 +370,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * wird und dabei zwingend mit der ID der Ursprungs-Datenbank
    * angelegt werden muss.
    * @param id
-   * @throws RemoteException
    */
-  public final void setID(String id) throws RemoteException
+  public final void setID(String id)
   {
     this.id = id;
   }
@@ -395,8 +394,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     	// Aber vielleicht ist es ja der Primary-Key
     	if (fieldName.equalsIgnoreCase(getIDField()))
     		return getID();
-    	else
-				return null;
+
+      return null;
     }
 
     // wir checken erstmal, ob es sich um ein Objekt aus einer Fremdtabelle
@@ -771,9 +770,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * weil es typischerweise von DBIterator weiterverwendet wird und dort eventuell
    * noch weitere Filterkriterien hinzugefuegt werden koennen muessen.  
    * @return das erzeugte SQL-Statement.
-   * @throws RemoteException Wenn beim Erzeugen des Statements ein Fehler auftrat.
    */
-  protected String getListQuery() throws RemoteException
+  protected String getListQuery()
   {
     return "select " + getIDField() + " from " + getTableName();
   }
@@ -1080,6 +1078,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.25  2005/03/09 01:07:51  web0
+ * @D javadoc fixes
+ *
  * Revision 1.24  2004/12/09 23:22:25  willuhn
  * @N getAttributeNames nun Bestandteil der API
  *

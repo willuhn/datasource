@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/MyDriver.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/12/07 01:27:58 $
- * $Author: willuhn $
+ * $Revision: 1.2 $
+ * $Date: 2005/03/09 01:07:51 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -37,6 +37,7 @@ public class MyDriver implements Driver
   /**
    * ct.
    * @param driverClass
+   * @param loader
    * @throws Exception
    */
   public MyDriver(String driverClass, ClassLoader loader) throws Exception
@@ -98,6 +99,9 @@ public class MyDriver implements Driver
 
 /**********************************************************************
  * $Log: MyDriver.java,v $
+ * Revision 1.2  2005/03/09 01:07:51  web0
+ * @D javadoc fixes
+ *
  * Revision 1.1  2004/12/07 01:27:58  willuhn
  * @N Dummy Driver
  *
