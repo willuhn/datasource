@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.4 $
- * $Date: 2004/03/29 20:36:23 $
+ * $Revision: 1.5 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,7 +16,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObjectNode;
+import de.willuhn.datasource.rmi.GenericIterator;
+import de.willuhn.datasource.rmi.GenericObjectNode;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -30,7 +31,7 @@ import de.willuhn.util.ApplicationException;
  * befinden, muessen den Wert "0" im Feld fuer das Eltern-Objekt besitzen.
  * @author willuhn
  */
-public abstract class AbstractDBObjectNode extends AbstractDBObject implements DBObjectNode
+public abstract class AbstractDBObjectNode extends AbstractDBObject implements GenericObjectNode
 {
 
   /**
@@ -52,9 +53,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#getChilds()
+   * @see de.willuhn.datasource.rmi.GenericObjectNode#getChilds()
    */
-  public DBIterator getChilds() throws RemoteException
+  public GenericIterator getChilds() throws RemoteException
   {
     DBIterator list = getList();
     list.addFilter(getNodeField() + " = " + this.getID());
@@ -62,9 +63,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#getTopLevelList()
+   * @see de.willuhn.datasource.rmi.GenericObjectNode#getTopLevelList()
    */
-  public DBIterator getTopLevelList() throws RemoteException
+  public GenericIterator getTopLevelList() throws RemoteException
   {
     DBIterator list = getList();
     list.addFilter(getNodeField() + " = 0");
@@ -72,21 +73,21 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#hasChild(de.willuhn.datasource.rmi.DBObjectNode)
+   * @see de.willuhn.datasource.rmi.GenericObjectNode#hasChild(de.willuhn.datasource.rmi.GenericObjectNode)
    */
-  public boolean hasChild(DBObjectNode object) throws RemoteException
+  public boolean hasChild(GenericObjectNode object) throws RemoteException
   {
     if (object == null)
       return false;
 
-    DBIterator childs = this.getChilds();
+		GenericIterator childs = this.getChilds();
     int count = 1;
-    DBObjectNode child = null;
+		GenericObjectNode child = null;
     while (childs.hasNext())
     {
       count++;
       if (count > 100) return false; // limit recursion
-      child = (DBObjectNode) childs.next();
+      child = (GenericObjectNode) childs.next();
       if (child.hasChild(object))
         return true;
     }
@@ -94,30 +95,30 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#getParent()
+   * @see de.willuhn.datasource.rmi.GenericObjectNode#getParent()
    */
-  public DBObjectNode getParent() throws RemoteException
+  public GenericObjectNode getParent() throws RemoteException
   {
     DBIterator list = getList();
-    list.addFilter(getIDField() + "=" + this.getField(this.getNodeField()));
+    list.addFilter(getIDField() + "=" + this.getAttribute(this.getNodeField()));
     if (!list.hasNext())
       return null;
-    return (DBObjectNode) list.next();
+    return (GenericObjectNode) list.next();
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#getPossibleParents()
+   * @see de.willuhn.datasource.rmi.GenericObjectNode#getPossibleParents()
    */
-  public DBIterator getPossibleParents() throws RemoteException
+  public GenericIterator getPossibleParents() throws RemoteException
   {
     DBIterator list = this.getList();
     list.addFilter(getIDField() + " != "+this.getID()); // an object cannot have itself as parent
     ArrayList array = new ArrayList();
 
-    DBObjectNode element = null;
+		GenericObjectNode element = null;
     while (list.hasNext())
     {
-      element = (DBObjectNode) list.next();
+      element = (GenericObjectNode) list.next();
 
       if (!this.hasChild(element)) {
         // only objects which are not childs of this can be possible parents
@@ -128,13 +129,13 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#getPath()
+   * @see de.willuhn.datasource.rmi.GenericObjectNode#getPath()
    */
-  public DBIterator getPath() throws RemoteException
+  public GenericIterator getPath() throws RemoteException
   {
     ArrayList objectArray = new ArrayList();
     boolean reached = false;
-    DBObjectNode currentObject = this.getParent();
+		GenericObjectNode currentObject = this.getParent();
 
     if (currentObject == null) {
       // keine Eltern-Objekte. Also liefern wir eine leere Liste.
@@ -142,7 +143,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     }
     objectArray.add(currentObject.getID());
 
-    DBObjectNode object = null;
+		GenericObjectNode object = null;
     while (!reached) {
       object = currentObject.getParent();
       if (object != null) {
@@ -167,7 +168,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   protected void deleteCheck() throws ApplicationException
   {
     try {
-      DBIterator list = getChilds();
+			GenericIterator list = getChilds();
       if (list.hasNext())
         throw new ApplicationException("Objekt kann nicht gelöscht werden da Abhängigkeiten existieren.");
     }
@@ -180,6 +181,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.5  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.4  2004/03/29 20:36:23  willuhn
  * *** empty log message ***
  *

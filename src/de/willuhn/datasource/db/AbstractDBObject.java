@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.6 $
- * $Date: 2004/06/10 20:22:40 $
+ * $Revision: 1.7 $
+ * $Date: 2004/06/17 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import java.util.Set;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.GenericObject;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -314,7 +315,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getID()
+   * @see de.willuhn.datasource.rmi.GenericObject#getID()
    */
   public final String getID() throws RemoteException
   {
@@ -336,9 +337,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getField(java.lang.String)
+   * @see de.willuhn.datasource.rmi.GenericObject#getAttribute(java.lang.String)
    */
-  public Object getField(String fieldName) throws RemoteException
+  public Object getAttribute(String fieldName) throws RemoteException
   {
     if (!isInitialized())
       throw new RemoteException("object not initialized.");
@@ -363,7 +364,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       else {
         try
         {
-          cachedObject = service.createObject(foreign,o.toString());
+          cachedObject = (DBObject) service.createObject(foreign,o.toString());
 					foreignObjectCache.put(foreign,cachedObject);
         }
         catch (Exception e)
@@ -767,9 +768,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   protected abstract String getTableName();
 
   /**
-   * @see de.willuhn.datasource.rmi.DBObject#getPrimaryField()
+   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
    */
-  public abstract String getPrimaryField() throws RemoteException;
+  public abstract String getPrimaryAttribute() throws RemoteException;
 
   /**
    * Diese Methode wird intern vor der Ausfuehrung von delete()
@@ -897,13 +898,13 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (foreign != null)
       {
         // Fremdschluessel. Also ID holen
-        DBObject fObject = (DBObject) object.getField(fields[i]);
+        DBObject fObject = (DBObject) object.getAttribute(fields[i]);
         if (fObject == null)
           continue;
         setField(fields[i],fObject.getID());
       }
       else {
-        setField(fields[i],object.getField(fields[i]));
+        setField(fields[i],object.getAttribute(fields[i]));
       }
     }
   }
@@ -911,11 +912,19 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   /**
    * @see de.willuhn.datasource.rmi.DBObject#equals(de.willuhn.datasource.rmi.DBObject)
    */
-  public boolean equals(DBObject o) throws RemoteException
+  public boolean equals(GenericObject other) throws RemoteException
   {
-    if (o == null)
+    if (other == null)
       return false;
 
+		DBObject o = null;
+		try {
+			o = (DBObject) other;
+		}
+		catch (ClassCastException e)
+		{
+			return false;
+		}
     String id        = o.getID();
     String className = o.getClass().getName();
 
@@ -930,6 +939,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.7  2004/06/17 00:05:51  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.6  2004/06/10 20:22:40  willuhn
  * @D javadoc comments fixed
  *

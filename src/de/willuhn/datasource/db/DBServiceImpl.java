@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/05/04 23:05:25 $
+ * $Revision: 1.10 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,7 @@ import de.willuhn.datasource.common.AbstractService;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.GenericObject;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
@@ -80,7 +81,7 @@ public class DBServiceImpl extends AbstractService implements DBService
       throw new RemoteException("server shut down. service no longer available.");
 
     try {
-      log.info("opening db connection. request from host: " + getClientHost());
+      getLogger().info("opening db connection. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
     
@@ -92,7 +93,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 		}
 		catch (ClassNotFoundException e2)
 		{
-			log.error("unable to load jb driver " + driverClass,e2);
+			getLogger().error("unable to load jb driver " + driverClass,e2);
 			throw new RemoteException("unable to load jdbc driver " + driverClass,e2);
 		}
 
@@ -102,7 +103,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 		}
 		catch (SQLException e2)
 		{
-			log.error("connection to database " + jdbcUrl + " failed",e2);
+			getLogger().error("connection to database " + jdbcUrl + " failed",e2);
 			throw new RemoteException("connection to database." + jdbcUrl + " failed",e2);
 		}
   }
@@ -117,7 +118,7 @@ public class DBServiceImpl extends AbstractService implements DBService
       return;
 
     try {
-			log.info("closing db connection. request from host: " + getClientHost());
+			getLogger().info("closing db connection. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -127,11 +128,11 @@ public class DBServiceImpl extends AbstractService implements DBService
     }
     catch (NullPointerException ne)
 		{
-			log.info("  allready closed");
+			getLogger().info("  allready closed");
 		}
     catch (SQLException e)
     {
-			log.error("  unable to close database connection",e);
+			getLogger().error("  unable to close database connection",e);
       throw new RemoteException("  unable to close database connection",e);
     }
   }
@@ -145,7 +146,7 @@ public class DBServiceImpl extends AbstractService implements DBService
    */
   private DBObject create(Class c) throws Exception
   {
-    Class[] found = classLoader.getClassFinder().findImplementors(c);
+    Class[] found = getClassLoder().getClassFinder().findImplementors(c);
     Class clazz = found[found.length-1]; // wir nehmen das letzte Element. Das ist am naehesten dran.
     Constructor ct = clazz.getConstructor(new Class[]{});
     ct.setAccessible(true);
@@ -157,23 +158,23 @@ public class DBServiceImpl extends AbstractService implements DBService
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBService#createObject(java.lang.Class, java.lang.String)
+   * @see de.willuhn.datasource.rmi.Service#createObject(java.lang.Class, java.lang.String)
    */
-  public DBObject createObject(Class c, String id) throws RemoteException
+  public GenericObject createObject(Class c, String identifier) throws RemoteException
   {
     try {
-      log.debug("try to create new DBObject. request from host: " + getClientHost());
+			getLogger().debug("try to create new DBObject. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
     try {
       DBObject o = create(c);
-      o.load(id);
+      o.load(identifier);
       return o;
     }
     catch (Exception e)
     {
-      log.error("unable to create object " + (c == null ? "unknown" : c.getName()),e);
+			getLogger().error("unable to create object " + (c == null ? "unknown" : c.getName()),e);
       throw new RemoteException("unable to create object " + (c == null ? "unknown" : c.getName()),e);
     }
   }
@@ -184,7 +185,7 @@ public class DBServiceImpl extends AbstractService implements DBService
   public DBIterator createList(Class c) throws RemoteException
 	{
     try {
-      log.debug("try to create new DBIterator. request from host: " + getClientHost());
+			getLogger().debug("try to create new DBIterator. request from host: " + getClientHost());
     }
     catch (ServerNotActiveException soe) {}
 
@@ -194,7 +195,7 @@ public class DBServiceImpl extends AbstractService implements DBService
 		}
 		catch (Exception e)
 		{
-			log.error("unable to create list for object " + c.getName(),e);
+			getLogger().error("unable to create list for object " + c.getName(),e);
 			throw new RemoteException("unable to create list for object " + c.getName(),e);
 		}
 	}
@@ -218,7 +219,7 @@ public class DBServiceImpl extends AbstractService implements DBService
     close();
     
     // print chache stats
-    log.debug("object cache matches: " + ObjectMetaCache.getStats() + " %");
+		getLogger().debug("object cache matches: " + ObjectMetaCache.getStats() + " %");
   }
 
 
@@ -232,13 +233,13 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 		Statement stmt = null;
     try {
-      log.debug("sending ping to database");
+			getLogger().debug("sending ping to database");
       stmt = conn.createStatement();
       boolean b = stmt.execute("select 1");
       if (b)
-        log.debug("ok");
+				getLogger().debug("ok");
       else
-        log.debug("failed");
+				getLogger().debug("failed");
       stmt.close();
       return b;
     }
@@ -255,6 +256,9 @@ public class DBServiceImpl extends AbstractService implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.10  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.9  2004/05/04 23:05:25  willuhn
  * *** empty log message ***
  *

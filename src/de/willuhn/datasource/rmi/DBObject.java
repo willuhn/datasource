@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/04/05 23:28:30 $
+ * $Revision: 1.4 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,17 +12,14 @@
  **********************************************************************/
 package de.willuhn.datasource.rmi;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import de.willuhn.util.ApplicationException;
 
 /**
- * Basis-Interface fuer alle Business-Objekte.
- * Erweitert java.rmi.Remote. Somit sind diese RMI-faehig.
- * @author willuhn
+ * Erweiterung des GenericObjects um Datenbank-Funktionalitaet.
  */
-public interface DBObject extends Remote
+public interface DBObject extends GenericObject
 {
 
   /**
@@ -121,15 +118,8 @@ public interface DBObject extends Remote
    */
   public void clear() throws RemoteException;
 
-	/**
-	 * Liefert die ID des Objektes oder null bei neuen Objekten.
-	 * @return die ID des Objektes oder null.
-	 * @throws RemoteException im Fehlerfall.
-	 */
-	public String getID() throws RemoteException;
-	
   /**
-   * Liefert den Wert des angegebenen Feldes.
+   * Liefert den Wert des angegebenen Attributes.
    * Aber die Funktion ist richtig schlau ;)
    * Sie checkt naemlich den Typ des Feldes in der Datenbank und
    * liefert nicht nur einen String sondern den korrespondierenden
@@ -140,8 +130,9 @@ public interface DBObject extends Remote
    * @param name Name des Feldes.
    * @return Wert des Feldes.
    * @throws RemoteException im Fehlerfall.
+   * @see de.willuhn.datasource.rmi.GenericObject#getAttribute(java.lang.String)
    */
-  public Object getField(String name) throws RemoteException;
+  public Object getAttribute(String name) throws RemoteException;
 
   /**
    * Liefert den Feldtyp des uebergebenen Feldes.
@@ -160,14 +151,9 @@ public interface DBObject extends Remote
 	public boolean isNewObject() throws RemoteException;
 
   /**
-   * Liefert den Namen des Primaer-Feldes dieses Objektes.
-   * Hintergrund: Wenn man z.Bsp. in einer Select-Box nur einen Wert
-   * anzeigen kann, dann wird dieser genommen.
-   * Achtung: Die Funktion liefert nicht den Wert des Feldes sondern nur dessen Namen.
-   * @return Name des Primaer-Feldes.
-   * @throws RemoteException im Fehlerfall.
+   * @see de.willuhn.datasource.rmi.GenericObject#getPrimaryAttribute()
    */
-  public String getPrimaryField() throws RemoteException;
+  public String getPrimaryAttribute() throws RemoteException;
 
   /**
    * Ueberschreibt dieses Objekt mit den Eigenschaften des uebergebenen.
@@ -189,17 +175,19 @@ public interface DBObject extends Remote
   /**
    * Vergleicht dieses Objekt mit dem uebergebenen.
    * Hinweis: Es wird nicht der Inhalt verglichen sondern nur die ID und der Typ.
-   * Achtung: Wir ueberschreiben hier nicht die equals-Funktion von <code>Object</code>
-   * da das via RMI nicht geht.
-   * @param o das zu vergleichende Objekt.
+   * @param other das zu vergleichende Objekt.
    * @return true, wenn sie vom gleichen Typ sind und die selbe ID haben.
    * @throws RemoteException
+   * @see de.willuhn.datasource.rmi.GenericObject#equals(de.willuhn.datasource.rmi.GenericObject)
    */
-  public boolean equals(DBObject o) throws RemoteException;
+  public boolean equals(GenericObject other) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.4  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.3  2004/04/05 23:28:30  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/06 18:24:34 $
+ * $Revision: 1.3 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -12,14 +12,14 @@
  **********************************************************************/
 package de.willuhn.datasource.rmi;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  * Iterator fuer Datenbanktabellen auf Objekt-Ebene.
  * @author willuhn
  */
-public interface DBIterator extends Remote {
+public interface DBIterator extends GenericIterator
+{
 
 
   /**
@@ -40,54 +40,15 @@ public interface DBIterator extends Remote {
    * @throws RemoteException
    */
   public void setOrder(String order) throws RemoteException;
-	/**
-	 * Liefert true, wenn weitere Elemente in diesem Iterator existieren.
-	 * @return true, wenn weitere Elemente vorhanden sind.
-	 * @throws RemoteException
-	 */
-	public boolean hasNext() throws RemoteException;
-
-	/**
-	 * Liefert das aktuelle Element der Iteration und blaettert um ein Element weiter.
-	 * @return aktuelles Element.
-	 * @throws RemoteException
-	 */
-	public DBObject next() throws RemoteException;
-
-  /**
-   * Liefert das aktuelle Element der Iteration und blaetter um ein Element zurueck.
-   * @return aktuelles Element.
-   * @throws RemoteException
-   */
-  public DBObject previous() throws RemoteException;
-
-  /**
-   * Blaettert den Iterator wieder an den Anfang zurueck. Somit kann er erneut
-   * durchlaufen werden.
-   * @throws RemoteException
-   */
-  public void begin() throws RemoteException;
-
-  /**
-   * Liefert die Anzahl der Elemente dieses Iterators.
-   * @return Anzahl der Elemente in dem Iterator.
-   * @throws RemoteException
-   */
-  public int size() throws RemoteException;
-
-  /**
-   * Prueft, ob das uebergebene Objekt in der aktuellen Liste vorhanden ist.
-   * @param o das zu pruefende Objekt.
-   * @return null wenn kein Objekt uebereinstimmt, andernfalls das ueberinstimmende Objekt aus dieser Liste.
-   * @throws RemoteException
-   */
-  public DBObject contains(DBObject o) throws RemoteException;
 
 }
 
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
+ * Revision 1.3  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.2  2004/03/06 18:24:34  willuhn
  * @D javadoc
  *

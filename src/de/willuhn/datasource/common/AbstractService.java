@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/common/Attic/AbstractService.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/03/18 01:24:17 $
+ * $Revision: 1.3 $
+ * $Date: 2004/06/17 00:05:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -29,9 +29,9 @@ public abstract class AbstractService
   implements Service
 {
 
-	protected Logger log = null;
-	protected MultipleClassLoader classLoader = null;
-	protected HashMap initParams = null;
+	private Logger log = null;
+	private MultipleClassLoader classLoader = null;
+	private HashMap initParams = null;
 
   /**
    * ct.
@@ -42,19 +42,41 @@ public abstract class AbstractService
   {
     super();
 		this.initParams = initParams;
-		this.log = new Logger("DBService");
+
+		// Wir definieren erstmal nen Default-Logger
+		this.log = new Logger("Service");
 		this.log.addTarget(System.out);
+		
+		// und nen Default-ClassLoader
+		this.classLoader = new MultipleClassLoader();
   }
   
-  /**
-   * ct.
-   * From UnicastRemoteObject.
-   * @throws RemoteException
+	/**
+	 * Liefert den Logger.
+   * @return Logger.
    */
-  protected AbstractService() throws RemoteException
-  {
-  	super();
-  }
+  protected Logger getLogger()
+	{
+		return log;
+	}
+
+	/**
+	 * Liefert den ClassLoader.
+   * @return ClassLoader.
+   */
+	protected MultipleClassLoader getClassLoder()
+	{
+		return classLoader;
+	}
+	
+	/**
+	 * Liefert die Init-Params.
+   * @return Init-Params.
+   */
+	protected HashMap getInitParams()
+	{
+		return initParams;
+	}
 
   /**
    * @see de.willuhn.datasource.rmi.Service#setLogger(de.willuhn.util.Logger)
@@ -78,6 +100,9 @@ public abstract class AbstractService
 
 /**********************************************************************
  * $Log: AbstractService.java,v $
+ * Revision 1.3  2004/06/17 00:05:51  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.2  2004/03/18 01:24:17  willuhn
  * @C refactoring
  *

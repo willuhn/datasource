@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/ServiceData.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/02/11 00:10:55 $
+ * $Revision: 1.3 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -10,6 +10,9 @@ package de.willuhn.datasource.rmi;
 
 /**
  * Bildet einen Datencontainer fuer die Konfiguration eines Services.
+ * Eine Implementierung dieses Interfaces ist nicht notwendig, vereinfacht
+ * jedoch das Handling der Initialisierungs-Parameter beim Erzeugen
+ * von Services durch eine Factory.
  */
 public interface ServiceData {
 
@@ -67,6 +70,9 @@ public interface ServiceData {
 
 /*********************************************************************
  * $Log: ServiceData.java,v $
+ * Revision 1.3  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.2  2004/02/11 00:10:55  willuhn
  * *** empty log message ***
  *

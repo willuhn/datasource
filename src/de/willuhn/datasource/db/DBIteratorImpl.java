@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.8 $
- * $Date: 2004/06/10 20:22:40 $
+ * $Revision: 1.9 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.GenericObject;
 
 /**
  * @author willuhn
@@ -75,7 +76,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     try {
       for (int i=0;i<list.size();++i)
       {
-        DBObject o = service.createObject(object.getClass(),(String)list.get(i));
+        DBObject o = (DBObject) service.createObject(object.getClass(),(String)list.get(i));
         this.list.add(o);
       }
     }
@@ -164,7 +165,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 			rs = stmt.executeQuery(sql);
 			while (rs.next())
 			{
-        DBObject o = service.createObject(object.getClass(),rs.getString(object.getIDField()));
+        DBObject o = (DBObject) service.createObject(object.getClass(),rs.getString(object.getIDField()));
 				list.add(o);
 			}
       this.initialized = true;
@@ -182,7 +183,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
 
   /**
-   * @see de.willuhn.datasource.rmi.DBIterator#hasNext()
+   * @see de.willuhn.datasource.rmi.GenericIterator#hasNext()
    */
   public boolean hasNext() throws RemoteException
 	{
@@ -191,13 +192,13 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
 
   /**
-   * @see de.willuhn.datasource.rmi.DBIterator#next()
+   * @see de.willuhn.datasource.rmi.GenericIterator#next()
    */
-  public DBObject next() throws RemoteException
+  public GenericObject next() throws RemoteException
 	{
     if (!initialized) init();
     try {
-      return (DBObject) list.get(index++);
+      return (GenericObject) list.get(index++);
     }
     catch (Exception e)
     {
@@ -206,13 +207,13 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 	}
   
   /**
-   * @see de.willuhn.datasource.rmi.DBIterator#previous()
+   * @see de.willuhn.datasource.rmi.GenericIterator#previous()
    */
-  public DBObject previous() throws RemoteException
+  public GenericObject previous() throws RemoteException
   {
     if (!initialized) init();
     try {
-      return (DBObject) list.get(index--);
+      return (GenericObject) list.get(index--);
     }
     catch (Exception e)
     {
@@ -221,7 +222,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBIterator#size()
+   * @see de.willuhn.datasource.rmi.GenericIterator#size()
    */
   public int size() throws RemoteException
   {
@@ -230,7 +231,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBIterator#begin()
+   * @see de.willuhn.datasource.rmi.GenericIterator#begin()
    */
   public void begin() throws RemoteException
   {
@@ -238,23 +239,23 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
-   * @see de.willuhn.datasource.rmi.DBIterator#contains(de.willuhn.datasource.rmi.DBObject)
+   * @see de.willuhn.datasource.rmi.GenericIterator#contains(de.willuhn.datasource.rmi.GenericObject)
    */
-  public DBObject contains(DBObject o) throws RemoteException
+  public GenericObject contains(GenericObject other) throws RemoteException
   {
     if (!initialized) init();
 
-    if (o == null)
+    if (other == null)
       return null;
 
-    if (!o.getClass().equals(object.getClass()))
+    if (!other.getClass().equals(object.getClass()))
       return null; // wir koennen uns die Iteration sparen.
 
-    DBObject object = null;
+    GenericObject object = null;
     for (int i=0;i<list.size();++i)
     {
-      object = (DBObject) list.get(i);
-      if (object.equals(o))
+      object = (GenericObject) list.get(i);
+      if (object.equals(other))
         return object;
     }
     
@@ -275,6 +276,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.9  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.8  2004/06/10 20:22:40  willuhn
  * @D javadoc comments fixed
  *

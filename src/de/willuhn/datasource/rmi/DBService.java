@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/03/19 19:25:11 $
+ * $Revision: 1.6 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -21,18 +21,6 @@ import java.sql.Connection;
  */
 public interface DBService extends Service
 {
-
- 
-  /**
-   * Erzeugt ein neues Business-Objekt des angegebenen Typs.
-   * @param clazz Name der Klasse des zu erzeugenden Objektes.
-   * @param id ID des Objektes. Kann null sein, wenn ein neues Objekt
-   * erzeugt werden soll. Andernfalls wird das mit der genannten ID geladen.
-   * @return Das erzeugte Objekt
-   * @throws RemoteException
-   */
-  public DBObject createObject(Class clazz, String id) throws RemoteException;
-
 
 	/**
    * Liefert eine Liste aller in der Datenbank vorhandenen Objekte des angegebenen Typs,
@@ -62,6 +50,9 @@ public interface DBService extends Service
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.6  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.5  2004/03/19 19:25:11  willuhn
  * *** empty log message ***
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Attic/Service.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/03/18 01:24:17 $
+ * $Revision: 1.4 $
+ * $Date: 2004/06/17 00:05:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,9 +37,20 @@ public interface Service extends Remote
    */
   public void close() throws RemoteException;
 
+	/**
+	 * Erzeugt ein neues Objekt des angegebenen Typs.
+	 * @param clazz Name der Klasse des zu erzeugenden Objektes.
+	 * @param identifier der eindeutige Identifier des Objektes.
+	 * Kann null sein, wenn ein neues Objekt erzeugt werden soll.
+	 * Andernfalls wird das mit dem genannten Identifier geladen.
+	 * @return Das erzeugte Objekt
+	 * @throws RemoteException
+	 */
+	public GenericObject createObject(Class clazz, String identifier) throws RemoteException;
+
   /**
    * Prueft, ob dieser Service auf dem Server noch verfuegbar ist.
-   * Wenn diese Funktion true liefert, kann der Service auch via open()
+   * Wenn diese Funktion false liefert, kann der Service auch via open()
    * nicht mehr geoeffnet werden. Heisst: Der Service ist nicht
    * nur geschlossen worden sondern der gesamte Server ist heruntergefahren
    * worden.
@@ -55,30 +66,32 @@ public interface Service extends Remote
    * @throws RemoteException
    */
   public void shutDown() throws RemoteException;
-  
-  /**
+
+
+	/**
 	 * Definiert den zu verwendenden Logger.
 	 * @param l der Logger.
-   * @throws RemoteException
+	 * @throws RemoteException
 	 */
 	public void setLogger(Logger l) throws RemoteException;
 
 	/**
 	 * Definiert den zu verwendenden ClassLoader.
-	 * Die Funktion ist ein Zugestaendnis an die Plugin-Funktionalitaet
-	 * von Jameica. Da dort Jars zur Laufzeit geladen und zum Classpath
-	 * hinzugefuegt werden und der Service (momentan nur DBService)
-	 * die Fach-Klassen kennen muss, fuer die er die Daten aus der
-	 * Datenbank lesen soll, braucht er einen Classloader, der auch
-	 * die Klassen der Plugins kennt.
-   * @param loader
-   * @throws RemoteException
-   */
-  public void setClassLoader(MultipleClassLoader loader) throws RemoteException;
+	 * Ist genau der ClassLoader, welchen der Service fuer die Erzeugung von Object
+	 * via createObject verwendet soll. Wird keiner definiert, wird
+	 * der Service den SystemClassLoader verwenden. 
+	 * @param loader der ClassLoader.
+	 * @throws RemoteException
+	 */
+	public void setClassLoader(MultipleClassLoader loader) throws RemoteException;
+  
 }
 
 /*********************************************************************
  * $Log: Service.java,v $
+ * Revision 1.4  2004/06/17 00:05:50  willuhn
+ * @N GenericObject, GenericIterator
+ *
  * Revision 1.3  2004/03/18 01:24:17  willuhn
  * @C refactoring
  *
