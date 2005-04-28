@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/ObjectMetaCache.java,v $
- * $Revision: 1.3 $
- * $Date: 2005/04/28 15:44:09 $
+ * $Revision: 1.4 $
+ * $Date: 2005/04/28 21:28:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@ package de.willuhn.datasource.db;
 
 import java.util.HashMap;
 
+import de.willuhn.logging.Logger;
 import de.willuhn.util.Session;
 
 /**
@@ -46,6 +47,13 @@ public class ObjectMetaCache
    */
   static HashMap getMetaData(Class clazz)
   {
+    if (all == 10000l)
+    {
+      // Nach 100.000 Aufrufen geben wir die Stats aus.
+      Logger.info("[object meta cache stats] requests: " + all + ", matches: " + found + " [" + getStats() + "%]");
+      found = 0;
+      all = 0;
+    }
     ++all;
     HashMap m = (HashMap) metaCache.get(clazz);
     if (m != null) ++found;
@@ -70,12 +78,16 @@ public class ObjectMetaCache
   public static int getStats()
   {
     if (found == 0 || all == 0) return 0;
-    return (int) ((100 * found) / all);
+    int stats = (int) ((100 * found) / all);
+    return stats;
   }
 }
 
 /*********************************************************************
  * $Log: ObjectMetaCache.java,v $
+ * Revision 1.4  2005/04/28 21:28:48  web0
+ * *** empty log message ***
+ *
  * Revision 1.3  2005/04/28 15:44:09  web0
  * *** empty log message ***
  *
