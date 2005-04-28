@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/ObjectMetaCache.java,v $
- * $Revision: 1.2 $
- * $Date: 2005/03/09 01:07:51 $
+ * $Revision: 1.3 $
+ * $Date: 2005/04/28 15:44:09 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,6 +13,8 @@
 package de.willuhn.datasource.db;
 
 import java.util.HashMap;
+
+import de.willuhn.util.Session;
 
 /**
  * Diese Klasse ist (wie der Name schon sagt ;) ein Cache.
@@ -32,7 +34,7 @@ import java.util.HashMap;
 public class ObjectMetaCache
 {
 
-  private static HashMap metaCache = new HashMap();
+  private static Session metaCache = new Session(1000l * 60 * 60 * 2); // 2 Stunden Timeout
   
   private static long found = 0;
   private static long all = 0;
@@ -74,6 +76,9 @@ public class ObjectMetaCache
 
 /*********************************************************************
  * $Log: ObjectMetaCache.java,v $
+ * Revision 1.3  2005/04/28 15:44:09  web0
+ * *** empty log message ***
+ *
  * Revision 1.2  2005/03/09 01:07:51  web0
  * @D javadoc fixes
  *
