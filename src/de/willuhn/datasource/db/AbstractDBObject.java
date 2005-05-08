@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/03/09 01:07:51 $
+ * $Revision: 1.26 $
+ * $Date: 2005/05/08 17:45:32 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   // Haelt die Eigenschaften des Objektes.
   private HashMap properties = new HashMap();
   
+  // Backup der Eigenschaften des Objektes, um Aenderungen zu ueberwachen
+  private HashMap origProperties = new HashMap();
+
   // Haelt die Datentypen der Properties.
   private HashMap types      = new HashMap();
 
@@ -254,6 +257,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 			{
 				setAttribute(attributes[i],data.getObject(attributes[i]));
 			}
+      // Jetzt kopieren wir noch die Eigenschaften in die Backup-Tabelle um Aenderungen ueberwachen zu koennen
+      this.origProperties.putAll(this.properties);
 		}
 		catch (SQLException e)
 		{
@@ -447,6 +452,16 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     {
       throw new RemoteException("unable to determine filed type of attribute " + attributeName);
     }
+  }
+
+  /**
+   * Prueft, ob das Objekt seit dem Laden geaendert wurde.
+   * @return true, wenn es geaendert wurde.
+   * @throws RemoteException
+   */
+  protected boolean hasChanged() throws RemoteException
+  {
+    return !this.properties.equals(this.origProperties);
   }
 
   /**
@@ -1078,6 +1093,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.26  2005/05/08 17:45:32  web0
+ * @N AbstractDBObject#hasChanged
+ *
  * Revision 1.25  2005/03/09 01:07:51  web0
  * @D javadoc fixes
  *
