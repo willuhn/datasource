@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.26 $
- * $Date: 2005/05/08 17:45:32 $
+ * $Revision: 1.27 $
+ * $Date: 2005/05/30 22:03:09 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -892,7 +892,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * das Objekt daher nicht gelöscht werden kann.
    * @throws ApplicationException wenn das Objekt nicht gelöscht werden darf.
    */
-  protected abstract void deleteCheck() throws ApplicationException;
+  protected void deleteCheck() throws ApplicationException
+  {
+  }
 
   /**
    * Diese Methode wird intern vor der Ausfuehrung von insert()
@@ -901,7 +903,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Z.Bsp. ob alle Pflichtfelder ausgefüllt sind und korrekte Werte enthalten.
    * @throws ApplicationException wenn das Objekt nicht gespeichert werden darf.
    */
-  protected abstract void insertCheck() throws ApplicationException;
+  protected void insertCheck() throws ApplicationException
+  {
+  }
 
   /**
    * Diese Methode wird intern vor der Ausfuehrung von update()
@@ -910,7 +914,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Z.Bsp. ob alle Pflichtfelder ausgefüllt sind und korrekte Werte enthalten.
    * @throws ApplicationException wenn das Objekt nicht gespeichert werden darf.
    */
-  protected abstract void updateCheck() throws ApplicationException;
+  protected void updateCheck() throws ApplicationException
+  {
+  }
 
   /**
    * Prueft, ob das angegebene Feld ein Fremschluessel zu einer
@@ -920,7 +926,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * @return Klasse (abgeleitet von DBObject) welche den Fremdschluessel abbildet oder null. 
    * @throws RemoteException im Fehlerfall.
    */
-  protected abstract Class getForeignObject(String field) throws RemoteException;
+  protected Class getForeignObject(String field) throws RemoteException
+  {
+    return null;
+  }
   
   /**
    * @see de.willuhn.datasource.rmi.DBObject#transactionBegin()
@@ -1093,6 +1102,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.27  2005/05/30 22:03:09  web0
+ * @C some methods are no longer abstract
+ *
  * Revision 1.26  2005/05/08 17:45:32  web0
  * @N AbstractDBObject#hasChanged
  *
