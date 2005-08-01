@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/05/30 22:03:09 $
+ * $Revision: 1.28 $
+ * $Date: 2005/08/01 11:27:37 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -457,13 +457,30 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   /**
    * Prueft, ob das Objekt seit dem Laden geaendert wurde.
    * @return true, wenn es geaendert wurde.
-   * @throws RemoteException
    */
-  protected boolean hasChanged() throws RemoteException
+  protected boolean hasChanged()
   {
     return !this.properties.equals(this.origProperties);
   }
 
+  /**
+   * Prueft, ob sich der Wert des genannten Attributs seit dem Laden geaendert hat.
+   * @param attribute Name des Attributes.
+   * @return true, wenn es sich geaendert hat.
+   */
+  protected boolean hasChanged(String attribute)
+  {
+    Object o = this.origProperties.get(attribute);
+    Object n = this.properties.get(attribute);
+    if ((o == null && n != null) || (o != null && n == null))
+      return true; // einer der beiden Werte ist jetzt null.
+
+    if (o == null && n == null)
+      return false; // immer noch leer
+
+    return !o.equals(n);
+  }
+  
   /**
    * Speichert einen neuen Wert in den Properties
    * und liefert den vorherigen zurueck.
@@ -653,6 +670,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     {
 			if (attributes[i].equalsIgnoreCase(this.getIDField()))
 				continue; // skip the id field
+      if (!hasChanged(attributes[i]))
+        continue; // wurde nicht geaendert
       sql += attributes[i] + "=?,";
     }
     sql = sql.substring(0,sql.length()-1); // remove last ","
@@ -667,6 +686,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       PreparedStatement stmt = getConnection().prepareStatement(sql);
       for (int i=0;i<attributes.length;++i)
       {
+        if (attributes[i].equalsIgnoreCase(this.getIDField()))
+          continue; // skip the id field
+        if (!hasChanged(attributes[i]))
+          continue; // wurde nicht geaendert
         String type  = (String) types.get(attributes[i]);
         Object value = properties.get(attributes[i]);
         setStmtValue(stmt,i,type,value);
@@ -1102,6 +1125,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.28  2005/08/01 11:27:37  web0
+ * @N unchanged properties will now be ignored on update statements
+ *
  * Revision 1.27  2005/05/30 22:03:09  web0
  * @C some methods are no longer abstract
  *
