@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.28 $
- * $Date: 2005/08/01 11:27:37 $
+ * $Revision: 1.29 $
+ * $Date: 2005/08/01 11:47:26 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -620,6 +620,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     int affected = 0;
     try {
 			stmt = getUpdateSQL();
+      if (stmt == null)
+        return;
       affected = stmt.executeUpdate();
       if (affected != 1)
       {
@@ -629,6 +631,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (!this.inTransaction)
         getConnection().commit();
       notify(storeListeners);
+      this.origProperties.putAll(this.properties);
     }
     catch (SQLException e)
     {
@@ -646,7 +649,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
 		finally {
 			try {
-				stmt.close();
+        if (stmt != null)
+          stmt.close();
 			} catch (SQLException se) {/*useless*/}
 		}
     
@@ -655,7 +659,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   /**
    * Liefert das automatisch erzeugte SQL-Statement fuer ein Update.
    * Kann bei Bedarf überschrieben um ein vom dynamisch erzeugten
-   * abweichendes Statement für die Speicherung zu verwenden.  
+   * abweichendes Statement für die Speicherung zu verwenden.
+   * Die Funktion darf <null> zurueckliefern, wenn nichts zu aendern ist.  
    * @return das erzeugte SQL-Statement.
    * @throws RemoteException wenn beim Erzugen des Statements ein Fehler auftrat.
    */
@@ -666,6 +671,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     String sql = "update " + getTableName() + " set ";
     String[] attributes = getAttributeNames();
 
+    int count = 0;
     for (int i=0;i<attributes.length;++i)
     {
 			if (attributes[i].equalsIgnoreCase(this.getIDField()))
@@ -673,6 +679,12 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (!hasChanged(attributes[i]))
         continue; // wurde nicht geaendert
       sql += attributes[i] + "=?,";
+      count++;
+    }
+    if (count == 0)
+    {
+      Logger.info("nothing changed in this object, skipping update");
+      return null;
     }
     sql = sql.substring(0,sql.length()-1); // remove last ","
     try {
@@ -684,6 +696,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     try {
       PreparedStatement stmt = getConnection().prepareStatement(sql);
+      count = 0;
       for (int i=0;i<attributes.length;++i)
       {
         if (attributes[i].equalsIgnoreCase(this.getIDField()))
@@ -692,7 +705,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
           continue; // wurde nicht geaendert
         String type  = (String) types.get(attributes[i]);
         Object value = properties.get(attributes[i]);
-        setStmtValue(stmt,i,type,value);
+        setStmtValue(stmt,count++,type,value);
       }
 			Logger.debug("executing sql statement: " + stmt.toString());
       return stmt;
@@ -1125,6 +1138,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.29  2005/08/01 11:47:26  web0
+ * @N unchanged properties will now be ignored on update statements
+ *
  * Revision 1.28  2005/08/01 11:27:37  web0
  * @N unchanged properties will now be ignored on update statements
  *
