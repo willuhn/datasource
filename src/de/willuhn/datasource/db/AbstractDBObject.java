@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.29 $
- * $Date: 2005/08/01 11:47:26 $
+ * $Revision: 1.30 $
+ * $Date: 2005/08/22 22:54:15 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -409,7 +409,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     Class foreign = getForeignObject(fieldName);
     if (foreign != null)
     {
-      DBObject cachedObject = (DBObject) foreignObjectCache.get(foreign);
+      DBObject cachedObject = (DBObject) foreignObjectCache.get(foreign.getName() + fieldName);
       if (cachedObject != null)
       {
         String value = o.toString();
@@ -420,7 +420,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         try
         {
           cachedObject = (DBObject) service.createObject(foreign,o.toString());
-					foreignObjectCache.put(foreign,cachedObject);
+					foreignObjectCache.put(foreign.getName() + fieldName,cachedObject);
         }
         catch (RemoteException re)
         {
@@ -1138,6 +1138,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.30  2005/08/22 22:54:15  web0
+ * *** empty log message ***
+ *
  * Revision 1.29  2005/08/01 11:47:26  web0
  * @N unchanged properties will now be ignored on update statements
  *
