@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.22 $
- * $Date: 2005/03/09 01:07:51 $
+ * $Revision: 1.23 $
+ * $Date: 2005/08/25 22:37:29 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -198,6 +198,8 @@ public class EmbeddedDatabase
 		Connection conn = null;
 		Statement stmt = null;
 		DBSystem session = null;
+    
+    String currentStatement = null;
 
 		try {
 
@@ -244,7 +246,8 @@ public class EmbeddedDatabase
 			String[] tables = all.toString().split(";");
 			for (int i=0;i<tables.length;++i)
 			{
-				stmt.executeUpdate(tables[i]);
+        currentStatement = tables[i];
+				stmt.executeUpdate(currentStatement);
         conn.commit();
 			}
 		}
@@ -255,8 +258,8 @@ public class EmbeddedDatabase
 			}
 			catch (Exception e2) { /* useless */ }
 
-			Logger.error("error while executing sql script",e);
-			throw new SQLException("exception while executing sql script: " + e.getMessage());
+			Logger.error("error while executing sql script. Current statement: " + currentStatement,e);
+			throw new SQLException("exception while executing sql script: " + e.getMessage() + ". Current statement: " + currentStatement);
 		}
 		finally {
 			try {
@@ -374,6 +377,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.23  2005/08/25 22:37:29  web0
+ * *** empty log message ***
+ *
  * Revision 1.22  2005/03/09 01:07:51  web0
  * @D javadoc fixes
  *
