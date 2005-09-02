@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.31 $
- * $Date: 2005/09/02 11:32:28 $
+ * $Revision: 1.32 $
+ * $Date: 2005/09/02 13:13:01 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import de.willuhn.datasource.GenericObject;
@@ -35,6 +37,7 @@ import de.willuhn.datasource.rmi.Listener;
 import de.willuhn.datasource.rmi.ObjectNotFoundException;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
+import de.willuhn.util.Session;
 
 /**
  * Basisklasse fuer alle Business-Objekte 
@@ -56,8 +59,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   private HashMap types      = new HashMap();
 
   // definiert, ob das Objekt gerade in einer manuellen Transaktion ist
-  private int transactionCount = 0;
-  private Object trMutex = new Object();
+  private transient static Session transactions = new Session(5 * 60 * 1000l); // 5 Minuten
 
   // ein Cache fuer ForeignObjects
   private HashMap foreignObjectCache = new HashMap();
@@ -98,6 +100,38 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   private final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
 
+  static
+  {
+    try
+    {
+      transactions.addObserver(new Observer()
+      {
+        public void update(Observable o, Object arg)
+        {
+          if (arg == null || !(arg instanceof Transaction))
+            return;
+          try
+          {
+            Logger.warn("no rollback/commit within last 5 minutes, starting auto rollback");
+            Transaction tr = (Transaction) arg;
+            if (tr.myConn != null && tr.count > 0)
+            {
+              tr.myConn.rollback();
+              tr.count = 0;
+            }
+          }
+          catch (Throwable t)
+          {
+            Logger.error("auto rollback failed",t);
+          }
+        }
+      });
+    }
+    catch (Throwable t)
+    {
+      Logger.error("unable to register session observer",t);
+    }
+  }
   /**
    * ct
    * @throws RemoteException
@@ -232,9 +266,22 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   private boolean inTransaction()
   {
-    synchronized(trMutex)
+    synchronized(transactions)
     {
-      return this.transactionCount > 0;
+      Transaction t = (Transaction) getTransaction();
+      return (t != null && t.count > 0);
+    }
+  }
+  
+  /**
+   * Liefert die aktuelle Transaktion oder null.
+   * @return Transaktion oder null.
+   */
+  private Transaction getTransaction()
+  {
+    synchronized(transactions)
+    {
+      return (Transaction) transactions.get(getConnection());
     }
   }
 
@@ -257,12 +304,12 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		ResultSet data = null;
 		try {
 			stmt = getConnection().createStatement();
-      data = stmt.executeQuery(getLoadQuery());
+      String load = getLoadQuery();
+      Logger.debug("executing query: " + load);
+      data = stmt.executeQuery(load);
 			if (!data.next())
       {
       	throw new ObjectNotFoundException("object [id: " + id + ", type: " + this.getClass().getName() + "] not found");
-//        this.id = null;
-//        return; // record not found.
       }
 
 			String[] attributes = getAttributeNames();
@@ -985,12 +1032,15 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   public final void transactionBegin() throws RemoteException
   {
-    synchronized(trMutex)
+    synchronized(transactions)
     {
       checkConnection();
 
-      this.transactionCount++;
-      Logger.debug("[begin] transaction count: " + this.transactionCount);
+      Transaction tr = getTransaction();
+      if (tr == null)
+        tr = new Transaction();
+      tr.count++;
+      Logger.debug("[begin] transaction count: " + tr.count);
     }
   }
 
@@ -999,7 +1049,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   public final void transactionRollback() throws RemoteException
   {
-    synchronized(trMutex)
+    synchronized(transactions)
     {
       if (!this.inTransaction())
       {
@@ -1009,10 +1059,14 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       
       checkConnection();
 
-      this.transactionCount--;
-      Logger.debug("[rollback] transaction count: " + this.transactionCount);
+      Transaction tr = getTransaction();
+      if (tr == null)
+        return;
 
-      if (this.transactionCount > 0)
+      tr.count--;
+      Logger.debug("[rollback] transaction count: " + tr.count);
+
+      if (tr.count > 0)
         return;
 
       try {
@@ -1031,7 +1085,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   public final void transactionCommit() throws RemoteException
   {
-    synchronized(trMutex)
+    synchronized(transactions)
     {
       if (!this.inTransaction())
       {
@@ -1041,10 +1095,14 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
       checkConnection();
 
-      this.transactionCount--;
-      Logger.debug("[commit] transaction count: " + this.transactionCount);
+      Transaction tr = getTransaction();
+      if (tr == null)
+        return;
+      
+      tr.count--;
+      Logger.debug("[commit] transaction count: " + tr.count);
 
-      if (this.transactionCount > 0)
+      if (tr.count > 0)
         return;
 
       try {
@@ -1170,10 +1228,25 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 			((Listener) listeners.get(i)).handleEvent(e);
 		}
 	}
+  
+  private class Transaction
+  {
+    private int count = 0;
+    private Connection myConn = null;
+    
+    private Transaction()
+    {
+      myConn = getConnection();
+      transactions.put(myConn,this);
+    }
+  }
 }
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.32  2005/09/02 13:13:01  web0
+ * @C transaction behavior
+ *
  * Revision 1.31  2005/09/02 11:32:28  web0
  * @C transaction behavior
  *
