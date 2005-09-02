@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.30 $
- * $Date: 2005/08/22 22:54:15 $
+ * $Revision: 1.31 $
+ * $Date: 2005/09/02 11:32:28 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -56,7 +56,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   private HashMap types      = new HashMap();
 
   // definiert, ob das Objekt gerade in einer manuellen Transaktion ist
-  private boolean inTransaction = false;
+  private int transactionCount = 0;
+  private Object trMutex = new Object();
 
   // ein Cache fuer ForeignObjects
   private HashMap foreignObjectCache = new HashMap();
@@ -224,6 +225,18 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     );
     
   }
+  
+  /**
+   * Prueft, ob wir gerade in einer Transaktion sind.
+   * @return true, wenn wir in einer Transaktion sind.
+   */
+  private boolean inTransaction()
+  {
+    synchronized(trMutex)
+    {
+      return this.transactionCount > 0;
+    }
+  }
 
   /**
    * @see de.willuhn.datasource.rmi.DBObject#load(java.lang.String)
@@ -333,7 +346,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         sql = "delete from " + getTableName() + " where "+this.getIDField()+" = '"+id+"'";
       }
       stmt.execute(sql);
-      if (!this.inTransaction)
+      if (!this.inTransaction())
       {
 				getConnection().commit();
       }
@@ -341,7 +354,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     catch (SQLException e)
     {
-      if (!this.inTransaction) {
+      if (!this.inTransaction()) {
         try {
           getConnection().rollback();
           throw new RemoteException("delete failed, rollback successful",e);
@@ -571,13 +584,13 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       stmt = getInsertSQL();
       stmt.execute();
       setLastId();
-      if (!this.inTransaction)
+      if (!this.inTransaction())
   			getConnection().commit();
 			notify(storeListeners);
     }
     catch (SQLException e)
     {
-      if (!this.inTransaction) {
+      if (!this.inTransaction()) {
         try {
           getConnection().rollback();
           throw new RemoteException("insert failed, rollback successful",e);
@@ -628,14 +641,14 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         // Wenn nicht genau ein Datensatz geaendert wurde, ist was faul.
         throw new SQLException();
       }
-      if (!this.inTransaction)
+      if (!this.inTransaction())
         getConnection().commit();
       notify(storeListeners);
       this.origProperties.putAll(this.properties);
     }
     catch (SQLException e)
     {
-      if (!this.inTransaction) {
+      if (!this.inTransaction()) {
         try {
           getConnection().rollback();
           throw new RemoteException("update failed, rollback successful",e);
@@ -972,12 +985,13 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   public final void transactionBegin() throws RemoteException
   {
-    checkConnection();
+    synchronized(trMutex)
+    {
+      checkConnection();
 
-    if (this.inTransaction)
-      return;
-
-    this.inTransaction = true;
+      this.transactionCount++;
+      Logger.debug("[begin] transaction count: " + this.transactionCount);
+    }
   }
 
   /**
@@ -985,20 +999,31 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   public final void transactionRollback() throws RemoteException
   {
-    checkConnection();
-
-    if (!this.inTransaction)
-      return;
-
-    try {
-      getConnection().rollback();
-      this.inTransaction = false;
-    }
-    catch (SQLException e)
+    synchronized(trMutex)
     {
-      throw new RemoteException("rollback failed",e);
-    }
+      if (!this.inTransaction())
+      {
+        Logger.debug("[rollback] transaction rollback without begin or transaction allready rolled back");
+        return;
+      }
+      
+      checkConnection();
 
+      this.transactionCount--;
+      Logger.debug("[rollback] transaction count: " + this.transactionCount);
+
+      if (this.transactionCount > 0)
+        return;
+
+      try {
+        Logger.debug("[rollback] transaction rollback");
+        getConnection().rollback();
+      }
+      catch (SQLException e)
+      {
+        throw new RemoteException("rollback failed",e);
+      }
+    }
   }  
 
   /**
@@ -1006,25 +1031,36 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   public final void transactionCommit() throws RemoteException
   {
-    checkConnection();
-
-    if (!this.inTransaction)
-      return;
-
-    try {
-      getConnection().commit();
-      this.inTransaction = false;
-    }
-    catch (SQLException se)
+    synchronized(trMutex)
     {
-      try {
-        getConnection().rollback();
-        this.inTransaction = false;
-        throw new RemoteException("commit failed, rollback successful",se);
-      }
-      catch (SQLException se2)
+      if (!this.inTransaction())
       {
-				throw new RemoteException("commit failed, rollback failed",se2);
+        Logger.debug("[commit] transaction commit without begin or transaction allready commited, skipping");
+        return;
+      }
+
+      checkConnection();
+
+      this.transactionCount--;
+      Logger.debug("[commit] transaction count: " + this.transactionCount);
+
+      if (this.transactionCount > 0)
+        return;
+
+      try {
+        Logger.debug("[commit] transaction commit");
+        getConnection().commit();
+      }
+      catch (SQLException se)
+      {
+        try {
+          getConnection().rollback();
+          throw new RemoteException("commit failed, rollback successful",se);
+        }
+        catch (SQLException se2)
+        {
+          throw new RemoteException("commit failed, rollback failed",se2);
+        }
       }
     }
   }
@@ -1138,6 +1174,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.31  2005/09/02 11:32:28  web0
+ * @C transaction behavior
+ *
  * Revision 1.30  2005/08/22 22:54:15  web0
  * *** empty log message ***
  *
