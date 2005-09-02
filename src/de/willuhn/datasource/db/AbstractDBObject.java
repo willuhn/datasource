@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.32 $
- * $Date: 2005/09/02 13:13:01 $
+ * $Revision: 1.33 $
+ * $Date: 2005/09/02 13:32:00 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -1053,7 +1053,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     {
       if (!this.inTransaction())
       {
-        Logger.debug("[rollback] transaction rollback without begin or transaction allready rolled back");
+        Logger.debug("[rollback] rollback without begin or transaction allready rolled back");
         return;
       }
       
@@ -1061,7 +1061,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
       Transaction tr = getTransaction();
       if (tr == null)
+      {
+        Logger.debug("[rollback] rollback called, but no transaction found");
         return;
+      }
 
       tr.count--;
       Logger.debug("[rollback] transaction count: " + tr.count);
@@ -1097,7 +1100,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
       Transaction tr = getTransaction();
       if (tr == null)
+      {
+        Logger.debug("[commit] commit called, but no transaction found");
         return;
+      }
       
       tr.count--;
       Logger.debug("[commit] transaction count: " + tr.count);
@@ -1244,6 +1250,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.33  2005/09/02 13:32:00  web0
+ * @C transaction behavior
+ *
  * Revision 1.32  2005/09/02 13:13:01  web0
  * @C transaction behavior
  *
