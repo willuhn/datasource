@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.33 $
- * $Date: 2005/09/02 13:32:00 $
+ * $Revision: 1.34 $
+ * $Date: 2005/09/04 21:52:42 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -100,38 +100,6 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   private final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
 
-  static
-  {
-    try
-    {
-      transactions.addObserver(new Observer()
-      {
-        public void update(Observable o, Object arg)
-        {
-          if (arg == null || !(arg instanceof Transaction))
-            return;
-          try
-          {
-            Logger.warn("no rollback/commit within last 5 minutes, starting auto rollback");
-            Transaction tr = (Transaction) arg;
-            if (tr.myConn != null && tr.count > 0)
-            {
-              tr.myConn.rollback();
-              tr.count = 0;
-            }
-          }
-          catch (Throwable t)
-          {
-            Logger.error("auto rollback failed",t);
-          }
-        }
-      });
-    }
-    catch (Throwable t)
-    {
-      Logger.error("unable to register session observer",t);
-    }
-  }
   /**
    * ct
    * @throws RemoteException
@@ -1040,6 +1008,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (tr == null)
         tr = new Transaction();
       tr.count++;
+      if (tr.count > 5)
+        Logger.warn("[begin] transaction count: " + tr.count + " - forgotten to rollback/commit?");
+      
       Logger.debug("[begin] transaction count: " + tr.count);
     }
   }
@@ -1250,6 +1221,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.34  2005/09/04 21:52:42  web0
+ * *** empty log message ***
+ *
  * Revision 1.33  2005/09/02 13:32:00  web0
  * @C transaction behavior
  *
