@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.34 $
- * $Date: 2005/09/04 21:52:42 $
+ * $Revision: 1.35 $
+ * $Date: 2005/09/26 10:24:05 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -605,6 +605,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     catch (SQLException e)
     {
+      this.id = null;
       if (!this.inTransaction()) {
         try {
           getConnection().rollback();
@@ -1221,6 +1222,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.35  2005/09/26 10:24:05  web0
+ * *** empty log message ***
+ *
  * Revision 1.34  2005/09/04 21:52:42  web0
  * *** empty log message ***
  *
