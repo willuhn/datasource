@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.35 $
- * $Date: 2005/09/26 10:24:05 $
+ * $Revision: 1.36 $
+ * $Date: 2005/09/28 17:32:38 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 
 import de.willuhn.datasource.GenericObject;
@@ -602,6 +600,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (!this.inTransaction())
   			getConnection().commit();
 			notify(storeListeners);
+      this.created = true;
     }
     catch (SQLException e)
     {
@@ -1015,6 +1014,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       Logger.debug("[begin] transaction count: " + tr.count);
     }
   }
+  
+  private boolean created = false;
 
   /**
    * @see de.willuhn.datasource.rmi.DBObject#transactionRollback()
@@ -1023,6 +1024,15 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   {
     synchronized(transactions)
     {
+      // Erkennt, ob das rollback nach einem Insert ausgefuehrt wurde.
+      // Ist das der Fall, muss das Member mit der ID geloescht werden,
+      // denn es existiert ja nicht in der DB.
+      if (created)
+      {
+        this.id = null;
+        this.created = false;
+      }
+
       if (!this.inTransaction())
       {
         Logger.debug("[rollback] rollback without begin or transaction allready rolled back");
@@ -1222,6 +1232,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.36  2005/09/28 17:32:38  web0
+ * *** empty log message ***
+ *
  * Revision 1.35  2005/09/26 10:24:05  web0
  * *** empty log message ***
  *
