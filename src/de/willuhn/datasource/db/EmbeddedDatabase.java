@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.23 $
- * $Date: 2005/08/25 22:37:29 $
+ * $Revision: 1.24 $
+ * $Date: 2005/11/18 11:56:45 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -316,15 +316,19 @@ public class EmbeddedDatabase
    */
   public String getMD5Sum() throws Exception
 	{
+    Logger.info("calculating database md5 checksum");
 		StringBuffer sum = new StringBuffer();
 		ResultSet rs = null;
 		try {
 			Connection conn = getConnection();
 			DatabaseMetaData dmd = conn.getMetaData();
 			rs = dmd.getColumns(null,"APP",null,null);
+      String s = null;
 			while (rs.next())
 			{
-				sum.append(rs.getString("TABLE_NAME") + ":" + rs.getString("COLUMN_NAME") + ":" + rs.getString("TYPE_NAME") + "\n");
+        s = rs.getString("TABLE_NAME") + ":" + rs.getString("COLUMN_NAME") + ":" + rs.getString("TYPE_NAME");
+        Logger.debug(s);
+				sum.append(s + "\n");
 			}
 			return Checksum.md5(sum.toString().getBytes());
 		}
@@ -377,6 +381,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.24  2005/11/18 11:56:45  web0
+ * *** empty log message ***
+ *
  * Revision 1.23  2005/08/25 22:37:29  web0
  * *** empty log message ***
  *
