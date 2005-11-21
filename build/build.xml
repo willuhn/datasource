@@ -135,11 +135,15 @@
 	</target>
 
 	<target name="sign" description="signs the jar/zip file">
-	  	<checksum file="${project.release}/lib/de_willuhn_ds/${define.jarfilename}" />
+	  <checksum file="${project.release}/lib/de_willuhn_ds/${define.jarfilename}" />
+    <checksum file="${project.release}/${define.srcfilename}" />
 		<echo message="Creating PGP signature" />
-	  	<exec executable="kgpg" failonerror="true" timeout="60000">
-			<arg line="-S ${project.release}/lib/de_willuhn_ds/${define.jarfilename}"/>
-	  	</exec>
+  	<exec executable="kgpg" failonerror="true" timeout="60000">
+		  <arg line="-S ${project.release}/lib/de_willuhn_ds/${define.jarfilename}"/>
+  	</exec>
+    <exec executable="kgpg" failonerror="true" timeout="60000">
+      <arg line="-S ${project.release}/${define.srcfilename}"/>
+    </exec>
 	</target>
 
 	<target name="signsrc" description="signs the source zip">
