@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.24 $
- * $Date: 2005/11/18 11:56:45 $
+ * $Revision: 1.25 $
+ * $Date: 2005/12/12 18:50:34 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -229,9 +229,12 @@ public class EmbeddedDatabase
 			finally
 			{
 				try {
-					br.close();
+          if (br != null)
+            br.close();
 				}
-				catch (Exception e) {}
+				catch (Exception e) {
+          Logger.error("error while closing file reader",e);
+        }
 			}
 
 
@@ -253,21 +256,47 @@ public class EmbeddedDatabase
 		}
 		catch (SQLException e)
 		{
-			try {
-				conn.rollback();
+			try
+      {
+        if (conn != null)
+          conn.rollback();
 			}
-			catch (Exception e2) { /* useless */ }
+			catch (Exception e2)
+      {
+        Logger.error("error while rollback connection",e2);
+      }
 
 			Logger.error("error while executing sql script. Current statement: " + currentStatement,e);
 			throw new SQLException("exception while executing sql script: " + e.getMessage() + ". Current statement: " + currentStatement);
 		}
 		finally {
-			try {
-				stmt.close();
-				conn.close();
-				session.close();
+			try
+      {
+        if (stmt != null)
+          stmt.close();
 			}
-			catch (Exception e2) { /* useless */ }
+      catch (Exception e2)
+      {
+        Logger.error("error while closing statement",e2);
+      }
+      try
+      {
+        if (conn != null)
+          conn.close();
+      }
+      catch (Exception e3)
+      {
+        Logger.error("error while closing connection",e3);
+      }
+      try
+      {
+        if (session != null)
+          session.close();
+      }
+      catch (Exception e4)
+      {
+        Logger.error("error while closing session",e4);
+      }
 		}
 		
 	}
@@ -319,8 +348,9 @@ public class EmbeddedDatabase
     Logger.info("calculating database md5 checksum");
 		StringBuffer sum = new StringBuffer();
 		ResultSet rs = null;
+    Connection conn = null;
 		try {
-			Connection conn = getConnection();
+			conn = getConnection();
 			DatabaseMetaData dmd = conn.getMetaData();
 			rs = dmd.getColumns(null,"APP",null,null);
       String s = null;
@@ -335,9 +365,21 @@ public class EmbeddedDatabase
 		finally
 		{
 			try {
-				rs.close();
+        if (rs != null)
+          rs.close();
 			}
-			catch (Exception e) { /*useless*/ }
+			catch (Exception e)
+      {
+        Logger.error("error while closing resultset",e);
+      }
+      try {
+        if (conn != null)
+          conn.close();
+      }
+      catch (Exception e2)
+      {
+        Logger.error("error while closing connection",e2);
+      }
 		}
 	}
 
@@ -381,6 +423,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.25  2005/12/12 18:50:34  web0
+ * @B try/catch Handling
+ *
  * Revision 1.24  2005/11/18 11:56:45  web0
  * *** empty log message ***
  *
