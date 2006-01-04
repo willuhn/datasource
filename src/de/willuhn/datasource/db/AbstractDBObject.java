@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.36 $
- * $Date: 2005/09/28 17:32:38 $
+ * $Revision: 1.37 $
+ * $Date: 2006/01/04 17:04:57 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -344,9 +344,6 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
     deleteCheck();
 
-		// Wir benachrichtigen die Listeners.
-		notify(deleteListeners);
-
 		Statement stmt = null;
     try {
     	stmt = getConnection().createStatement();
@@ -363,6 +360,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       {
 				getConnection().commit();
       }
+
+      // Wir benachrichtigen die Listeners.
+      notify(deleteListeners);
+
 			this.id = null;
     }
     catch (SQLException e)
@@ -1232,6 +1233,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.37  2006/01/04 17:04:57  web0
+ * @C DeleteListener wird nun unmittelbar nach dem Loeschen jedoch vor this.id=null aufgerufen
+ *
  * Revision 1.36  2005/09/28 17:32:38  web0
  * *** empty log message ***
  *

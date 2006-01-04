@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.10 $
- * $Date: 2004/10/25 17:58:37 $
- * $Author: willuhn $
+ * $Revision: 1.11 $
+ * $Date: 2006/01/04 17:04:56 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -79,12 +79,9 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
 
 	/**
 	 * Fuegt dem Objekt einen Listener hinzu, der ausgeloest wird, wenn
-	 * das Objekt geloescht werden soll.
-	 * Hinweis: Das Event wird unmittelbar <b>vor</b> dem tatsaechlichen Loeschen
-	 * ausgeloest. Wuerde dies <b>nach</b> dem Loeschen geschehen, kann der
-	 * Benachrichtigte mit der Information nicht mehr viel anfangen, weil das
-	 * Objekt dann auch keine ID mehr hat und somit nicht mehr festgestellt
-	 * werden kann, <b>welches</b> Objekt eigentlich geloescht wurde.
+	 * das Objekt gerade geloescht wurde.
+	 * Hinweis: Das Event wird unmittelbar <b>nach</b> dem Loeschen
+	 * ausgeloest, jedoch noch bevor die ID auf null gesetzt wurde.
 	 * @param l der Listener.
 	 * @throws RemoteException
 	 */
@@ -103,6 +100,9 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.11  2006/01/04 17:04:56  web0
+ * @C DeleteListener wird nun unmittelbar nach dem Loeschen jedoch vor this.id=null aufgerufen
+ *
  * Revision 1.10  2004/10/25 17:58:37  willuhn
  * @N Delete/Store-Listeners
  *
