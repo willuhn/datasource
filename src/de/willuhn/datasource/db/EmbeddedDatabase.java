@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.25 $
- * $Date: 2005/12/12 18:50:34 $
+ * $Revision: 1.26 $
+ * $Date: 2006/01/30 14:55:33 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -13,7 +13,6 @@
 
 package de.willuhn.datasource.db;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -21,11 +20,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.mckoi.database.TableDataConglomerate;
 import com.mckoi.database.TransactionSystem;
@@ -36,7 +32,8 @@ import com.mckoi.util.UserTerminal;
 
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.logging.Logger;
-import de.willuhn.security.Checksum;
+import de.willuhn.sql.CheckSum;
+import de.willuhn.sql.ScriptExecutor;
 
 /**
  * Embedded Datenbank die man jederzeit gut gebrauchen kann.
@@ -195,89 +192,29 @@ public class EmbeddedDatabase
 			throw new IOException("SQL file does not exist or is not readable");
 		
 
-		Connection conn = null;
-		Statement stmt = null;
-		DBSystem session = null;
+		Connection conn   = null;
+		DBSystem session  = null;
+    FileReader reader = null;
     
-    String currentStatement = null;
-
-		try {
-
-			BufferedReader br = null;
-			String thisLine = null;
-			StringBuffer all = new StringBuffer();
-
-			try {
-				br =  new BufferedReader(new FileReader(file));
-				while ((thisLine =  br.readLine()) != null)
-				{
-					if (!(thisLine.length() > 0))  // Zeile enthaelt nichts
-						continue;
-					if (thisLine.matches(" *?"))	 // Zeile enthaelt nur Leerzeichen
-						continue;
-					if (thisLine.startsWith("--")) // Kommentare
-						continue;
-					if (thisLine.startsWith("\n") || thisLine.startsWith("\r")) // Leerzeile
-						continue;
-					all.append(thisLine.trim());
-				}
-			}
-			catch (IOException e)
-			{
-				throw e;
-			}
-			finally
-			{
-				try {
-          if (br != null)
-            br.close();
-				}
-				catch (Exception e) {
-          Logger.error("error while closing file reader",e);
-        }
-			}
-
-
-			session = control.startDatabase(config);
-
-			conn = session.getConnection(username,password);
-			conn.setAutoCommit(false);
-
-			stmt = conn.createStatement();
+		try
+    {
+      
+		  session = control.startDatabase(config);
+			conn    = session.getConnection(username,password);
+      reader  = new FileReader(file);
 
 			Logger.info("executing sql commands from " + file.getAbsolutePath());
-			String[] tables = all.toString().split(";");
-			for (int i=0;i<tables.length;++i)
-			{
-        currentStatement = tables[i];
-				stmt.executeUpdate(currentStatement);
-        conn.commit();
-			}
-		}
-		catch (SQLException e)
-		{
-			try
-      {
-        if (conn != null)
-          conn.rollback();
-			}
-			catch (Exception e2)
-      {
-        Logger.error("error while rollback connection",e2);
-      }
-
-			Logger.error("error while executing sql script. Current statement: " + currentStatement,e);
-			throw new SQLException("exception while executing sql script: " + e.getMessage() + ". Current statement: " + currentStatement);
+      ScriptExecutor.execute(reader,conn);
 		}
 		finally {
-			try
+      try
       {
-        if (stmt != null)
-          stmt.close();
-			}
-      catch (Exception e2)
+        if (reader != null)
+          reader.close();
+      }
+      catch (Exception e3)
       {
-        Logger.error("error while closing statement",e2);
+        Logger.error("error while closing file " + file.getAbsolutePath(),e3);
       }
       try
       {
@@ -345,33 +282,13 @@ public class EmbeddedDatabase
    */
   public String getMD5Sum() throws Exception
 	{
-    Logger.info("calculating database md5 checksum");
-		StringBuffer sum = new StringBuffer();
-		ResultSet rs = null;
     Connection conn = null;
 		try {
 			conn = getConnection();
-			DatabaseMetaData dmd = conn.getMetaData();
-			rs = dmd.getColumns(null,"APP",null,null);
-      String s = null;
-			while (rs.next())
-			{
-        s = rs.getString("TABLE_NAME") + ":" + rs.getString("COLUMN_NAME") + ":" + rs.getString("TYPE_NAME");
-        Logger.debug(s);
-				sum.append(s + "\n");
-			}
-			return Checksum.md5(sum.toString().getBytes());
+      return CheckSum.md5(conn,null,"APP");
 		}
 		finally
 		{
-			try {
-        if (rs != null)
-          rs.close();
-			}
-			catch (Exception e)
-      {
-        Logger.error("error while closing resultset",e);
-      }
       try {
         if (conn != null)
           conn.close();
@@ -423,6 +340,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.26  2006/01/30 14:55:33  web0
+ * @N de.willuhn.sql
+ *
  * Revision 1.25  2005/12/12 18:50:34  web0
  * @B try/catch Handling
  *
