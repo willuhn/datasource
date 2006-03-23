@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2005/03/09 01:07:51 $
+ * $Revision: 1.28 $
+ * $Date: 2006/03/23 10:23:08 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -19,12 +19,16 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.Observable;
+import java.util.Observer;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
+import de.willuhn.util.Session;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
@@ -32,13 +36,14 @@ import de.willuhn.util.ClassFinder;
  */
 public class DBServiceImpl extends UnicastRemoteObject implements DBService
 {
-
+  private final static int CONNECTION_TIMEOUT = 5;
+  
   private String jdbcDriver   = null;
   private String jdbcUrl      = null;
   private String jdbcUsername = null;
   private String jdbcPassword = null;
   
-  private Connection conn     = null;
+  private Session connections = null;
 
   private boolean started		  = false;
   private boolean startable		= true;
@@ -75,16 +80,111 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     this.jdbcDriver   = jdbcDriver;
     this.jdbcUsername = jdbcUsername;
     this.jdbcPassword = jdbcPassword;
+
+    Logger.info("connection timeout: " + CONNECTION_TIMEOUT + " minutes");
+    this.connections = new Session(CONNECTION_TIMEOUT * 60 * 1000l);
+    this.connections.addObserver(new Observer()
+    {
+      public void update(Observable o, Object arg)
+      {
+        if (arg == null || !(arg instanceof Connection))
+          return;
+        closeConnection((Connection) arg);
+      }
+    });
+  
   }
 
 	/**
 	 * Liefert die Connection, die dieser Service gerade verwendet.
    * @return Connection.
+   * @throws RemoteException
    */
-	protected Connection getConnection()
+	protected final Connection getConnection() throws RemoteException
 	{
-		return conn;
+    String key = "<local>";
+    try
+    {
+      key = UnicastRemoteObject.getClientHost();
+    }
+    catch (Throwable t)
+    {
+      // ignore
+    }
+    Connection conn = (Connection) this.connections.get(key);
+
+    if (conn != null)
+    {
+      try
+      {
+        checkConnection(conn);
+      }
+      catch (SQLException e)
+      {
+        Logger.info("connection check failed, creating new connection. message: " + e.getMessage());
+        conn = null;
+      }
+    }
+    
+    if (conn == null)
+    {
+      conn = createConnection();
+      this.connections.put(key,conn);
+    }
+
+    return conn;
 	}
+  
+  /**
+   * Erstellt eine neue Connection.
+   * @return die neu erstellte Connection.
+   * @throws RemoteException
+   */
+  private Connection createConnection() throws RemoteException
+  {
+    Logger.info("creating new connection");
+    try {
+      if (this.jdbcUsername != null && this.jdbcUsername.length() > 0 && this.jdbcPassword != null)
+        return DriverManager.getConnection(this.jdbcUrl,this.jdbcUsername,this.jdbcPassword);
+
+      return DriverManager.getConnection(jdbcUrl);
+    }
+    catch (SQLException e2)
+    {
+      Logger.error("connection to database " + jdbcUrl + " failed",e2);
+      throw new RemoteException("connection to database." + jdbcUrl + " failed",e2);
+    }
+  }
+  
+  /**
+   * Schliesst die uebergebene Connection.
+   * @param conn
+   */
+  private void closeConnection(Connection conn)
+  {
+    if (conn == null)
+      return;
+    try
+    {
+      Logger.info("closing connection");
+      conn.close();
+      Logger.info("connection closed");
+    }
+    catch (Throwable t)
+    {
+      Logger.error("error while closing connection. message: " + t.getMessage());
+    }
+  }
+  
+  /**
+   * Kann von abgeleiteten Klassen ueberschrieben werden, um die Connection
+   * zu testen.
+   * @param conn die zu testende Connection. Ist nie <code>null</code>.
+   * @throws SQLException
+   */
+  protected void checkConnection(Connection conn) throws SQLException
+  {
+  }
 
   /**
    * Definiert einen optionalen Classfinder, der von dem Service
@@ -131,13 +231,12 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		if (!isStartable())
 			throw new RemoteException("service restart not allowed");
 
-		Logger.info("opening db service");
+		Logger.info("starting db service");
     try {
-			Logger.info("request from host: " + getClientHost());
+			Logger.info("request from host: " + UnicastRemoteObject.getClientHost());
     }
     catch (ServerNotActiveException soe) {}
     
-		// Ob es hier Sinn macht, vorher nochmal close() aufzurufen?
 		try {
 			if (loader != null)
 			{
@@ -162,18 +261,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 			throw new RemoteException("unable to load jdbc driver " + jdbcDriver,e2);
 		}
 
-		try {
-      if (this.jdbcUsername != null && this.jdbcUsername.length() > 0 && this.jdbcPassword != null)
-        conn = DriverManager.getConnection(this.jdbcUrl,this.jdbcUsername,this.jdbcPassword);
-      else
-  			conn = DriverManager.getConnection(jdbcUrl);
-      started = true;
-		}
-		catch (SQLException e2)
-		{
-			Logger.error("connection to database " + jdbcUrl + " failed",e2);
-			throw new RemoteException("connection to database." + jdbcUrl + " failed",e2);
-		}
+    started = true;
   }
 
 
@@ -188,28 +276,34 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 			return;
     }
 
-		startable = restartAllowed;
-
-		Logger.info("closing db service");
-    try {
-			Logger.info("request from host: " + getClientHost());
-    }
-    catch (ServerNotActiveException soe) {}
-
-		Logger.debug("db service: object cache matches: " + ObjectMetaCache.getStats() + " %");
-
-    try {
-      started = false;
-      conn.close();
-    }
-    catch (NullPointerException ne)
-		{
-			Logger.info("  allready stopped or never started");
-		}
-    catch (SQLException e)
+    try
     {
-			Logger.error("  unable to close database connection",e);
-      throw new RemoteException("  unable to close database connection",e);
+      startable = restartAllowed;
+
+      Logger.info("stopping db service");
+      try {
+        Logger.info("stop request from host: " + getClientHost());
+      }
+      catch (ServerNotActiveException soe) {}
+
+      Logger.debug("db service: object cache matches: " + ObjectMetaCache.getStats() + " %");
+
+      int count = 0;
+      synchronized(this.connections)
+      {
+        Enumeration e = this.connections.keys();
+        while (e.hasMoreElements())
+        {
+          String key = (String) e.nextElement();
+          closeConnection((Connection) this.connections.get(key));
+          count++;
+        }
+      }
+      Logger.info("db service stopped [" + count + " connection(s) closed]");
+    }
+    finally
+    {
+      started = false;
     }
   }
   
@@ -321,6 +415,11 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.28  2006/03/23 10:23:08  web0
+ * @N connections are now created per client host
+ * @N checkConnection()
+ * @N connections now have a 5 minute timeout
+ *
  * Revision 1.27  2005/03/09 01:07:51  web0
  * @D javadoc fixes
  *
