@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2006/03/23 10:23:08 $
+ * $Revision: 1.29 $
+ * $Date: 2006/03/27 16:26:48 $
  * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
@@ -20,15 +20,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.Hashtable;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
-import de.willuhn.util.Session;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
@@ -36,14 +34,12 @@ import de.willuhn.util.Session;
  */
 public class DBServiceImpl extends UnicastRemoteObject implements DBService
 {
-  private final static int CONNECTION_TIMEOUT = 5;
-  
   private String jdbcDriver   = null;
   private String jdbcUrl      = null;
   private String jdbcUsername = null;
   private String jdbcPassword = null;
   
-  private Session connections = null;
+  private Hashtable connections = null;
 
   private boolean started		  = false;
   private boolean startable		= true;
@@ -81,18 +77,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     this.jdbcUsername = jdbcUsername;
     this.jdbcPassword = jdbcPassword;
 
-    Logger.info("connection timeout: " + CONNECTION_TIMEOUT + " minutes");
-    this.connections = new Session(CONNECTION_TIMEOUT * 60 * 1000l);
-    this.connections.addObserver(new Observer()
-    {
-      public void update(Observable o, Object arg)
-      {
-        if (arg == null || !(arg instanceof Connection))
-          return;
-        closeConnection((Connection) arg);
-      }
-    });
-  
+    this.connections = new Hashtable();
   }
 
 	/**
@@ -415,6 +400,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.29  2006/03/27 16:26:48  web0
+ * @C replaced Session with Hashtable
+ *
  * Revision 1.28  2006/03/23 10:23:08  web0
  * @N connections are now created per client host
  * @N checkConnection()
