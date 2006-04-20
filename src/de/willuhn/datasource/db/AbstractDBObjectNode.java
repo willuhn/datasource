@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/08/11 23:36:34 $
- * $Author: willuhn $
+ * $Revision: 1.10 $
+ * $Date: 2006/04/20 08:34:12 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -54,9 +54,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   }
 
   /**
-   * @see de.willuhn.datasource.GenericObjectNode#getChilds()
+   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
    */
-  public GenericIterator getChilds() throws RemoteException
+  public GenericIterator getChildren() throws RemoteException
   {
     DBIterator list = getList();
     list.addFilter(getNodeField() + " = " + this.getID());
@@ -81,7 +81,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     if (object == null)
       return false;
 
-		GenericIterator childs = this.getChilds();
+		GenericIterator childs = this.getChildren();
     int count = 1;
 		GenericObjectNode child = null;
     while (childs.hasNext())
@@ -169,7 +169,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   protected void deleteCheck() throws ApplicationException
   {
     try {
-			GenericIterator list = getChilds();
+			GenericIterator list = getChildren();
       if (list.hasNext())
         throw new ApplicationException("Objekt kann nicht gelöscht werden da Abhängigkeiten existieren.");
     }
@@ -222,6 +222,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.10  2006/04/20 08:34:12  web0
+ * @C s/Childs/Children/
+ *
  * Revision 1.9  2004/08/11 23:36:34  willuhn
  * @N Node Objekte in GenericObjectNode und DBObjectNode aufgeteilt
  *

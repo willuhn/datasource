@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/GenericObjectNode.java,v $
- * $Revision: 1.2 $
- * $Date: 2004/08/11 23:36:34 $
- * $Author: willuhn $
+ * $Revision: 1.3 $
+ * $Date: 2006/04/20 08:34:13 $
+ * $Author: web0 $
  * $Locker:  $
  * $State: Exp $
  *
@@ -27,7 +27,7 @@ public interface GenericObjectNode extends GenericObject
    * @return Iterator mit den direkten Kind-Objekten.
    * @throws RemoteException
    */
-  public GenericIterator getChilds() throws RemoteException;
+  public GenericIterator getChildren() throws RemoteException;
 
 
   /**
@@ -75,6 +75,9 @@ public interface GenericObjectNode extends GenericObject
 
 /*********************************************************************
  * $Log: GenericObjectNode.java,v $
+ * Revision 1.3  2006/04/20 08:34:13  web0
+ * @C s/Childs/Children/
+ *
  * Revision 1.2  2004/08/11 23:36:34  willuhn
  * @N Node Objekte in GenericObjectNode und DBObjectNode aufgeteilt
  *
