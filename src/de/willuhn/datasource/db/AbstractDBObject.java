@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.37 $
- * $Date: 2006/01/04 17:04:57 $
- * $Author: web0 $
+ * $Revision: 1.38 $
+ * $Date: 2006/05/23 22:39:02 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -712,7 +712,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     if (count == 0)
     {
-      Logger.info("nothing changed in this object, skipping update");
+      Logger.debug("nothing changed in this object, skipping update");
       return null;
     }
     sql = sql.substring(0,sql.length()-1); // remove last ","
@@ -1233,6 +1233,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.38  2006/05/23 22:39:02  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.37  2006/01/04 17:04:57  web0
  * @C DeleteListener wird nun unmittelbar nach dem Loeschen jedoch vor this.id=null aufgerufen
  *
