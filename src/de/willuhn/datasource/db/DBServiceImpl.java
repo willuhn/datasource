@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2006/03/27 16:26:48 $
- * $Author: web0 $
+ * $Revision: 1.30 $
+ * $Date: 2006/06/19 22:22:48 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -128,16 +128,19 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   private Connection createConnection() throws RemoteException
   {
     Logger.info("creating new connection");
+    String url = getJdbcUrl();
     try {
-      if (this.jdbcUsername != null && this.jdbcUsername.length() > 0 && this.jdbcPassword != null)
-        return DriverManager.getConnection(this.jdbcUrl,this.jdbcUsername,this.jdbcPassword);
+      String username = getJdbcUsername();
+      String password = getJdbcPassword();
+      if (username != null && username.length() > 0 && password != null)
+        return DriverManager.getConnection(url,username,password);
 
-      return DriverManager.getConnection(jdbcUrl);
+      return DriverManager.getConnection(url);
     }
     catch (SQLException e2)
     {
-      Logger.error("connection to database " + jdbcUrl + " failed",e2);
-      throw new RemoteException("connection to database." + jdbcUrl + " failed",e2);
+      Logger.error("connection to database " + url + " failed",e2);
+      throw new RemoteException("connection to database." + url + " failed",e2);
     }
   }
   
@@ -221,14 +224,14 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 			Logger.info("request from host: " + UnicastRemoteObject.getClientHost());
     }
     catch (ServerNotActiveException soe) {}
-    
+
+    String driver = getJdbcDriver();
 		try {
 			if (loader != null)
 			{
 				try
 				{
-					DriverManager.registerDriver(new MyDriver(jdbcDriver,loader));
-					// Class.forName(jdbcDriver,true,loader);
+					DriverManager.registerDriver(new MyDriver(driver,loader));
 				}
 				catch (Throwable t)
 				{
@@ -237,13 +240,13 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 			}
 			else
 			{
-				Class.forName(jdbcDriver);
+				Class.forName(driver);
 			}
 		}
 		catch (ClassNotFoundException e2)
 		{
-			Logger.error("unable to load jdbc driver " + jdbcDriver,e2);
-			throw new RemoteException("unable to load jdbc driver " + jdbcDriver,e2);
+			Logger.error("unable to load jdbc driver " + driver,e2);
+			throw new RemoteException("unable to load jdbc driver " + driver,e2);
 		}
 
     started = true;
@@ -396,10 +399,54 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   {
     return "database service";
   }
+  
+  /**
+   * Liefert den JDBC-Treiber.
+   * @return der JDBC-Treiber.
+   * @throws RemoteException
+   */
+  protected String getJdbcDriver() throws RemoteException
+  {
+    return this.jdbcDriver;
+  }
+  
+  /**
+   * Liefert die JDBC-URL.
+   * @return die JDBC-URL.
+   * @throws RemoteException
+   */
+  protected String getJdbcUrl() throws RemoteException
+  {
+    return this.jdbcUrl;
+  }
+  
+  /**
+   * Liefert den JDBC-Usernamen.
+   * @return der Username.
+   * @throws RemoteException
+   */
+  protected String getJdbcUsername() throws RemoteException
+  {
+    return this.jdbcUsername;
+  }
+  
+  
+  /**
+   * Liefert das JDBC-Passwort.
+   * @return das JDBC-Passwort.
+   * @throws RemoteException
+   */
+  protected String getJdbcPassword() throws RemoteException
+  {
+    return this.jdbcPassword;
+  }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.30  2006/06/19 22:22:48  willuhn
+ * @N Ueberschreibbare Getter fuer JDBC-Daten
+ *
  * Revision 1.29  2006/03/27 16:26:48  web0
  * @C replaced Session with Hashtable
  *
