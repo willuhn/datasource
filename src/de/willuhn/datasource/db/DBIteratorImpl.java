@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.19 $
- * $Date: 2005/03/09 01:07:51 $
- * $Author: web0 $
+ * $Revision: 1.20 $
+ * $Date: 2006/08/23 09:31:34 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -15,8 +15,9 @@ package de.willuhn.datasource.db;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 
 import de.willuhn.datasource.GenericObject;
@@ -31,14 +32,18 @@ import de.willuhn.logging.Logger;
  */
 public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
-	private DBService service;
-	private Connection conn;
-	private AbstractDBObject object;
-	private ArrayList list = new ArrayList();
-	private int index = 0;
-  private String filter = "";
-  private String order = "";
-  private boolean initialized = false;
+	private DBService service       = null;
+	private Connection conn         = null;
+	private AbstractDBObject object = null;
+
+  private String filter           = "";
+  private String order            = "";
+  private ArrayList params        = new ArrayList();
+
+  private ArrayList list          = new ArrayList();
+  private int index               = 0;
+
+  private boolean initialized     = false;
 
   /**
    * Erzeugt einen neuen Iterator.
@@ -51,9 +56,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 		if (object == null)
 			throw new RemoteException("given object type is null");
 
-  	this.object = object;
+  	this.object  = object;
 		this.service = service;
-		this.conn = service.getConnection();
+		this.conn    = service.getConnection();
 
 		if (conn == null)
 			throw new RemoteException("given connection is null");
@@ -101,7 +106,16 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   /**
    * @see de.willuhn.datasource.rmi.DBIterator#addFilter(java.lang.String)
    */
-  public void addFilter(String filter) throws RemoteException {
+  public void addFilter(String filter) throws RemoteException
+  {
+    this.addFilter(filter,null);
+  }
+
+  /**
+   * @see de.willuhn.datasource.rmi.DBIterator#addFilter(java.lang.String, java.lang.Object[])
+   */
+  public void addFilter(String filter, Object[] p) throws RemoteException
+  {
     if (this.initialized)
       return; // allready initialized
 
@@ -116,6 +130,13 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
       this.filter += " and " + filter;
     }
 
+    if (p != null)
+    {
+      for (int i=0;i<p.length;++i)
+      {
+        this.params.add(p[i]);
+      }
+    }
   }
 
   /**
@@ -155,15 +176,26 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     if (this.initialized)
       return; // allready initialzed
 
-		Statement stmt = null;
-    String sql = null;
-		ResultSet rs = null;
+		PreparedStatement stmt = null;
+    String sql             = null;
+		ResultSet rs           = null;
 		try {
-			stmt = conn.createStatement();
       sql = prepareSQL();
+
+      stmt = conn.prepareStatement(sql);
       
-			Logger.debug("executing sql query: " + sql);
-			rs = stmt.executeQuery(sql);
+      for (int i=0;i<this.params.size();++i)
+      {
+        Object p = this.params.get(i);
+        if (p == null)
+          stmt.setNull((i+1),Types.OTHER);
+        else
+          stmt.setObject((i+1),p);
+      }
+      
+      Logger.debug("executing sql query: " + stmt);
+
+      rs = stmt.executeQuery();
 			while (rs.next())
 			{
         DBObject o = (DBObject) service.createObject(object.getClass(),rs.getString(object.getIDField()));
@@ -268,6 +300,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.20  2006/08/23 09:31:34  willuhn
+ * @N DBIterator kann nun auch PreparedStatements verwenden
+ *
  * Revision 1.19  2005/03/09 01:07:51  web0
  * @D javadoc fixes
  *

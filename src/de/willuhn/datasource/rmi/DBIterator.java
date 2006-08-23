@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.5 $
- * $Date: 2004/08/31 18:13:59 $
+ * $Revision: 1.6 $
+ * $Date: 2006/08/23 09:31:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,6 +37,23 @@ public interface DBIterator extends GenericIterator
   public void addFilter(String filter) throws RemoteException;
   
   /**
+   * Wie {@link DBIterator#addFilter(String)} - allerdings mit dem
+   * Unterschied, dass ueber das Objekt-Array zusaetzliche Parameter
+   * angegeben werden koennen, mit denen dann ein PreparedStatement
+   * gefuellt wird.
+   * Mann kann also entweder schreiben:
+   * <code>addFilter("kontonummer='200'");</code>
+   * oder
+   * <code>addFilter("kontonummer=?",new Object[]{"200"});</code>
+   * Die Verwendung des PreparedStatements schuetzt vor SQL-Injections.
+   * @see DBIterator#addFilter(String)
+   * @param filter ein zusaetzlicher Filter.
+   * @param params
+   * @throws RemoteException
+   */
+  public void addFilter(String filter, Object[] params) throws RemoteException;
+  
+  /**
    * Fuegt dem Iterator eine Sortierung hinzu.
    * @param order
    * @throws RemoteException
@@ -48,6 +65,9 @@ public interface DBIterator extends GenericIterator
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
+ * Revision 1.6  2006/08/23 09:31:34  willuhn
+ * @N DBIterator kann nun auch PreparedStatements verwenden
+ *
  * Revision 1.5  2004/08/31 18:13:59  willuhn
  * *** empty log message ***
  *
