@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBService.java,v $
- * $Revision: 1.9 $
- * $Date: 2004/08/31 18:13:59 $
+ * $Revision: 1.10 $
+ * $Date: 2006/09/05 20:52:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,10 +42,23 @@ public interface DBService extends Service
 	 */
 	public DBObject createObject(Class clazz, String identifier) throws RemoteException;
 
+  /**
+   * Fuehrt ein SQL-Statement aus und uebergibt das Resultset an den Extractor.
+   * @param sql das Statement.
+   * @param params die Parameter zur Erzeugung des PreparedStatements.
+   * @param extractor der Extractor.
+   * @return die vom ResultSetExtractor zurueckgelieferten Daten.
+   * @throws RemoteException
+   */
+  public Object execute(String sql, Object[] params, ResultSetExtractor extractor) throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: DBService.java,v $
+ * Revision 1.10  2006/09/05 20:52:24  willuhn
+ * @N Added ResultsetExtractor (portiert aus Syntax)
+ *
  * Revision 1.9  2004/08/31 18:13:59  willuhn
  * *** empty log message ***
  *

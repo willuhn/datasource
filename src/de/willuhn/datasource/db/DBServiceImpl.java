@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2006/06/19 22:22:48 $
+ * $Revision: 1.31 $
+ * $Date: 2006/09/05 20:52:24 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,13 +18,17 @@ import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.ResultSetExtractor;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ClassFinder;
 
@@ -374,6 +378,65 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		}
 	}
 
+  /**
+   * @see de.willuhn.datasource.rmi.DBService#execute(java.lang.String, java.lang.Object[], de.willuhn.datasource.rmi.ResultSetExtractor)
+   */
+  public Object execute(String sql, Object[] params, ResultSetExtractor extractor) throws RemoteException
+  {
+    checkStarted();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try
+    {
+      ps = getConnection().prepareStatement(sql);
+      if (params != null)
+      {
+        for (int i=0;i<params.length;++i)
+        {
+          Object o = params[i];
+          if (o == null)
+            ps.setNull((i+1), Types.NULL);
+          else
+            ps.setObject((i+1),params[i]);
+        }
+      }
+
+      rs = ps.executeQuery();
+      return extractor.extract(rs);
+    }
+    catch (SQLException e)
+    {
+      Logger.error("error while executing sql statement",e);
+      throw new RemoteException("error while executing sql statement: " + e.getMessage(),e);
+    }
+    finally
+    {
+      if (rs != null)
+      {
+        try
+        {
+          rs.close();
+        }
+        catch (Throwable t)
+        {
+          Logger.error("error while closing resultset",t);
+        }
+      }
+      if (ps != null)
+      {
+        try
+        {
+          ps.close();
+        }
+        catch (Throwable t2)
+        {
+          Logger.error("error while closing statement",t2);
+        }
+      }
+    }
+  }
+
+  
 	/**
 	 * Prueft intern, ob der Service gestartet ist und wirft ggf. eine Exception.
    * @throws RemoteException
@@ -444,6 +507,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.31  2006/09/05 20:52:24  willuhn
+ * @N Added ResultsetExtractor (portiert aus Syntax)
+ *
  * Revision 1.30  2006/06/19 22:22:48  willuhn
  * @N Ueberschreibbare Getter fuer JDBC-Daten
  *
