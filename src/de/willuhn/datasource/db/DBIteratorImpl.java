@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.20 $
- * $Date: 2006/08/23 09:31:34 $
+ * $Revision: 1.21 $
+ * $Date: 2006/10/17 23:50:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,6 +24,8 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
+import de.willuhn.datasource.rmi.Event;
+import de.willuhn.datasource.rmi.Listener;
 import de.willuhn.logging.Logger;
 
 /**
@@ -198,7 +200,14 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
       rs = stmt.executeQuery();
 			while (rs.next())
 			{
-        DBObject o = (DBObject) service.createObject(object.getClass(),rs.getString(object.getIDField()));
+        final DBObject o = (DBObject) service.createObject(object.getClass(),rs.getString(object.getIDField()));
+        o.addDeleteListener(new Listener() {
+          public void handleEvent(Event e) throws RemoteException
+          {
+            list.remove(o);
+          }
+        
+        });
 				list.add(o);
 			}
       this.initialized = true;
@@ -300,6 +309,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.21  2006/10/17 23:50:42  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.20  2006/08/23 09:31:34  willuhn
  * @N DBIterator kann nun auch PreparedStatements verwenden
  *
