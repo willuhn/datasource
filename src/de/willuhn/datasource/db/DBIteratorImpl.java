@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.22 $
- * $Date: 2006/10/18 17:07:20 $
+ * $Revision: 1.23 $
+ * $Date: 2006/10/18 18:54:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -204,8 +204,12 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
         o.addDeleteListener(new Listener() {
           public void handleEvent(Event e) throws RemoteException
           {
-            // TODO: Index ggf. korrigieren!
-            list.remove(o);
+            int pos = list.indexOf(e.getObject());
+            list.remove(pos);
+
+            // offset ggf. korrigieren
+            if (index > pos)
+              index--;
           }
         
         });
@@ -310,6 +314,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.23  2006/10/18 18:54:46  willuhn
+ * @B Korrektur des Offsets
+ *
  * Revision 1.22  2006/10/18 17:07:20  willuhn
  * @N DBIterator registriert einen DeleteListener, um sich selbst zu bereinigen, wenn Objekte aus ihr geloescht werden
  * @N deleteListener in AbstractDBObject
