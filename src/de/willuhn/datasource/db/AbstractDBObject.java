@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.38 $
- * $Date: 2006/05/23 22:39:02 $
+ * $Revision: 1.39 $
+ * $Date: 2006/10/18 17:07:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -1195,6 +1195,26 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   	storeListeners.add(l);
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.DBObject#removeDeleteListener(de.willuhn.datasource.rmi.Listener)
+   */
+  public void removeDeleteListener(Listener l) throws RemoteException
+  {
+    if (deleteListeners == null)
+      return;
+    deleteListeners.remove(l);
+  }
+
+  /**
+   * @see de.willuhn.datasource.rmi.DBObject#removeStoreListener(de.willuhn.datasource.rmi.Listener)
+   */
+  public void removeStoreListener(Listener l) throws RemoteException
+  {
+    if (storeListeners == null)
+      return;
+    storeListeners.remove(l);
+  }
+
 	/**
 	 * Private Hilfs-Funktion, die die Listeners der uebergebenen Liste benachrichtigt.
    * @param listeners Liste der Listeners.
@@ -1233,6 +1253,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.39  2006/10/18 17:07:20  willuhn
+ * @N DBIterator registriert einen DeleteListener, um sich selbst zu bereinigen, wenn Objekte aus ihr geloescht werden
+ * @N deleteListener in AbstractDBObject
+ *
  * Revision 1.38  2006/05/23 22:39:02  willuhn
  * *** empty log message ***
  *

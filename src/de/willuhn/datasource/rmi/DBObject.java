@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObject.java,v $
- * $Revision: 1.11 $
- * $Date: 2006/01/04 17:04:56 $
- * $Author: web0 $
+ * $Revision: 1.12 $
+ * $Date: 2006/10/18 17:07:20 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -96,10 +96,28 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
    */
   public void addStoreListener(Listener l) throws RemoteException;
 
+  /**
+   * Entfernt den Listener wieder.
+   * @param l der Listener.
+   * @throws RemoteException
+   */
+  public void removeDeleteListener(Listener l) throws RemoteException; 
+  
+  /**
+   * Entfernt den Listener wieder.
+   * @param l der Listener.
+   * @throws RemoteException
+   */
+  public void removeStoreListener(Listener l) throws RemoteException;
+
 }
 
 /*********************************************************************
  * $Log: DBObject.java,v $
+ * Revision 1.12  2006/10/18 17:07:20  willuhn
+ * @N DBIterator registriert einen DeleteListener, um sich selbst zu bereinigen, wenn Objekte aus ihr geloescht werden
+ * @N deleteListener in AbstractDBObject
+ *
  * Revision 1.11  2006/01/04 17:04:56  web0
  * @C DeleteListener wird nun unmittelbar nach dem Loeschen jedoch vor this.id=null aufgerufen
  *
