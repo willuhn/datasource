@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.39 $
- * $Date: 2006/10/18 17:07:20 $
+ * $Revision: 1.40 $
+ * $Date: 2006/10/23 22:27:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -277,14 +277,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       {
       	throw new ObjectNotFoundException("object [id: " + id + ", type: " + this.getClass().getName() + "] not found");
       }
-
-			String[] attributes = getAttributeNames();
-			for (int i=0;i<attributes.length;++i)
-			{
-				setAttribute(attributes[i],data.getObject(attributes[i]));
-			}
-      // Jetzt kopieren wir noch die Eigenschaften in die Backup-Tabelle um Aenderungen ueberwachen zu koennen
-      this.origProperties.putAll(this.properties);
+			fill(data);
 		}
 		catch (SQLException e)
 		{
@@ -298,8 +291,24 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 				stmt.close();
 			} catch (Throwable t) {/*useless*/}
 		}
-		 
 	}
+  
+  /**
+   * Fuellt das Objekt mit den Daten aus dem Resultset.
+   * @param rs
+   * @throws SQLException
+   * @throws RemoteException
+   */
+  void fill(ResultSet rs) throws SQLException, RemoteException
+  {
+    String[] attributes = getAttributeNames();
+    for (int i=0;i<attributes.length;++i)
+    {
+      setAttribute(attributes[i],rs.getObject(attributes[i]));
+    }
+    // Jetzt kopieren wir noch die Eigenschaften in die Backup-Tabelle um Aenderungen ueberwachen zu koennen
+    this.origProperties.putAll(this.properties);
+  }
   
   /**
    * @see de.willuhn.datasource.rmi.DBObject#store()
@@ -853,7 +862,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   protected String getListQuery()
   {
-    return "select " + getIDField() + " from " + getTableName();
+    // return "select " + getIDField() + " from " + getTableName();
+    return "select * from " + getTableName();
   }
 
 	/**
@@ -1253,6 +1263,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.40  2006/10/23 22:27:33  willuhn
+ * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
+ *
  * Revision 1.39  2006/10/18 17:07:20  willuhn
  * @N DBIterator registriert einen DeleteListener, um sich selbst zu bereinigen, wenn Objekte aus ihr geloescht werden
  * @N deleteListener in AbstractDBObject

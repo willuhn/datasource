@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.23 $
- * $Date: 2006/10/18 18:54:46 $
+ * $Revision: 1.24 $
+ * $Date: 2006/10/23 22:27:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -200,7 +200,11 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
       rs = stmt.executeQuery();
 			while (rs.next())
 			{
-        final DBObject o = (DBObject) service.createObject(object.getClass(),rs.getString(object.getIDField()));
+//        final DBObject o = (DBObject) service.createObject(object.getClass(),rs.getString(object.getIDField()));
+        final AbstractDBObject o = (AbstractDBObject) service.createObject(object.getClass(),null);
+        o.setID(rs.getString(o.getIDField()));
+        o.fill(rs);
+        
         o.addDeleteListener(new Listener() {
           public void handleEvent(Event e) throws RemoteException
           {
@@ -314,6 +318,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.24  2006/10/23 22:27:33  willuhn
+ * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
+ *
  * Revision 1.23  2006/10/18 18:54:46  willuhn
  * @B Korrektur des Offsets
  *
