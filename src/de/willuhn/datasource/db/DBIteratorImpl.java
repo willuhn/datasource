@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.24 $
- * $Date: 2006/10/23 22:27:33 $
+ * $Revision: 1.25 $
+ * $Date: 2006/11/06 22:38:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -205,18 +205,18 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
         o.setID(rs.getString(o.getIDField()));
         o.fill(rs);
         
-        o.addDeleteListener(new Listener() {
-          public void handleEvent(Event e) throws RemoteException
-          {
-            int pos = list.indexOf(e.getObject());
-            list.remove(pos);
-
-            // offset ggf. korrigieren
-            if (index > pos)
-              index--;
-          }
-        
-        });
+//        o.addDeleteListener(new Listener() {
+//          public void handleEvent(Event e) throws RemoteException
+//          {
+//            int pos = list.indexOf(e.getObject());
+//            list.remove(pos);
+//
+//            // offset ggf. korrigieren
+//            if (index > pos)
+//              index--;
+//          }
+//        
+//        });
 				list.add(o);
 			}
       this.initialized = true;
@@ -318,6 +318,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.25  2006/11/06 22:38:20  willuhn
+ * @R DeleteListener wieder entfernt - Overhead
+ *
  * Revision 1.24  2006/10/23 22:27:33  willuhn
  * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
  *
