@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.26 $
- * $Date: 2006/01/30 14:55:33 $
- * $Author: web0 $
+ * $Revision: 1.27 $
+ * $Date: 2006/11/20 22:57:35 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -53,7 +53,8 @@ public class EmbeddedDatabase
 	private String password = null;
 
 	private static String defaultConfig =
-		"database_path=.\n" +		"log_path=./log\n" +		"root_path=configuration\n" +		"jdbc_server_port=9157\n" +		"ignore_case_for_identifiers=disabled\n" +		"data_cache_size=4194304\n" +		"max_cache_entry_size=8192\n" +		"maximum_worker_threads=4\n" +		"debug_log_file=debug.log\n" +		"debug_level=30\n";
+		"database_path=.\n" +		"log_path=./log\n" +		"root_path=configuration\n" +		"jdbc_server_port=9157\n" +		"ignore_case_for_identifiers=disabled\n" +		"data_cache_size=4194304\n" +		"max_cache_entry_size=8192\n" +		"maximum_worker_threads=4\n" +		"debug_log_file=debug.log\n" +    "transaction_error_on_dirty_select=disabled\n" +
+		"debug_level=30\n";
 
   /**
 	 * Erzeugt eine neue Instanz der Datenbank.
@@ -340,6 +341,9 @@ public class EmbeddedDatabase
 
 /**********************************************************************
  * $Log: EmbeddedDatabase.java,v $
+ * Revision 1.27  2006/11/20 22:57:35  willuhn
+ * @N new parameter in default config: transaction_error_on_dirty_select=disabled
+ *
  * Revision 1.26  2006/01/30 14:55:33  web0
  * @N de.willuhn.sql
  *
