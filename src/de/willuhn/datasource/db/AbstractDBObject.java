@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.40 $
- * $Date: 2006/10/23 22:27:33 $
+ * $Revision: 1.41 $
+ * $Date: 2006/11/20 22:58:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -118,8 +118,6 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   	conn = service.getConnection();
     if (conn == null)
       throw new SQLException("connection is null");
-
-    conn.setAutoCommit(false); // Auto-Commit schalten wir aus weil wir vorsichtig sind ;)
   }
   
   /**
@@ -1263,6 +1261,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.41  2006/11/20 22:58:00  willuhn
+ * @C moved autocommit flag into dbservice
+ *
  * Revision 1.40  2006/10/23 22:27:33  willuhn
  * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
  *
