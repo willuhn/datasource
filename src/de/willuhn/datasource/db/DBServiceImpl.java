@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.31 $
- * $Date: 2006/09/05 20:52:24 $
+ * $Revision: 1.32 $
+ * $Date: 2006/11/20 22:58:41 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -22,8 +22,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
@@ -43,13 +45,24 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   private String jdbcUsername = null;
   private String jdbcPassword = null;
   
-  private Hashtable connections = null;
+  private Map connections     = null;
 
   private boolean started		  = false;
   private boolean startable		= true;
   
   private ClassFinder finder  = null;
   private ClassLoader loader  = null;
+
+  /**
+   * Erzeugt eine neue Instanz.
+   * @param jdbcDriver JDBC-Treiber-Klasse.
+   * @param jdbcURL JDBC-URL.
+   * @throws RemoteException
+   */
+  public DBServiceImpl() throws RemoteException
+  {
+    this(null,null,null,null);
+  }
 
   /**
    * Erzeugt eine neue Instanz.
@@ -81,7 +94,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     this.jdbcUsername = jdbcUsername;
     this.jdbcPassword = jdbcPassword;
 
-    this.connections = new Hashtable();
+    this.connections = Collections.synchronizedMap(new HashMap());
   }
 
 	/**
@@ -91,15 +104,8 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
 	protected final Connection getConnection() throws RemoteException
 	{
-    String key = "<local>";
-    try
-    {
-      key = UnicastRemoteObject.getClientHost();
-    }
-    catch (Throwable t)
-    {
-      // ignore
-    }
+    String key = getClientIdentifier();
+
     Connection conn = (Connection) this.connections.get(key);
 
     if (conn != null)
@@ -118,12 +124,43 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     if (conn == null)
     {
       conn = createConnection();
+      try
+      {
+        conn.setAutoCommit(getAutoCommit());
+        int trLevel = getTransactionIsolationLevel();
+        if (trLevel > 0)
+        {
+          Logger.info("transaction isolartion level: " + trLevel);
+          conn.setTransactionIsolation(trLevel);
+        }
+      }
+      catch (SQLException e)
+      {
+        throw new RemoteException("autocommit=false failed or transaction isolation level not supported",e);
+      }
+      Logger.info("created new connection for " + (key == null ? "<local>" : key));
       this.connections.put(key,conn);
     }
 
     return conn;
 	}
   
+  /**
+   * Liefert den Client-Host oder <code>null</code>.
+   * @return ein Client-Identifier.
+   */
+  private String getClientIdentifier()
+  {
+    try
+    {
+      return UnicastRemoteObject.getClientHost();
+    }
+    catch (Throwable t)
+    {
+      // ignore
+    }
+    return null;
+  }
   /**
    * Erstellt eine neue Connection.
    * @return die neu erstellte Connection.
@@ -268,6 +305,16 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 			return;
     }
 
+    String key = getClientIdentifier();
+    if (key != null)
+    {
+      // Das ist eine Remote-Client, der sich disconnected.
+      // Wir stoppen nicht den Service sondern melden nur
+      // den Client ab
+      Logger.info("disconnect client " + key);
+      closeConnection((Connection) this.connections.remove(key));
+      return;
+    }
     try
     {
       startable = restartAllowed;
@@ -283,11 +330,11 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
       int count = 0;
       synchronized(this.connections)
       {
-        Enumeration e = this.connections.keys();
-        while (e.hasMoreElements())
+        Iterator i = this.connections.keySet().iterator();
+        while (i.hasNext())
         {
-          String key = (String) e.nextElement();
-          closeConnection((Connection) this.connections.get(key));
+          key = (String) i.next();
+          closeConnection((Connection) this.connections.remove(key));
           count++;
         }
       }
@@ -503,10 +550,40 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   {
     return this.jdbcPassword;
   }
+
+  /**
+   * Liefert den Transaction-Isolation-Level.
+   * @return transactionIsolationLevel Transaction-Isolation-Level (Default:-1). 
+   * @see Connection#TRANSACTION_NONE
+   * @see Connection#TRANSACTION_READ_COMMITTED
+   * @see Connection#TRANSACTION_READ_UNCOMMITTED
+   * @see Connection#TRANSACTION_REPEATABLE_READ
+   * @see Connection#TRANSACTION_SERIALIZABLE
+   * @throws RemoteException
+   */
+  protected int getTransactionIsolationLevel() throws RemoteException
+  {
+    return -1;
+  }
+  
+  /**
+   * Liefert true, wenn autocommit aktiv sein soll.
+   * Default: false.
+   * @return Autocommit.
+   * @throws RemoteException
+   */
+  protected boolean getAutoCommit() throws RemoteException
+  {
+    return false;
+  }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.32  2006/11/20 22:58:41  willuhn
+ * @N autocommit and transaction isolation level are now configurable
+ * @N rmi clients can now be disconnected
+ *
  * Revision 1.31  2006/09/05 20:52:24  willuhn
  * @N Added ResultsetExtractor (portiert aus Syntax)
  *
