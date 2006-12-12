@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.32 $
- * $Date: 2006/11/20 22:58:41 $
+ * $Revision: 1.33 $
+ * $Date: 2006/12/12 13:05:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -195,6 +195,15 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
       return;
     try
     {
+      Logger.info("commit connection");
+      try
+      {
+        conn.commit();
+      }
+      catch (Exception e)
+      {
+        Logger.warn("commit failed");
+      }
       Logger.info("closing connection");
       conn.close();
       Logger.info("connection closed");
@@ -580,6 +589,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.33  2006/12/12 13:05:08  willuhn
+ * @N connection commit on close
+ *
  * Revision 1.32  2006/11/20 22:58:41  willuhn
  * @N autocommit and transaction isolation level are now configurable
  * @N rmi clients can now be disconnected
