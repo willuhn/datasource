@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.25 $
- * $Date: 2006/11/06 22:38:20 $
+ * $Revision: 1.26 $
+ * $Date: 2006/12/12 14:23:37 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -223,7 +223,8 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 		}
 		catch (Exception e)
 		{
-			throw new RemoteException("unable to init iterator",e);
+      String s = stmt == null ? null : stmt.toString();
+			throw new RemoteException("unable to init iterator. " + (s != null ? ("statement: " + s) : "") ,e);
 		}
 		finally {
 			try {
@@ -318,6 +319,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.26  2006/12/12 14:23:37  willuhn
+ * @N dump sql query on error
+ *
  * Revision 1.25  2006/11/06 22:38:20  willuhn
  * @R DeleteListener wieder entfernt - Overhead
  *
