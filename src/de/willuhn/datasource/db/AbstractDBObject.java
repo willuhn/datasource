@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.41 $
- * $Date: 2006/11/20 22:58:00 $
+ * $Revision: 1.42 $
+ * $Date: 2006/12/21 17:36:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -112,7 +112,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * @param service
    * @throws Exception
    */
-  void setService(DBServiceImpl service) throws Exception
+  protected void setService(DBServiceImpl service) throws Exception
   {
   	this.service = service;
   	conn = service.getConnection();
@@ -153,7 +153,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Holt sich die Meta-Daten der Tabelle und erzeugt die Properties.
    * @throws SQLException Wenn beim Laden der Meta-Daten ein Datenbank-Fehler auftrat.
    */
-  void init() throws SQLException
+  protected void init() throws SQLException
   {
     try {
       checkConnection();
@@ -1261,6 +1261,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.42  2006/12/21 17:36:43  willuhn
+ * @N maded init() and setService() protected
+ *
  * Revision 1.41  2006/11/20 22:58:00  willuhn
  * @C moved autocommit flag into dbservice
  *
