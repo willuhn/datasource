@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.42 $
- * $Date: 2006/12/21 17:36:43 $
+ * $Revision: 1.43 $
+ * $Date: 2007/01/12 14:31:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -195,7 +195,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 				properties.put(field,null);
         types.put(field,meta.getString("TYPE_NAME"));
 			}
-      ObjectMetaCache.addMetaData(this.getClass(),types);
+      ObjectMetaCache.setMetaData(this.getClass(),types);
 		}
 		catch (SQLException e)
 		{
@@ -1261,6 +1261,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.43  2007/01/12 14:31:39  willuhn
+ * @N made metadata methods public
+ *
  * Revision 1.42  2006/12/21 17:36:43  willuhn
  * @N maded init() and setService() protected
  *

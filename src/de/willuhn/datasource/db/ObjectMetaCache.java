@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/ObjectMetaCache.java,v $
- * $Revision: 1.4 $
- * $Date: 2005/04/28 21:28:48 $
- * $Author: web0 $
+ * $Revision: 1.5 $
+ * $Date: 2007/01/12 14:31:39 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -45,7 +45,7 @@ public class ObjectMetaCache
    * @param clazz Klasse.
    * @return Die Metadaten.
    */
-  static HashMap getMetaData(Class clazz)
+  public static HashMap getMetaData(Class clazz)
   {
     if (all == 10000l)
     {
@@ -65,11 +65,11 @@ public class ObjectMetaCache
    * @param clazz Klasse.
    * @param fields Hashmap mit den Metadaten (key=Feldnamen,value=Datentyp).
    */
-  static void addMetaData(Class clazz, HashMap fields)
+  public static void setMetaData(Class clazz, HashMap fields)
   {
     metaCache.put(clazz,fields);
   }
-
+  
   /**
    * Liefert den prozentualen Anteil zwischen Cache-Abfragen insgesamt und erfolgreich
    * beantworteten Abfragen.
@@ -85,6 +85,9 @@ public class ObjectMetaCache
 
 /*********************************************************************
  * $Log: ObjectMetaCache.java,v $
+ * Revision 1.5  2007/01/12 14:31:39  willuhn
+ * @N made metadata methods public
+ *
  * Revision 1.4  2005/04/28 21:28:48  web0
  * *** empty log message ***
  *
