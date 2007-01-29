@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.43 $
- * $Date: 2007/01/12 14:31:39 $
+ * $Revision: 1.44 $
+ * $Date: 2007/01/29 10:55:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -362,7 +362,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       {
         sql = "delete from " + getTableName() + " where "+this.getIDField()+" = '"+id+"'";
       }
-      stmt.execute(sql);
+      int count = stmt.executeUpdate(sql);
+      if (count != 1)
+        throw new SQLException("delete failed, executeUpdate returned " + count);
       if (!this.inTransaction())
       {
 				getConnection().commit();
@@ -1261,6 +1263,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.44  2007/01/29 10:55:42  willuhn
+ * @N Check der geloeschten Datensaetze
+ *
  * Revision 1.43  2007/01/12 14:31:39  willuhn
  * @N made metadata methods public
  *
