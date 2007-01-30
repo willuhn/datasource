@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.33 $
- * $Date: 2006/12/12 13:05:08 $
+ * $Revision: 1.34 $
+ * $Date: 2007/01/30 23:17:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -130,7 +130,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
         int trLevel = getTransactionIsolationLevel();
         if (trLevel > 0)
         {
-          Logger.info("transaction isolartion level: " + trLevel);
+          Logger.info("transaction isolation level: " + trLevel);
           conn.setTransactionIsolation(trLevel);
         }
       }
@@ -589,6 +589,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.34  2007/01/30 23:17:25  willuhn
+ * @D typo
+ *
  * Revision 1.33  2006/12/12 13:05:08  willuhn
  * @N connection commit on close
  *
