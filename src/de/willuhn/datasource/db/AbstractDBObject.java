@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.44 $
- * $Date: 2007/01/29 10:55:42 $
+ * $Revision: 1.45 $
+ * $Date: 2007/03/02 15:25:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -606,7 +606,14 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     try {
       stmt = getInsertSQL();
       stmt.execute();
-      setLastId();
+      
+      // Wir tragen die ID nur dann ein, wenn sie nicht schon im getInsertSQL() ermittelt wurde
+      // oder wenn wir noch keine haben
+      // Dann wenn sie bereits bei getInsertSQL() erzeugt wurde, muessen wir sie nicht
+      // nochmal ermitteln
+      if (this.id == null || !getService().getInsertWithID())
+        setLastId();
+      
       if (!this.inTransaction())
   			getConnection().commit();
 			notify(storeListeners);
@@ -765,46 +772,75 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   {
     checkConnection();
 
-    String sql = "insert into " + getTableName() + " ";
     String[] attributes = getAttributeNames();
 
-    String names = "(";
-    String values = " values (";
+    StringBuffer names = new StringBuffer();
+    StringBuffer values = new StringBuffer();
+
+    names.append("(");
+    values.append(" values (");
 
     for (int i=0;i<attributes.length;++i)
     {
-      if (attributes[i] == null || attributes[i].equals("")) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
+      if (attributes[i] == null || attributes[i].length() == 0) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
         continue; // skip empty fields
-      names += attributes[i] + ",";
-      values += "?,";
+
+      names.append(attributes[i]);
+      values.append('?');
+
+      // Beim letzten lassen wir die Kommas weg
+      if (i+1 < attributes.length)
+      {
+        names.append(',');
+        values.append(',');
+      }
     }
-
-    names  += getIDField() + ")";
-
+    
     // Wenn das Objekt eine ID hat, dann haengen wir sie an's Insert-Statement mit dran.
-    if (getID() != null)
+    this.id = getID();
+
+    // Wenn wir noch keine ID haben, aber eine erstellen sollen, dann tun wir das jetzt
+    // Wir passen aber auf, dass wir eine ggf. vorhandene nicht ueberschreiben
+    if (this.id == null && getService().getInsertWithID())
+      this.id = createID();
+
+    // Haben wir eine ID?
+    // Wenn ja, dann haengen wirs ans Statement
+    if (this.id != null)
     {
+      names.append(',');
+      names.append(getIDField());
+
+      values.append(',');
       try {
-        values += Integer.parseInt(getID()) + ")";
+        values.append(Integer.parseInt(this.id));
       }
       catch (NumberFormatException e)
       {
-        values += "'" + getID() + "')";
+        // Keine Zahl, also quoten wir es
+        values.append('\'');
+        values.append(this.id);
+        values.append('\'');
       }
     }
-    else {
-      // Weil die UNIQUEKEY() Funktion von McKoi nicht "select (max(id) + 1)" macht sondern
-      // selbst bei 1 anfaengt zu zaehlen, kommt es dauernd vor, dass es eine ID ermittelt,
-      // die es schon gibt. Naemlich genau dann, wenn in die Tabelle Zeilen eingefuegt wurden,
-      // die ihre eigene ID mitgebracht haben :(
 
-      values += "'" + createID() + "')";
-    }
+    names.append(')');
+    values.append(')');
 
     try {
-      PreparedStatement stmt = getConnection().prepareStatement(sql + names + values);
+      StringBuffer sql = new StringBuffer();
+      sql.append("insert into ");
+      sql.append(getTableName());
+      sql.append(' ');
+      sql.append(names.toString());
+      sql.append(values.toString());
+
+      PreparedStatement stmt = getConnection().prepareStatement(sql.toString());
       for (int i=0;i<attributes.length;++i)
       {
+        if (attributes[i] == null || attributes[i].length() == 0) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
+          continue; // skip empty fields
+        
         String type  = (String) types.get(attributes[i]);
         Object value = properties.get(attributes[i]);
         setStmtValue(stmt,i,type,value);
@@ -1263,6 +1299,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.45  2007/03/02 15:25:03  willuhn
+ * @N getInsertWithID um festlegen zu koennen, ob INSERTs mit ID erzeugt werden sollen
+ * @C last_insert_id() nur aufrufen, wenn nach dem INSERT noch keine ID vorhanden ist
+ *
  * Revision 1.44  2007/01/29 10:55:42  willuhn
  * @N Check der geloeschten Datensaetze
  *

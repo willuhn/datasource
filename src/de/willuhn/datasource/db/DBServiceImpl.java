@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.34 $
- * $Date: 2007/01/30 23:17:25 $
+ * $Revision: 1.35 $
+ * $Date: 2007/03/02 15:25:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -102,7 +102,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    * @return Connection.
    * @throws RemoteException
    */
-	protected final Connection getConnection() throws RemoteException
+	protected Connection getConnection() throws RemoteException
 	{
     String key = getClientIdentifier();
 
@@ -180,7 +180,6 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     }
     catch (SQLException e2)
     {
-      Logger.error("connection to database " + url + " failed",e2);
       throw new RemoteException("connection to database." + url + " failed",e2);
     }
   }
@@ -585,10 +584,29 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   {
     return false;
   }
+  
+  /**
+   * Liefert true, wenn der DB-Service bei INSERT-Queries <b>vorher</b> die zu verwendende ID ermitteln soll.
+   * MySQL zum besitzt eine auto_increment-Funktion, mit der es nicht notwendig ist, die ID beim
+   * Insert mit anzugeben. Falls die Datenbank das jedoch nicht korrekt kann (z.Bsp. McKoi), dann
+   * kann die Funktion true liefern. In dem Fall wird vor dem Insert ein "select max(id)+1 from table"
+   * ausgefuehrt und diese ID fuer das Insert verwendet.
+   * <b>Standard-Wert: TRUE</b>
+   * @return true, wenn bei Inserts vorher die ID ermittelt werden soll.
+   * @throws RemoteException
+   */
+  protected boolean getInsertWithID() throws RemoteException
+  {
+    return true;
+  }
 }
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.35  2007/03/02 15:25:03  willuhn
+ * @N getInsertWithID um festlegen zu koennen, ob INSERTs mit ID erzeugt werden sollen
+ * @C last_insert_id() nur aufrufen, wenn nach dem INSERT noch keine ID vorhanden ist
+ *
  * Revision 1.34  2007/01/30 23:17:25  willuhn
  * @D typo
  *
