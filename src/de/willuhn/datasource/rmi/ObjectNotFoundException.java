@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/ObjectNotFoundException.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/08/26 23:19:33 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/02 23:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,8 @@ import java.rmi.RemoteException;
  */
 public class ObjectNotFoundException extends RemoteException
 {
+
+  private static final long serialVersionUID = 1L;
 
   /**
    * ct.
@@ -52,6 +54,10 @@ public class ObjectNotFoundException extends RemoteException
 
 /**********************************************************************
  * $Log: ObjectNotFoundException.java,v $
+ * Revision 1.2  2007/04/02 23:00:42  willuhn
+ * @B falscher Parameter in BeanUtil#get
+ * @N PseudoIterator#asList
+ *
  * Revision 1.1  2004/08/26 23:19:33  willuhn
  * @N added ObjectNotFoundException
  *

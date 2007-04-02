@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.1 $
- * $Date: 2007/03/29 23:06:04 $
+ * $Revision: 1.2 $
+ * $Date: 2007/04/02 23:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,7 @@ public class BeanUtil
     if (bean instanceof GenericObject)
       return ((GenericObject)bean).getAttribute(attribute);
     
-    return invoke(bean,toMethod("get",attribute),new Object[]{Void.TYPE});
+    return invoke(bean,toMethod("get",attribute),null);
   }
   
   /**
@@ -124,6 +124,10 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.2  2007/04/02 23:00:42  willuhn
+ * @B falscher Parameter in BeanUtil#get
+ * @N PseudoIterator#asList
+ *
  * Revision 1.1  2007/03/29 23:06:04  willuhn
  * @N helper class for generic bean access
  *

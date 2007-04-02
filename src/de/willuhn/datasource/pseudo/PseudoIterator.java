@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/pseudo/PseudoIterator.java,v $
- * $Revision: 1.6 $
- * $Date: 2005/03/09 01:07:51 $
- * $Author: web0 $
+ * $Revision: 1.7 $
+ * $Date: 2007/04/02 23:00:42 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -14,6 +14,7 @@ package de.willuhn.datasource.pseudo;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,9 @@ import de.willuhn.datasource.GenericObject;
 public class PseudoIterator extends UnicastRemoteObject implements GenericIterator
 {
 
-	private List list = null;
+  private static final long serialVersionUID = 1L;
+
+  private List list = null;
 	private int index = 0;
 
 	/**
@@ -52,6 +55,20 @@ public class PseudoIterator extends UnicastRemoteObject implements GenericIterat
 		i.list = Arrays.asList(objects);
 		return i;
 	}
+  
+  /**
+   * Erzeugt eine Liste aus einem GenericIterator.
+   * @param iterator zu konvertierender Iterator.
+   * @return Liste.
+   * @throws RemoteException
+   */
+  public static List asList(GenericIterator iterator) throws RemoteException
+  {
+    ArrayList list = new ArrayList();
+    while (iterator.hasNext())
+      list.add(iterator.next());
+    return list;
+  }
 
   /**
    * @see de.willuhn.datasource.GenericIterator#hasNext()
@@ -117,6 +134,10 @@ public class PseudoIterator extends UnicastRemoteObject implements GenericIterat
 
 /**********************************************************************
  * $Log: PseudoIterator.java,v $
+ * Revision 1.7  2007/04/02 23:00:42  willuhn
+ * @B falscher Parameter in BeanUtil#get
+ * @N PseudoIterator#asList
+ *
  * Revision 1.6  2005/03/09 01:07:51  web0
  * @D javadoc fixes
  *

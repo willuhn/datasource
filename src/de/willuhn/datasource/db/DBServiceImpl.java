@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.35 $
- * $Date: 2007/03/02 15:25:03 $
+ * $Revision: 1.36 $
+ * $Date: 2007/04/02 23:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,8 @@ import de.willuhn.util.ClassFinder;
  */
 public class DBServiceImpl extends UnicastRemoteObject implements DBService
 {
+  private static final long serialVersionUID = 1L;
+  
   private String jdbcDriver   = null;
   private String jdbcUrl      = null;
   private String jdbcUsername = null;
@@ -603,6 +605,10 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.36  2007/04/02 23:00:42  willuhn
+ * @B falscher Parameter in BeanUtil#get
+ * @N PseudoIterator#asList
+ *
  * Revision 1.35  2007/03/02 15:25:03  willuhn
  * @N getInsertWithID um festlegen zu koennen, ob INSERTs mit ID erzeugt werden sollen
  * @C last_insert_id() nur aufrufen, wenn nach dem INSERT noch keine ID vorhanden ist

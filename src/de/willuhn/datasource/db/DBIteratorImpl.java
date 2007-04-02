@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.26 $
- * $Date: 2006/12/12 14:23:37 $
+ * $Revision: 1.27 $
+ * $Date: 2007/04/02 23:00:42 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -24,8 +24,6 @@ import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
-import de.willuhn.datasource.rmi.Event;
-import de.willuhn.datasource.rmi.Listener;
 import de.willuhn.logging.Logger;
 
 /**
@@ -319,6 +317,10 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.27  2007/04/02 23:00:42  willuhn
+ * @B falscher Parameter in BeanUtil#get
+ * @N PseudoIterator#asList
+ *
  * Revision 1.26  2006/12/12 14:23:37  willuhn
  * @N dump sql query on error
  *
