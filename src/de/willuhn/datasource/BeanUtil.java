@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.2 $
- * $Date: 2007/04/02 23:00:42 $
+ * $Revision: 1.3 $
+ * $Date: 2007/04/10 22:44:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -84,6 +84,27 @@ public class BeanUtil
   }
   
   /**
+   * Vergleicht zwei Objekte.
+   * Handelt es sich um Objekte des Typs GenericObject, werden deren equals-Methoden verwendet.
+   * @param a Objekt a.
+   * @param b Objekt b.
+   * @return True, wenn beide Objekte gleich sind.
+   * @throws RemoteException
+   */
+  public static boolean equals(Object a, Object b) throws RemoteException
+  {
+    if (a == b)
+      return true;
+    if (a == null || b == null)
+      return false;
+    
+    if ((a instanceof GenericObject) && (b instanceof GenericObject))
+      return ((GenericObject)a).equals((GenericObject)b);
+    
+    return a.equals(b);
+  }
+  
+  /**
    * Macht aus einem Attribut-Namen einen Getter oder Setter.
    * @param getSet String "get" oder "set".
    * @param attribute Name des Attributes. 
@@ -124,6 +145,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.3  2007/04/10 22:44:48  willuhn
+ * @N Additional equals method to honor GenericObjects
+ *
  * Revision 1.2  2007/04/02 23:00:42  willuhn
  * @B falscher Parameter in BeanUtil#get
  * @N PseudoIterator#asList
