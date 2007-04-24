@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.45 $
- * $Date: 2007/03/02 15:25:03 $
+ * $Revision: 1.46 $
+ * $Date: 2007/04/24 19:09:15 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -629,10 +629,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         }
         catch (SQLException e2)
         {
-					throw new RemoteException("delete failed, rollback failed",e2);
+					throw new RemoteException("insert failed, rollback failed",e2);
         }
       }
-			throw new RemoteException("delete failed",e);
+			throw new RemoteException("insert failed",e);
     }
 		finally {
 			try {
@@ -1299,6 +1299,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.46  2007/04/24 19:09:15  willuhn
+ * @B typo
+ *
  * Revision 1.45  2007/03/02 15:25:03  willuhn
  * @N getInsertWithID um festlegen zu koennen, ob INSERTs mit ID erzeugt werden sollen
  * @C last_insert_id() nur aufrufen, wenn nach dem INSERT noch keine ID vorhanden ist
