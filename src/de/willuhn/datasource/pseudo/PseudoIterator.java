@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/pseudo/PseudoIterator.java,v $
- * $Revision: 1.7 $
- * $Date: 2007/04/02 23:00:42 $
+ * $Revision: 1.8 $
+ * $Date: 2007/04/25 13:30:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -67,6 +67,7 @@ public class PseudoIterator extends UnicastRemoteObject implements GenericIterat
     ArrayList list = new ArrayList();
     while (iterator.hasNext())
       list.add(iterator.next());
+    iterator.begin();
     return list;
   }
 
@@ -134,6 +135,9 @@ public class PseudoIterator extends UnicastRemoteObject implements GenericIterat
 
 /**********************************************************************
  * $Log: PseudoIterator.java,v $
+ * Revision 1.8  2007/04/25 13:30:05  willuhn
+ * @B call "begin()" after asList()
+ *
  * Revision 1.7  2007/04/02 23:00:42  willuhn
  * @B falscher Parameter in BeanUtil#get
  * @N PseudoIterator#asList
