@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.46 $
- * $Date: 2007/04/24 19:09:15 $
+ * $Revision: 1.47 $
+ * $Date: 2007/06/04 15:48:22 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -942,10 +942,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (type == null || value == null)
         stmt.setNull(index,Types.NULL);
 
-      else if (ATTRIBUTETYPE_DATE.equalsIgnoreCase(type) || ATTRIBUTETYPE_DATETIME.equalsIgnoreCase(type))
+      else if (ATTRIBUTETYPE_DATE.equalsIgnoreCase(type))
         stmt.setDate(index,new java.sql.Date(((Date) value).getTime()));
 
-      else if (ATTRIBUTETYPE_TIMESTAMP.equalsIgnoreCase(type))
+      else if (ATTRIBUTETYPE_TIMESTAMP.equalsIgnoreCase(type) || ATTRIBUTETYPE_DATETIME.equalsIgnoreCase(type))
         stmt.setTimestamp(index,new Timestamp(((Date) value).getTime()));
 
       else if (ATTRIBUTETYPE_INT.equalsIgnoreCase(type))
@@ -1299,6 +1299,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.47  2007/06/04 15:48:22  willuhn
+ * @B "DATETIME" muss mit setTimestamp statt setDate gesetzt werden
+ *
  * Revision 1.46  2007/04/24 19:09:15  willuhn
  * @B typo
  *
