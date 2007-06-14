@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.47 $
- * $Date: 2007/06/04 15:48:22 $
+ * $Revision: 1.48 $
+ * $Date: 2007/06/14 16:32:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,7 +187,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		try {
 			meta = getConnection().getMetaData().getColumns(null,null,tableName,null);
 			String field;
-			while (meta.next())
+      if (!meta.next())
+        throw new SQLException("unable to determine meta data for table " + tableName);
+      
+			do
 			{
 				field = meta.getString("COLUMN_NAME");
 				if (field == null || field.equalsIgnoreCase(this.getIDField())) // skip empty fields and primary key
@@ -195,6 +198,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 				properties.put(field,null);
         types.put(field,meta.getString("TYPE_NAME"));
 			}
+      while (meta.next());
       ObjectMetaCache.setMetaData(this.getClass(),types);
 		}
 		catch (SQLException e)
@@ -1299,6 +1303,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.48  2007/06/14 16:32:51  willuhn
+ * @C throw sql exception if meta data could not be loaded
+ *
  * Revision 1.47  2007/06/04 15:48:22  willuhn
  * @B "DATETIME" muss mit setTimestamp statt setDate gesetzt werden
  *
