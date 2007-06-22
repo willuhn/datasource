@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.49 $
- * $Date: 2007/06/22 17:42:54 $
+ * $Revision: 1.50 $
+ * $Date: 2007/06/22 17:46:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -185,7 +185,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		String tableName = getTableName();
 		ResultSet meta = null;
 		try {
-			meta = getConnection().getMetaData().getColumns(null,null,tableName.toUpperCase(),null);
+			meta = getConnection().getMetaData().getColumns(null,null,tableName,null);
 			String field;
       if (!meta.next())
         throw new SQLException("unable to determine meta data for table " + tableName);
@@ -1304,6 +1304,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.50  2007/06/22 17:46:34  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.49  2007/06/22 17:42:54  willuhn
  * *** empty log message ***
  *
