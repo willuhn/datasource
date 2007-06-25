@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.50 $
- * $Date: 2007/06/22 17:46:34 $
+ * $Revision: 1.51 $
+ * $Date: 2007/06/25 11:12:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,6 +98,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   private final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
 
+  private boolean upper = Boolean.getBoolean("de.willuhn.datasource.db.uppercase");
+
   /**
    * ct
    * @throws RemoteException
@@ -182,7 +184,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       return;
     }
 
-		String tableName = getTableName();
+    String tableName = getTableName();
+    if (this.upper)
+      tableName = tableName.toUpperCase();
+    
 		ResultSet meta = null;
 		try {
 			meta = getConnection().getMetaData().getColumns(null,null,tableName,null);
@@ -195,8 +200,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 				field = meta.getString("COLUMN_NAME");
 				if (field == null || field.equalsIgnoreCase(this.getIDField())) // skip empty fields and primary key
 					continue;
-				properties.put(field,null);
-        types.put(field,meta.getString("TYPE_NAME"));
+				properties.put(this.upper ? field.toLowerCase() : field,null);
+        types.put(this.upper ? field.toLowerCase() : field,meta.getString("TYPE_NAME"));
 			}
       while (meta.next());
       ObjectMetaCache.setMetaData(this.getClass(),types);
@@ -268,6 +273,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       throw new RemoteException("object not initialized.");
     
 		String tableName = getTableName();
+    if (this.upper)
+      tableName = tableName.toUpperCase();
+    
 		Statement stmt = null;
 		ResultSet data = null;
 		try {
@@ -306,7 +314,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     String[] attributes = getAttributeNames();
     for (int i=0;i<attributes.length;++i)
     {
-      setAttribute(attributes[i],rs.getObject(attributes[i]));
+      setAttribute(attributes[i],rs.getObject(this.upper ? attributes[i].toUpperCase() : attributes[i]));
     }
     // Jetzt kopieren wir noch die Eigenschaften in die Backup-Tabelle um Aenderungen ueberwachen zu koennen
     this.origProperties.putAll(this.properties);
@@ -359,12 +367,22 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     try {
     	stmt = getConnection().createStatement();
       String sql = null;
+
+      String tableName = getTableName();
+      String idField   = getIDField();
+      
+      if (this.upper)
+      {
+        tableName = tableName.toUpperCase();
+        idField   = idField.toUpperCase();
+      }
+
       try {
-        sql = "delete from " + getTableName() + " where "+this.getIDField()+" = "+Integer.parseInt(id);
+        sql = "delete from " + tableName + " where " + idField + " = "+Integer.parseInt(id);
       }
       catch (NumberFormatException e)
       {
-        sql = "delete from " + getTableName() + " where "+this.getIDField()+" = '"+id+"'";
+        sql = "delete from " + tableName + " where " + idField + " = '"+id+"'";
       }
       int count = stmt.executeUpdate(sql);
       if (count != 1)
@@ -576,8 +594,17 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 		Statement stmt = null;
 		try {
+
+      String tableName = getTableName();
+      String idField   = getIDField();
+      if (this.upper)
+      {
+        tableName = tableName.toUpperCase();
+        idField   = idField.toUpperCase();
+      }
+      
 			stmt = getConnection().createStatement();
-			ResultSet rs = stmt.executeQuery("select max("+this.getIDField()+") from " + getTableName());
+			ResultSet rs = stmt.executeQuery("select max(" + idField + ") from " + tableName);
 			rs.next();
 			this.id = rs.getString(1);
 		}
@@ -718,17 +745,29 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   {
     checkConnection();
 
-    String sql = "update " + getTableName() + " set ";
+    String tableName = getTableName();
+    String idField   = getIDField();
+
+    if (this.upper)
+    {
+      tableName = tableName.toUpperCase();
+      idField   = idField.toUpperCase();
+    }
+    
+    String sql = "update " + tableName + " set ";
     String[] attributes = getAttributeNames();
 
     int count = 0;
     for (int i=0;i<attributes.length;++i)
     {
-			if (attributes[i].equalsIgnoreCase(this.getIDField()))
+			if (attributes[i].equalsIgnoreCase(idField))
 				continue; // skip the id field
       if (!hasChanged(attributes[i]))
         continue; // wurde nicht geaendert
-      sql += attributes[i] + "=?,";
+      if (this.upper)
+        sql += attributes[i].toUpperCase() + "=?,";
+      else
+        sql += attributes[i] + "=?,";
       count++;
     }
     if (count == 0)
@@ -738,18 +777,18 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     sql = sql.substring(0,sql.length()-1); // remove last ","
     try {
-      sql += " where "+this.getIDField()+"="+Integer.parseInt(getID());
+      sql += " where " + idField + "=" + Integer.parseInt(getID());
     }
     catch (NumberFormatException e)
     {
-      sql += " where "+this.getIDField()+"='"+getID()+"'";
+      sql += " where " + idField + "='"+getID()+"'";
     }
     try {
       PreparedStatement stmt = getConnection().prepareStatement(sql);
       count = 0;
       for (int i=0;i<attributes.length;++i)
       {
-        if (attributes[i].equalsIgnoreCase(this.getIDField()))
+        if (attributes[i].equalsIgnoreCase(idField))
           continue; // skip the id field
         if (!hasChanged(attributes[i]))
           continue; // wurde nicht geaendert
@@ -790,7 +829,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (attributes[i] == null || attributes[i].length() == 0) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
         continue; // skip empty fields
 
-      names.append(attributes[i]);
+      names.append(this.upper ? attributes[i].toUpperCase() : attributes[i]);
       values.append('?');
 
       // Beim letzten lassen wir die Kommas weg
@@ -814,7 +853,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     if (this.id != null)
     {
       names.append(',');
-      names.append(getIDField());
+      names.append(this.upper ? getIDField().toUpperCase() : getIDField());
 
       values.append(',');
       try {
@@ -835,7 +874,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     try {
       StringBuffer sql = new StringBuffer();
       sql.append("insert into ");
-      sql.append(getTableName());
+      sql.append(this.upper ? getTableName().toUpperCase() : getTableName());
       sql.append(' ');
       sql.append(names.toString());
       sql.append(values.toString());
@@ -869,8 +908,16 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     Statement stmt = null;
     ResultSet rs = null;
     try {
+      String tableName = getTableName();
+      String idField   = getIDField();
+      if (this.upper)
+      {
+        tableName = tableName.toUpperCase();
+        idField   = idField.toUpperCase();
+      }
+      
       stmt = getConnection().createStatement();
-      rs = stmt.executeQuery("select (max(" + getIDField() + ") + 1) from " + getTableName());
+      rs = stmt.executeQuery("select (max(" + idField + ") + 1) from " + tableName);
       if (!rs.next())
         throw new SQLException("select max(id) returned empty resultset");
       return rs.getString(1);
@@ -904,7 +951,11 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   protected String getListQuery()
   {
     // return "select " + getIDField() + " from " + getTableName();
-    return "select * from " + getTableName();
+    String tableName = getTableName();
+    if (this.upper)
+      tableName = tableName.toUpperCase();
+    
+    return "select * from " + tableName;
   }
 
 	/**
@@ -919,12 +970,20 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	 */
 	protected String getLoadQuery() throws RemoteException
 	{
+    String tableName = getTableName();
+    String idField   = getIDField();
+    if (this.upper)
+    {
+      tableName = tableName.toUpperCase();
+      idField   = idField.toUpperCase();
+    }
+    
 		try {
-			return "select * from " + getTableName() + " where " + this.getIDField() + " = "+Integer.parseInt(this.getID());
+			return "select * from " + tableName + " where " + idField + " = "+Integer.parseInt(this.getID());
 		}
 		catch (NumberFormatException e)
 		{
-			return "select * from " + getTableName() + " where " + this.getIDField() + " = '"+this.getID()+"'";
+			return "select * from " + tableName + " where " + idField + " = '"+this.getID()+"'";
 		}
 	}
 
@@ -985,7 +1044,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   protected String getIDField()
   {
-    return "id";
+    return upper ? "ID" : "id";
   }
 
   /**
@@ -1304,6 +1363,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.51  2007/06/25 11:12:09  willuhn
+ * @N Durch Aktivierung des System-Property "de.willuhn.datasource.db.uppercase" werden nun auch Datenbanken unterstuetzt, die Identifier in Uppercase umwandeln
+ *
  * Revision 1.50  2007/06/22 17:46:34  willuhn
  * *** empty log message ***
  *
