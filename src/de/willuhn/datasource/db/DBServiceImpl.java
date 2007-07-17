@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.36 $
- * $Date: 2007/04/02 23:00:42 $
+ * $Revision: 1.37 $
+ * $Date: 2007/07/17 12:40:23 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -57,8 +57,6 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
   /**
    * Erzeugt eine neue Instanz.
-   * @param jdbcDriver JDBC-Treiber-Klasse.
-   * @param jdbcURL JDBC-URL.
    * @throws RemoteException
    */
   public DBServiceImpl() throws RemoteException
@@ -605,6 +603,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.37  2007/07/17 12:40:23  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.36  2007/04/02 23:00:42  willuhn
  * @B falscher Parameter in BeanUtil#get
  * @N PseudoIterator#asList
