@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.51 $
- * $Date: 2007/06/25 11:12:09 $
+ * $Revision: 1.52 $
+ * $Date: 2007/08/23 12:51:40 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -98,7 +98,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   private final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
 
-  private boolean upper = Boolean.getBoolean("de.willuhn.datasource.db.uppercase");
+  private boolean upper = false;
 
   /**
    * ct
@@ -167,6 +167,11 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     
     if (isInitialized())
       return; // allready initialized
+    
+    // Checken, ob die Datenbank Uppercase ist
+    this.upper = Boolean.getBoolean(getService().getClass().getName() + ".uppercase");
+    if (this.upper)
+      Logger.info("switching dbservice to uppercase");
 
     HashMap cachedMeta = ObjectMetaCache.getMetaData(this.getClass());
 
@@ -1363,6 +1368,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.52  2007/08/23 12:51:40  willuhn
+ * @C Uppercase-Verhalten nicht global sondern pro DBService konfigurierbar. Verhindert Fehler, wenn mehrere Plugins installiert sind
+ *
  * Revision 1.51  2007/06/25 11:12:09  willuhn
  * @N Durch Aktivierung des System-Property "de.willuhn.datasource.db.uppercase" werden nun auch Datenbanken unterstuetzt, die Identifier in Uppercase umwandeln
  *
