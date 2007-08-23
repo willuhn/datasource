@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.52 $
- * $Date: 2007/08/23 12:51:40 $
+ * $Revision: 1.53 $
+ * $Date: 2007/08/23 13:05:21 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -171,7 +171,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     // Checken, ob die Datenbank Uppercase ist
     this.upper = Boolean.getBoolean(getService().getClass().getName() + ".uppercase");
     if (this.upper)
-      Logger.info("switching dbservice to uppercase");
+      Logger.debug("switching dbservice to uppercase");
 
     HashMap cachedMeta = ObjectMetaCache.getMetaData(this.getClass());
 
@@ -1368,6 +1368,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.53  2007/08/23 13:05:21  willuhn
+ * @C changed log level
+ *
  * Revision 1.52  2007/08/23 12:51:40  willuhn
  * @C Uppercase-Verhalten nicht global sondern pro DBService konfigurierbar. Verhindert Fehler, wenn mehrere Plugins installiert sind
  *
