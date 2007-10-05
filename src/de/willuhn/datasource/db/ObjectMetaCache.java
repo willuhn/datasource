@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/ObjectMetaCache.java,v $
- * $Revision: 1.5 $
- * $Date: 2007/01/12 14:31:39 $
+ * $Revision: 1.6 $
+ * $Date: 2007/10/05 15:16:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -42,10 +42,11 @@ public class ObjectMetaCache
 
   /**
    * Liefert die Meta-Daten einer Klasse oder null.
-   * @param clazz Klasse.
+   * @param service Klasse des Service.
+   * @param objectType Klasse des Objekt-Typs.
    * @return Die Metadaten.
    */
-  public static HashMap getMetaData(Class clazz)
+  public static HashMap getMetaData(Class service, Class objectType)
   {
     if (all == 10000l)
     {
@@ -55,19 +56,20 @@ public class ObjectMetaCache
       all = 0;
     }
     ++all;
-    HashMap m = (HashMap) metaCache.get(clazz);
+    HashMap m = (HashMap) metaCache.get(service.getName() + "." + objectType.getName());
     if (m != null) ++found;
     return m;
   }
 
   /**
    * Fuegt dem Cache die Meta-Daten einer DBObject-Klasse hinzu.
-   * @param clazz Klasse.
+   * @param service Klasse des Service.
+   * @param objectType Klasse des Objekt-Typs.
    * @param fields Hashmap mit den Metadaten (key=Feldnamen,value=Datentyp).
    */
-  public static void setMetaData(Class clazz, HashMap fields)
+  public static void setMetaData(Class service, Class objectType, HashMap fields)
   {
-    metaCache.put(clazz,fields);
+    metaCache.put(service.getName() + "." + objectType.getName(),fields);
   }
   
   /**
@@ -85,6 +87,9 @@ public class ObjectMetaCache
 
 /*********************************************************************
  * $Log: ObjectMetaCache.java,v $
+ * Revision 1.6  2007/10/05 15:16:27  willuhn
+ * @N Objekt-Metadaten pro Service speichern
+ *
  * Revision 1.5  2007/01/12 14:31:39  willuhn
  * @N made metadata methods public
  *

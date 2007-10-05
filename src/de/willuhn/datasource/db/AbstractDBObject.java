@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.53 $
- * $Date: 2007/08/23 13:05:21 $
+ * $Revision: 1.54 $
+ * $Date: 2007/10/05 15:16:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -173,7 +173,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     if (this.upper)
       Logger.debug("switching dbservice to uppercase");
 
-    HashMap cachedMeta = ObjectMetaCache.getMetaData(this.getClass());
+    HashMap cachedMeta = ObjectMetaCache.getMetaData(getService().getClass(),this.getClass());
 
     if (cachedMeta != null)
     {
@@ -209,7 +209,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         types.put(this.upper ? field.toLowerCase() : field,meta.getString("TYPE_NAME"));
 			}
       while (meta.next());
-      ObjectMetaCache.setMetaData(this.getClass(),types);
+      ObjectMetaCache.setMetaData(getService().getClass(),this.getClass(),types);
 		}
 		catch (SQLException e)
 		{
@@ -1368,6 +1368,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.54  2007/10/05 15:16:27  willuhn
+ * @N Objekt-Metadaten pro Service speichern
+ *
  * Revision 1.53  2007/08/23 13:05:21  willuhn
  * @C changed log level
  *
