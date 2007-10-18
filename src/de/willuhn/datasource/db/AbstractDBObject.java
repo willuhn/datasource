@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.54 $
- * $Date: 2007/10/05 15:16:27 $
+ * $Revision: 1.55 $
+ * $Date: 2007/10/18 10:24:46 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -469,8 +469,12 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     // wir checken erstmal, ob es sich um ein Objekt aus einer Fremdtabelle
     // handelt. Wenn das der Fall ist, liefern wir das statt der
     // lokalen ID aus.
+    // "o" kann auch vom Typ DBObject sein. Naemlich dann, wenn es noch nicht
+    // in der Datenbank existiert. Weil dann setAttribute(String,Object) nicht
+    // etwa die ID des Objektes in "properties" speichert sondern das Objekt
+    // selbst. Die Faelle fischen wir mit dem "instanceof" raus
     Class foreign = getForeignObject(fieldName);
-    if (foreign != null)
+    if (foreign != null && !(o instanceof DBObject))
     {
       DBObject cachedObject = (DBObject) foreignObjectCache.get(foreign.getName() + fieldName);
       if (cachedObject != null)
@@ -1368,6 +1372,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.55  2007/10/18 10:24:46  willuhn
+ * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
+ * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
+ *
  * Revision 1.54  2007/10/05 15:16:27  willuhn
  * @N Objekt-Metadaten pro Service speichern
  *
