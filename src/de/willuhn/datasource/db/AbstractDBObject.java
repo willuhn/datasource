@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.55 $
- * $Date: 2007/10/18 10:24:46 $
+ * $Revision: 1.56 $
+ * $Date: 2008/01/04 23:51:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -170,8 +170,6 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     
     // Checken, ob die Datenbank Uppercase ist
     this.upper = Boolean.getBoolean(getService().getClass().getName() + ".uppercase");
-    if (this.upper)
-      Logger.debug("switching dbservice to uppercase");
 
     HashMap cachedMeta = ObjectMetaCache.getMetaData(getService().getClass(),this.getClass());
 
@@ -1372,6 +1370,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.56  2008/01/04 23:51:07  willuhn
+ * @R Debug-Ausgabe entfernt
+ *
  * Revision 1.55  2007/10/18 10:24:46  willuhn
  * @B Foreign-Objects in AbstractDBObject auch dann korrekt behandeln, wenn sie noch nicht gespeichert wurden
  * @C Beim Abrufen der Dauerauftraege nicht mehr nach Konten suchen sondern hart dem Konto zuweisen, ueber das sie abgerufen wurden
