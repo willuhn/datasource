@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.56 $
- * $Date: 2008/01/04 23:51:07 $
+ * $Revision: 1.57 $
+ * $Date: 2008/01/22 12:03:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -558,7 +558,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * @return vorheriger Wert des Feldes.
    * @throws RemoteException
    */
-  protected final Object setAttribute(String fieldName, Object value) throws RemoteException
+  public Object setAttribute(String fieldName, Object value) throws RemoteException
   {
     if (fieldName == null)
       return null;
@@ -1370,6 +1370,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.57  2008/01/22 12:03:09  willuhn
+ * @N Objekt-Serializer/-Deserializer fuer XML-Format
+ *
  * Revision 1.56  2008/01/04 23:51:07  willuhn
  * @R Debug-Ausgabe entfernt
  *
