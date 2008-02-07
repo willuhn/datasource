@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.57 $
- * $Date: 2008/01/22 12:03:09 $
+ * $Revision: 1.58 $
+ * $Date: 2008/02/07 23:00:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -108,6 +108,17 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	{
 		super(); // Konstruktor von UnicastRemoteObject
 	}
+
+  /**
+   * ct
+   * Konstruktor mit expliziter Port-Angabe.
+   * @param port der zu verwendende Port.
+   * @throws RemoteException
+   */
+  public AbstractDBObject(int port) throws RemoteException
+  {
+    super(port);
+  }
 
   /**
    * Speichert den Service-Provider.
@@ -1370,6 +1381,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.58  2008/02/07 23:00:07  willuhn
+ * @N Konstruktor mit expliziter Port-Angabe
+ *
  * Revision 1.57  2008/01/22 12:03:09  willuhn
  * @N Objekt-Serializer/-Deserializer fuer XML-Format
  *
