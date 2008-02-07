@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.37 $
- * $Date: 2007/07/17 12:40:23 $
+ * $Revision: 1.38 $
+ * $Date: 2008/02/07 23:42:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -85,7 +85,13 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public DBServiceImpl(String jdbcDriver, String jdbcURL, String jdbcUsername, String jdbcPassword) throws RemoteException
   {
-    super();
+    // super(); // Wird nicht mehr automatisch gemacht, um
+    // das Exportieren des Objektes auf einem dynamischen Port
+    // zu verhindern (wegen RMI over SSL)
+    // Service muss manuell mit:
+    // DBServiceImpl.exportObject(this,1099); exportiert werden
+
+    
 		Logger.debug("using jdbc driver  : " + jdbcDriver);
 		Logger.debug("using jdbc url     : " + jdbcURL);
 		Logger.debug("using jdbc username: " + jdbcUsername);
@@ -603,6 +609,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.38  2008/02/07 23:42:08  willuhn
+ * @C kein implizites Exportieren der Objekte mehr
+ *
  * Revision 1.37  2007/07/17 12:40:23  willuhn
  * *** empty log message ***
  *

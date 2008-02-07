@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.59 $
- * $Date: 2008/02/07 23:42:08 $
+ * $Revision: 1.60 $
+ * $Date: 2008/02/07 23:42:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -106,7 +106,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
 	public AbstractDBObject() throws RemoteException
 	{
-		super(); // Konstruktor von UnicastRemoteObject
+		// super();
 	}
 
   /**
@@ -1370,6 +1370,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.60  2008/02/07 23:42:51  willuhn
+ * @C kein implizites Exportieren der Objekte mehr
+ *
  * Revision 1.59  2008/02/07 23:42:08  willuhn
  * @C kein implizites Exportieren der Objekte mehr
  *
