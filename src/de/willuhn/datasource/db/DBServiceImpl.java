@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.38 $
- * $Date: 2008/02/07 23:42:08 $
+ * $Revision: 1.39 $
+ * $Date: 2008/02/07 23:56:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public DBServiceImpl() throws RemoteException
   {
-    this(null,null,null,null);
+    this(0,null,null,null,null);
   }
 
   /**
@@ -72,7 +72,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
 	public DBServiceImpl(String jdbcDriver, String jdbcURL) throws RemoteException
 	{
-    this(jdbcDriver,jdbcURL,null,null);
+    this(0,jdbcDriver,jdbcURL,null,null);
 	}
   
   /**
@@ -85,12 +85,20 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public DBServiceImpl(String jdbcDriver, String jdbcURL, String jdbcUsername, String jdbcPassword) throws RemoteException
   {
-    // super(); // Wird nicht mehr automatisch gemacht, um
-    // das Exportieren des Objektes auf einem dynamischen Port
-    // zu verhindern (wegen RMI over SSL)
-    // Service muss manuell mit:
-    // DBServiceImpl.exportObject(this,1099); exportiert werden
-
+    this(0,jdbcDriver,jdbcURL,jdbcUsername,jdbcPassword);
+  }
+  /**
+   * Erzeugt eine neue Instanz.
+   * @param rmiPort
+   * @param jdbcDriver JDBC-Treiber-Klasse.
+   * @param jdbcURL JDBC-URL.
+   * @param jdbcUsername Username.
+   * @param jdbcPassword Passwort.
+   * @throws RemoteException
+   */
+  public DBServiceImpl(int rmiPort, String jdbcDriver, String jdbcURL, String jdbcUsername, String jdbcPassword) throws RemoteException
+  {
+    super(rmiPort);
     
 		Logger.debug("using jdbc driver  : " + jdbcDriver);
 		Logger.debug("using jdbc url     : " + jdbcURL);
@@ -609,6 +617,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
+ * Revision 1.39  2008/02/07 23:56:39  willuhn
+ * @N Explizite Angabe des RMI-Ports moeglich
+ *
  * Revision 1.38  2008/02/07 23:42:08  willuhn
  * @C kein implizites Exportieren der Objekte mehr
  *

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.60 $
- * $Date: 2008/02/07 23:42:51 $
+ * $Revision: 1.61 $
+ * $Date: 2008/02/07 23:56:39 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -106,8 +106,18 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
 	public AbstractDBObject() throws RemoteException
 	{
-		// super();
+		super();
 	}
+
+  /**
+   * ct
+   * Konstruktor mit expliziter Angabe des Ports.
+   * @throws RemoteException
+   */
+  public AbstractDBObject(int rmiPort) throws RemoteException
+  {
+    super(rmiPort);
+  }
 
   /**
    * Speichert den Service-Provider.
@@ -1370,6 +1380,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.61  2008/02/07 23:56:39  willuhn
+ * @N Explizite Angabe des RMI-Ports moeglich
+ *
  * Revision 1.60  2008/02/07 23:42:51  willuhn
  * @C kein implizites Exportieren der Objekte mehr
  *
