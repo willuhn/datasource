@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBServiceImpl.java,v $
- * $Revision: 1.39 $
- * $Date: 2008/02/07 23:56:39 $
+ * $Revision: 1.40 $
+ * $Date: 2008/02/08 00:26:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -61,7 +61,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public DBServiceImpl() throws RemoteException
   {
-    this(0,null,null,null,null);
+    this(null,null,null,null);
   }
 
   /**
@@ -72,7 +72,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
 	public DBServiceImpl(String jdbcDriver, String jdbcURL) throws RemoteException
 	{
-    this(0,jdbcDriver,jdbcURL,null,null);
+    this(jdbcDriver,jdbcURL,null,null);
 	}
   
   /**
@@ -85,21 +85,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    */
   public DBServiceImpl(String jdbcDriver, String jdbcURL, String jdbcUsername, String jdbcPassword) throws RemoteException
   {
-    this(0,jdbcDriver,jdbcURL,jdbcUsername,jdbcPassword);
-  }
-  /**
-   * Erzeugt eine neue Instanz.
-   * @param rmiPort
-   * @param jdbcDriver JDBC-Treiber-Klasse.
-   * @param jdbcURL JDBC-URL.
-   * @param jdbcUsername Username.
-   * @param jdbcPassword Passwort.
-   * @throws RemoteException
-   */
-  public DBServiceImpl(int rmiPort, String jdbcDriver, String jdbcURL, String jdbcUsername, String jdbcPassword) throws RemoteException
-  {
-    super(rmiPort);
-    
+    super();
 		Logger.debug("using jdbc driver  : " + jdbcDriver);
 		Logger.debug("using jdbc url     : " + jdbcURL);
 		Logger.debug("using jdbc username: " + jdbcUsername);
@@ -617,11 +603,8 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 /*********************************************************************
  * $Log: DBServiceImpl.java,v $
- * Revision 1.39  2008/02/07 23:56:39  willuhn
- * @N Explizite Angabe des RMI-Ports moeglich
- *
- * Revision 1.38  2008/02/07 23:42:08  willuhn
- * @C kein implizites Exportieren der Objekte mehr
+ * Revision 1.40  2008/02/08 00:26:51  willuhn
+ * @R temporaeres UNDO
  *
  * Revision 1.37  2007/07/17 12:40:23  willuhn
  * *** empty log message ***
