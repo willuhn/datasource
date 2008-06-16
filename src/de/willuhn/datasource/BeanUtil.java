@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.3 $
- * $Date: 2007/04/10 22:44:48 $
+ * $Revision: 1.4 $
+ * $Date: 2008/06/16 10:40:07 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -123,7 +123,7 @@ public class BeanUtil
    * @return der Rueckgabe-Wert der Methode.
    * @throws RemoteException
    */
-  private static Object invoke(Object bean, String method, Object params[]) throws RemoteException
+  public static Object invoke(Object bean, String method, Object params[]) throws RemoteException
   {
     Expression ex = new Expression(bean,method,params);
     try
@@ -145,6 +145,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.4  2008/06/16 10:40:07  willuhn
+ * @C BeanUtil#invoke ist jetzt public
+ *
  * Revision 1.3  2007/04/10 22:44:48  willuhn
  * @N Additional equals method to honor GenericObjects
  *
