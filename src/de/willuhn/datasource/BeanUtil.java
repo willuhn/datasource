@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/06/16 10:40:07 $
+ * $Revision: 1.5 $
+ * $Date: 2008/06/16 10:56:26 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,7 +35,18 @@ public class BeanUtil
     if (bean instanceof GenericObject)
       return ((GenericObject)bean).getAttribute(attribute);
     
-    return invoke(bean,toMethod("get",attribute),null);
+    try
+    {
+      return invoke(bean,toMethod("get",attribute),null);
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (Exception e)
+    {
+      throw new RemoteException("unable to get attribute " + attribute,e);
+    }
   }
   
   /**
@@ -59,7 +70,18 @@ public class BeanUtil
    */
   public static void set(Object bean, String attribute, Object params[]) throws RemoteException
   {
-    invoke(bean,toMethod("set",attribute),params);
+    try
+    {
+      invoke(bean,toMethod("set",attribute),params);
+    }
+    catch (RemoteException re)
+    {
+      throw re;
+    }
+    catch (Exception e)
+    {
+      throw new RemoteException("unable to set attribute " + attribute,e);
+    }
   }
 
   /**
@@ -121,23 +143,12 @@ public class BeanUtil
    * @param method der Methodenname.
    * @param params die zu uebergebenden Parameter.
    * @return der Rueckgabe-Wert der Methode.
-   * @throws RemoteException
+   * @throws Exception
    */
-  public static Object invoke(Object bean, String method, Object params[]) throws RemoteException
+  public static Object invoke(Object bean, String method, Object params[]) throws Exception
   {
     Expression ex = new Expression(bean,method,params);
-    try
-    {
-      return ex.getValue();
-    }
-    catch (RemoteException re)
-    {
-      throw re;
-    }
-    catch (Exception e)
-    {
-      throw new RemoteException("unable to invoke method " + method,e);
-    }
+    return ex.getValue();
   }
 
 }
@@ -145,6 +156,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.5  2008/06/16 10:56:26  willuhn
+ * @C urspruengliche Exception des invoke nicht fangen
+ *
  * Revision 1.4  2008/06/16 10:40:07  willuhn
  * @C BeanUtil#invoke ist jetzt public
  *
