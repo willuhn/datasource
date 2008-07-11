@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.62 $
- * $Date: 2008/02/08 00:26:51 $
+ * $Revision: 1.63 $
+ * $Date: 2008/07/11 09:30:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,15 +19,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
 import de.willuhn.datasource.GenericObject;
+import de.willuhn.datasource.db.types.Type;
+import de.willuhn.datasource.db.types.TypeRegistry;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.Event;
@@ -68,35 +67,6 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	private transient ArrayList deleteListeners = null;
 	private transient ArrayList storeListeners  = null;
 
-  /**
-   * Attribute dieses Typs werden als java.util.Date erkannt.
-   */
-  private final static String ATTRIBUTETYPE_DATE      = "date";
-
-  /**
-   * Attribute dieses Typs werden als java.util.Date erkannt.
-   */
-  private final static String ATTRIBUTETYPE_TIMESTAMP = "timestamp";
-
-  /**
-   * Attribute dieses Typs werden als java.util.Date erkannt.
-   */
-  private final static String ATTRIBUTETYPE_DATETIME  = "datetime";
-
-  /**
-   * Attribute dieses Typs werden als java.lang.Integer erkannt.
-   */
-  private final static String ATTRIBUTETYPE_INT       = "int";
-
-  /**
-   * Attribute dieses Typs werden als java.lang.Double erkannt.
-   */
-  private final static String ATTRIBUTETYPE_DOUBLE    = "double";
-
-  /**
-   * Attribute dieses Typs werden als java.lang.Double erkannt.
-   */
-  private final static String ATTRIBUTETYPE_DECIMAL   = "decimal";
 
   private boolean upper = false;
 
@@ -317,7 +287,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     String[] attributes = getAttributeNames();
     for (int i=0;i<attributes.length;++i)
     {
-      setAttribute(attributes[i],rs.getObject(this.upper ? attributes[i].toUpperCase() : attributes[i]));
+      Type t = TypeRegistry.getType((String) types.get(attributes[i]));
+      setAttribute(attributes[i],t.get(rs,this.upper ? attributes[i].toUpperCase() : attributes[i]));
     }
     // Jetzt kopieren wir noch die Eigenschaften in die Backup-Tabelle um Aenderungen ueberwachen zu koennen
     this.origProperties.putAll(this.properties);
@@ -1005,35 +976,13 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * @param index der Index im Statement.
    * @param type Bezeichnung des Feld-Typs entspechend der types-Mappingtabelle.
    * @param value der Wert.
+   * @throws SQLException
    */
-  private void setStmtValue(PreparedStatement stmt, int index, String type, Object value)
+  private void setStmtValue(PreparedStatement stmt, int index, String type, Object value) throws SQLException
   {
     index++;  // Wer zur Hoelle hat sich ausgedacht, dass Arrays bei Index 0, PreparedStatements aber bei 1 anfangen?? Grr
-    try {
-      if (type == null || value == null)
-        stmt.setNull(index,Types.NULL);
-
-      else if (ATTRIBUTETYPE_DATE.equalsIgnoreCase(type))
-        stmt.setDate(index,new java.sql.Date(((Date) value).getTime()));
-
-      else if (ATTRIBUTETYPE_TIMESTAMP.equalsIgnoreCase(type) || ATTRIBUTETYPE_DATETIME.equalsIgnoreCase(type))
-        stmt.setTimestamp(index,new Timestamp(((Date) value).getTime()));
-
-      else if (ATTRIBUTETYPE_INT.equalsIgnoreCase(type))
-        stmt.setInt(index,((Integer) value).intValue());
-
-      else if (ATTRIBUTETYPE_DOUBLE.equalsIgnoreCase(type) || ATTRIBUTETYPE_DECIMAL.equalsIgnoreCase(type))
-        stmt.setDouble(index,((Double) value).doubleValue());
-
-      else stmt.setString(index,(String) value);
-    }
-    catch (Exception e)
-    {
-      try {
-        stmt.setString(index,""+value);
-      }
-      catch (Exception e2) {/* useless */}
-    }
+    Type t = TypeRegistry.getType(type);
+    t.set(stmt,index,value);
   }
 
   /**
@@ -1370,6 +1319,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.63  2008/07/11 09:30:17  willuhn
+ * @N Support fuer Byte-Arrays
+ * @N SQL-Typen sind jetzt erweiterbar
+ *
  * Revision 1.62  2008/02/08 00:26:51  willuhn
  * @R temporaeres UNDO
  *
@@ -1419,228 +1372,4 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
  *
  * Revision 1.43  2007/01/12 14:31:39  willuhn
  * @N made metadata methods public
- *
- * Revision 1.42  2006/12/21 17:36:43  willuhn
- * @N maded init() and setService() protected
- *
- * Revision 1.41  2006/11/20 22:58:00  willuhn
- * @C moved autocommit flag into dbservice
- *
- * Revision 1.40  2006/10/23 22:27:33  willuhn
- * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
- *
- * Revision 1.39  2006/10/18 17:07:20  willuhn
- * @N DBIterator registriert einen DeleteListener, um sich selbst zu bereinigen, wenn Objekte aus ihr geloescht werden
- * @N deleteListener in AbstractDBObject
- *
- * Revision 1.38  2006/05/23 22:39:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.37  2006/01/04 17:04:57  web0
- * @C DeleteListener wird nun unmittelbar nach dem Loeschen jedoch vor this.id=null aufgerufen
- *
- * Revision 1.36  2005/09/28 17:32:38  web0
- * *** empty log message ***
- *
- * Revision 1.35  2005/09/26 10:24:05  web0
- * *** empty log message ***
- *
- * Revision 1.34  2005/09/04 21:52:42  web0
- * *** empty log message ***
- *
- * Revision 1.33  2005/09/02 13:32:00  web0
- * @C transaction behavior
- *
- * Revision 1.32  2005/09/02 13:13:01  web0
- * @C transaction behavior
- *
- * Revision 1.31  2005/09/02 11:32:28  web0
- * @C transaction behavior
- *
- * Revision 1.30  2005/08/22 22:54:15  web0
- * *** empty log message ***
- *
- * Revision 1.29  2005/08/01 11:47:26  web0
- * @N unchanged properties will now be ignored on update statements
- *
- * Revision 1.28  2005/08/01 11:27:37  web0
- * @N unchanged properties will now be ignored on update statements
- *
- * Revision 1.27  2005/05/30 22:03:09  web0
- * @C some methods are no longer abstract
- *
- * Revision 1.26  2005/05/08 17:45:32  web0
- * @N AbstractDBObject#hasChanged
- *
- * Revision 1.25  2005/03/09 01:07:51  web0
- * @D javadoc fixes
- *
- * Revision 1.24  2004/12/09 23:22:25  willuhn
- * @N getAttributeNames nun Bestandteil der API
- *
- * Revision 1.23  2004/11/12 18:21:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2004/11/05 19:48:24  willuhn
- * *** empty log message ***
- *
- * Revision 1.21  2004/11/05 01:50:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2004/10/31 18:46:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2004/10/25 17:58:37  willuhn
- * @N Delete/Store-Listeners
- *
- * Revision 1.18  2004/08/26 23:19:33  willuhn
- * @N added ObjectNotFoundException
- *
- * Revision 1.17  2004/08/18 23:21:38  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/08/18 23:14:00  willuhn
- * @D Javadoc
- *
- * Revision 1.15  2004/08/11 22:23:51  willuhn
- * @N AbstractDBObject.getLoadQuery
- *
- * Revision 1.14  2004/08/03 22:42:57  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2004/08/03 22:11:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2004/08/03 21:46:16  willuhn
- * @C Speichern des Primaer-Schluessels als regulaeres Feld wieder erlaubt
- *
- * Revision 1.11  2004/08/03 00:44:13  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/07/21 23:53:56  willuhn
- * @C massive Refactoring ;)
- *
- * Revision 1.9  2004/07/13 22:19:30  willuhn
- * @C paar Funktionsnamen umbenannt
- *
- * Revision 1.8  2004/06/30 21:58:12  willuhn
- * @N md5 check for database
- *
- * Revision 1.7  2004/06/17 00:05:51  willuhn
- * @N GenericObject, GenericIterator
- *
- * Revision 1.6  2004/06/10 20:22:40  willuhn
- * @D javadoc comments fixed
- *
- * Revision 1.5  2004/03/18 01:24:17  willuhn
- * @C refactoring
- *
- * Revision 1.4  2004/03/06 18:24:34  willuhn
- * @D javadoc
- *
- * Revision 1.3  2004/02/23 20:31:26  willuhn
- * @C refactoring in AbstractDialog
- *
- * Revision 1.2  2004/01/23 00:25:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/01/10 14:52:19  willuhn
- * @C package removings
- *
- * Revision 1.1  2004/01/08 20:46:43  willuhn
- * @N database stuff separated from jameica
- *
- * Revision 1.30  2004/01/04 18:48:36  willuhn
- * @N config store support
- *
- * Revision 1.29  2004/01/03 18:08:05  willuhn
- * @N Exception logging
- * @C replaced bb.util xml parser with nanoxml
- *
- * Revision 1.28  2003/12/30 02:10:57  willuhn
- * @N updateChecker
- *
- * Revision 1.27  2003/12/29 22:07:40  willuhn
- * *** empty log message ***
- *
- * Revision 1.26  2003/12/29 20:07:19  willuhn
- * @N Formatter
- *
- * Revision 1.25  2003/12/29 16:29:47  willuhn
- * @N javadoc
- *
- * Revision 1.24  2003/12/28 22:58:27  willuhn
- * @N synchronize mode
- *
- * Revision 1.23  2003/12/27 21:23:33  willuhn
- * @N object serialization
- *
- * Revision 1.22  2003/12/26 21:43:29  willuhn
- * @N customers changable
- *
- * Revision 1.21  2003/12/22 16:41:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2003/12/19 01:43:26  willuhn
- * @N added Tree
- *
- * Revision 1.19  2003/12/18 21:47:12  willuhn
- * @N AbstractDBObjectNode
- *
- * Revision 1.18  2003/12/16 02:27:44  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2003/12/15 19:08:01  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2003/12/13 20:05:21  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2003/12/12 21:11:29  willuhn
- * @N ObjectMetaCache
- *
- * Revision 1.14  2003/12/11 21:00:54  willuhn
- * @C refactoring
- *
- * Revision 1.13  2003/12/05 17:12:23  willuhn
- * @C SelectInput
- *
- * Revision 1.12  2003/11/30 16:23:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2003/11/27 00:22:18  willuhn
- * @B paar Bugfixes aus Kombination RMI + Reflection
- * @N insertCheck(), deleteCheck(), updateCheck()
- * @R AbstractDBObject#toString() da in RemoteObject ueberschrieben (RMI-Konflikt)
- *
- * Revision 1.10  2003/11/24 23:01:58  willuhn
- * @N added settings
- *
- * Revision 1.9  2003/11/24 17:27:50  willuhn
- * @N Context menu in table
- *
- * Revision 1.8  2003/11/24 16:25:53  willuhn
- * @N AbstractDBObject is now able to resolve foreign keys
- *
- * Revision 1.7  2003/11/24 14:21:53  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2003/11/22 20:43:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2003/11/21 02:10:21  willuhn
- * @N prepared Statements in AbstractDBObject
- * @N a lot of new SWT parts
- *
- * Revision 1.4  2003/11/20 03:48:42  willuhn
- * @N first dialogues
- *
- * Revision 1.3  2003/11/13 00:37:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2003/11/12 00:58:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/11/05 22:46:19  willuhn
- * *** empty log message ***
  **********************************************************************/
