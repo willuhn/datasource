@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/types/TypeRegistry.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/07/11 09:30:17 $
+ * $Revision: 1.2 $
+ * $Date: 2008/07/14 08:55:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,20 +34,21 @@ public class TypeRegistry
   {
     types.put(null,        TYPE_DEFAULT);
 
-    types.put("varchar",   new TypeString());
-    types.put("text",      new TypeString());
-    types.put("longtext",  new TypeString());
+    types.put("varchar",     new TypeString());
+    types.put("longvarchar", new TypeString());
+    types.put("text",        new TypeString());
+    types.put("longtext",    new TypeString());
 
-    types.put("date",      new TypeDate());
-    types.put("datetime",  new TypeTimestamp());
-    types.put("timestamp", new TypeTimestamp());
+    types.put("date",        new TypeDate());
+    types.put("datetime",    new TypeTimestamp());
+    types.put("timestamp",   new TypeTimestamp());
     
-    types.put("int",       new TypeInteger());
-    types.put("double",    new TypeDouble());
-    types.put("decimal",   new TypeDouble());
+    types.put("int",         new TypeInteger());
+    types.put("double",      new TypeDouble());
+    types.put("decimal",     new TypeDouble());
     
-    types.put("blob",      new TypeByteArray());
-    types.put("longblob",  new TypeByteArray());
+    types.put("blob",        new TypeByteArray());
+    types.put("longblob",    new TypeByteArray());
   }
   
   /**
@@ -85,6 +86,9 @@ public class TypeRegistry
 
 /*********************************************************************
  * $Log: TypeRegistry.java,v $
+ * Revision 1.2  2008/07/14 08:55:28  willuhn
+ * @N "longvarchar" added
+ *
  * Revision 1.1  2008/07/11 09:30:17  willuhn
  * @N Support fuer Byte-Arrays
  * @N SQL-Typen sind jetzt erweiterbar
