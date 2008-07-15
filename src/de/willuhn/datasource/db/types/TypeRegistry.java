@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/types/TypeRegistry.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/07/14 08:55:28 $
+ * $Revision: 1.3 $
+ * $Date: 2008/07/15 11:02:31 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -35,9 +35,9 @@ public class TypeRegistry
     types.put(null,        TYPE_DEFAULT);
 
     types.put("varchar",     new TypeString());
-    types.put("longvarchar", new TypeString());
-    types.put("text",        new TypeString());
-    types.put("longtext",    new TypeString());
+    types.put("longvarchar", new TypeLongString());
+    types.put("text",        new TypeLongString());
+    types.put("longtext",    new TypeLongString());
 
     types.put("date",        new TypeDate());
     types.put("datetime",    new TypeTimestamp());
@@ -86,6 +86,9 @@ public class TypeRegistry
 
 /*********************************************************************
  * $Log: TypeRegistry.java,v $
+ * Revision 1.3  2008/07/15 11:02:31  willuhn
+ * @N Neuer Typ "TypeLongString", der aus den Feldern "TEXT", "LONGTEXT" und "LONGVARCHAR" bei Bedarf aus einem Reader liest (ist abhaengig vom JDBC-Treiber)
+ *
  * Revision 1.2  2008/07/14 08:55:28  willuhn
  * @N "longvarchar" added
  *
