@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/AbstractXmlIO.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/01/22 12:03:09 $
+ * $Revision: 1.2 $
+ * $Date: 2008/09/02 17:59:10 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.datasource.serialize;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,13 +34,14 @@ public abstract class AbstractXmlIO implements IO
   protected final static Map valueMap = new HashMap();
   static
   {
-    valueMap.put(null,                new StringValue());
-    valueMap.put("java.lang.Double",  new DoubleValue());
-    valueMap.put("java.lang.Integer", new IntegerValue());
-    valueMap.put("java.lang.Long",    new LongValue());
-    valueMap.put("java.util.Date",    new DateValue());
-    valueMap.put("java.sql.Date",     new SqlDateValue());
-    valueMap.put("java.sql.Timestamp",new TimestampValue());
+    valueMap.put(null,                   new StringValue());
+    valueMap.put("java.lang.Double",     new DoubleValue());
+    valueMap.put("java.math.BigDecimal", new BigDecimalValue());
+    valueMap.put("java.lang.Integer",    new IntegerValue());
+    valueMap.put("java.lang.Long",       new LongValue());
+    valueMap.put("java.util.Date",       new DateValue());
+    valueMap.put("java.sql.Date",        new SqlDateValue());
+    valueMap.put("java.sql.Timestamp",   new TimestampValue());
   }
 
   protected static interface Value
@@ -100,6 +102,20 @@ public abstract class AbstractXmlIO implements IO
     }
   }
   
+  /**
+   * Implementierung fuer BigDecimal.
+   */
+  protected static class BigDecimalValue extends AbstractValue
+  {
+    /**
+     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
+     */
+    public Object unserialize(String s) throws IOException
+    {
+      return new BigDecimal(s);
+    }
+  }
+
   /**
    * Implementierung fuer Integer.
    */
@@ -194,6 +210,9 @@ public abstract class AbstractXmlIO implements IO
 
 /*********************************************************************
  * $Log: AbstractXmlIO.java,v $
+ * Revision 1.2  2008/09/02 17:59:10  willuhn
+ * @N Support fuer BigDecimal im XML-Export
+ *
  * Revision 1.1  2008/01/22 12:03:09  willuhn
  * @N Objekt-Serializer/-Deserializer fuer XML-Format
  *
