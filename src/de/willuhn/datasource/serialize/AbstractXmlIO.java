@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/AbstractXmlIO.java,v $
- * $Revision: 1.2 $
- * $Date: 2008/09/02 17:59:10 $
+ * $Revision: 1.3 $
+ * $Date: 2008/09/28 23:26:53 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.willuhn.logging.Logger;
+import de.willuhn.util.Base64;
 
 
 /**
@@ -42,6 +43,7 @@ public abstract class AbstractXmlIO implements IO
     valueMap.put("java.util.Date",       new DateValue());
     valueMap.put("java.sql.Date",        new SqlDateValue());
     valueMap.put("java.sql.Timestamp",   new TimestampValue());
+    valueMap.put("[B",                   new ByteArrayValue());
   }
 
   protected static interface Value
@@ -205,11 +207,54 @@ public abstract class AbstractXmlIO implements IO
       return new java.sql.Timestamp(date.getTime());
     }
   }
+  
+  /**
+   * Implementierung fuer Byte-Arrays.
+   */
+  protected static class ByteArrayValue implements Value
+  {
+
+    /**
+     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#serialize(java.lang.Object)
+     */
+    public String serialize(Object o) throws IOException {
+      if (o == null)
+        return "";
+      if (!(o instanceof byte[]))
+        throw new IOException("unable to serialize " + o);
+      return Base64.encode((byte[])o);
+    }
+
+    /**
+     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
+     */
+    public Object unserialize(String s) throws IOException {
+      if (s == null || s.length() == 0)
+        return null;
+      return Base64.decode(s);
+    }
+    
+  }
 }
 
 
+/**********************************************************************
+ * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/AbstractXmlIO.java,v $
+ * $Revision: 1.3 $
+ * $Date: 2008/09/28 23:26:53 $
+ * $Author: willuhn $
+ * $Locker:  $
+ * $State: Exp $
+ *
+ * Copyright (c) by willuhn software & services
+ * All rights reserved
+ *
+ **********************************************************************/
 /*********************************************************************
  * $Log: AbstractXmlIO.java,v $
+ * Revision 1.3  2008/09/28 23:26:53  willuhn
+ * @N Support fuer bytearray
+ *
  * Revision 1.2  2008/09/02 17:59:10  willuhn
  * @N Support fuer BigDecimal im XML-Export
  *
