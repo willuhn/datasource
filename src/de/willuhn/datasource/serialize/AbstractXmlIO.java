@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/AbstractXmlIO.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/09/28 23:26:53 $
+ * $Revision: 1.4 $
+ * $Date: 2008/09/29 14:18:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -72,7 +72,7 @@ public abstract class AbstractXmlIO implements IO
      */
     public String serialize(Object o) throws IOException
     {
-      return o.toString();
+      return o == null ? "" : o.toString();
     }
   }
   
@@ -86,7 +86,7 @@ public abstract class AbstractXmlIO implements IO
      */
     public Object unserialize(String s) throws IOException
     {
-      return new String(s);
+      return s == null ? "" : s;
     }
   }
 
@@ -100,7 +100,7 @@ public abstract class AbstractXmlIO implements IO
      */
     public Object unserialize(String s) throws IOException
     {
-      return new Double(s);
+      return (s == null || s.length() == 0) ? null : new Double(s);
     }
   }
   
@@ -114,7 +114,7 @@ public abstract class AbstractXmlIO implements IO
      */
     public Object unserialize(String s) throws IOException
     {
-      return new BigDecimal(s);
+      return (s == null || s.length() == 0) ? null : new BigDecimal(s);
     }
   }
 
@@ -128,7 +128,7 @@ public abstract class AbstractXmlIO implements IO
      */
     public Object unserialize(String s) throws IOException
     {
-      return new Integer(s);
+      return (s == null || s.length() == 0) ? null : new Integer(s);
     }
   }
 
@@ -142,7 +142,7 @@ public abstract class AbstractXmlIO implements IO
      */
     public Object unserialize(String s) throws IOException
     {
-      return new Long(s);
+      return (s == null || s.length() == 0) ? null : new Long(s);
     }
   }
   
@@ -158,6 +158,8 @@ public abstract class AbstractXmlIO implements IO
      */
     public Object unserialize(String s) throws IOException
     {
+      if (s == null || s.length() == 0)
+        return null;
       try
       {
         return format.parse(s);
@@ -174,7 +176,7 @@ public abstract class AbstractXmlIO implements IO
      */
     public String serialize(Object o) throws IOException
     {
-      return format.format((Date)o);
+      return o == null ? "" : format.format((Date)o);
     }
   }
   
@@ -189,7 +191,7 @@ public abstract class AbstractXmlIO implements IO
     public Object unserialize(String s) throws IOException
     {
       Date date = (Date) super.unserialize(s);
-      return new java.sql.Date(date.getTime());
+      return date == null ? null : new java.sql.Date(date.getTime());
     }
   }
 
@@ -204,7 +206,7 @@ public abstract class AbstractXmlIO implements IO
     public Object unserialize(String s) throws IOException
     {
       Date date = (Date) super.unserialize(s);
-      return new java.sql.Timestamp(date.getTime());
+      return date == null ? null : new java.sql.Timestamp(date.getTime());
     }
   }
   
@@ -240,8 +242,8 @@ public abstract class AbstractXmlIO implements IO
 
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/AbstractXmlIO.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/09/28 23:26:53 $
+ * $Revision: 1.4 $
+ * $Date: 2008/09/29 14:18:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -252,6 +254,9 @@ public abstract class AbstractXmlIO implements IO
  **********************************************************************/
 /*********************************************************************
  * $Log: AbstractXmlIO.java,v $
+ * Revision 1.4  2008/09/29 14:18:00  willuhn
+ * @N Support for NULL-values
+ *
  * Revision 1.3  2008/09/28 23:26:53  willuhn
  * @N Support fuer bytearray
  *

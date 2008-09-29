@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/XmlReader.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/01/22 12:03:09 $
+ * $Revision: 1.2 $
+ * $Date: 2008/09/29 14:18:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -89,8 +89,6 @@ public class XmlReader extends AbstractXmlIO implements Reader
       {
         // ignore
       }
-      if (value == null)
-        continue;
       
       Value v = (Value) valueMap.get(vType);
       if (v == null) v = (Value) valueMap.get(null);
@@ -126,6 +124,9 @@ public class XmlReader extends AbstractXmlIO implements Reader
 
 /*********************************************************************
  * $Log: XmlReader.java,v $
+ * Revision 1.2  2008/09/29 14:18:00  willuhn
+ * @N Support for NULL-values
+ *
  * Revision 1.1  2008/01/22 12:03:09  willuhn
  * @N Objekt-Serializer/-Deserializer fuer XML-Format
  *
