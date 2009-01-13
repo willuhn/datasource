@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.5 $
- * $Date: 2008/06/16 10:56:26 $
+ * $Revision: 1.6 $
+ * $Date: 2009/01/13 16:36:43 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,8 @@ package de.willuhn.datasource;
 
 import java.beans.Expression;
 import java.rmi.RemoteException;
+
+import de.willuhn.logging.Logger;
 
 
 /**
@@ -42,6 +44,11 @@ public class BeanUtil
     catch (RemoteException re)
     {
       throw re;
+    }
+    catch (NoSuchMethodException nme)
+    {
+      Logger.warn(nme.getMessage());
+      return null;
     }
     catch (Exception e)
     {
@@ -156,6 +163,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.6  2009/01/13 16:36:43  willuhn
+ * @C Wenn benannter Getter einer Bean nicht existiert, dann keine NoSuchMethodException werfen sondern nur warning loggen
+ *
  * Revision 1.5  2008/06/16 10:56:26  willuhn
  * @C urspruengliche Exception des invoke nicht fangen
  *
