@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.12 $
- * $Date: 2009/02/23 22:25:06 $
+ * $Revision: 1.13 $
+ * $Date: 2009/02/23 22:31:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -69,7 +69,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   public GenericIterator getTopLevelList() throws RemoteException
   {
     DBIterator list = getList();
-    list.addFilter(getNodeField() + " = 0");
+    list.addFilter(getNodeField() + " is null");
     return list;
   }
 
@@ -229,6 +229,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.13  2009/02/23 22:31:08  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.12  2009/02/23 22:25:06  willuhn
  * *** empty log message ***
  *
