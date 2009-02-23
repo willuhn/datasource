@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.11 $
- * $Date: 2009/02/23 22:13:49 $
+ * $Revision: 1.12 $
+ * $Date: 2009/02/23 22:25:06 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -223,12 +223,15 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
    */
   public void setParent(DBObjectNode parent) throws RemoteException
   {
-    setAttribute(getNodeField(),parent == null ? null : parent.getID());
+    setAttribute(getNodeField(),parent);
   }
 }
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.12  2009/02/23 22:25:06  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.11  2009/02/23 22:13:49  willuhn
  * @N setParent(DBObjectNode) in DBObjectNode
  *
