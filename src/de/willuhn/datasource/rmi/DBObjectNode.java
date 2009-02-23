@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBObjectNode.java,v $
- * $Revision: 1.3 $
- * $Date: 2004/08/11 23:36:34 $
+ * $Revision: 1.4 $
+ * $Date: 2009/02/23 22:13:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -37,10 +37,20 @@ public interface DBObjectNode extends DBObject, GenericObjectNode
 	 * @throws RemoteException
 	 */
 	public GenericIterator getTopLevelList() throws RemoteException;
+	
+	/**
+	 * Speichert das Eltern-Element.
+	 * @param parent Eltern-Element.
+	 * @throws RemoteException
+	 */
+	public void setParent(DBObjectNode parent) throws RemoteException;
 }
 
 /*********************************************************************
  * $Log: DBObjectNode.java,v $
+ * Revision 1.4  2009/02/23 22:13:49  willuhn
+ * @N setParent(DBObjectNode) in DBObjectNode
+ *
  * Revision 1.3  2004/08/11 23:36:34  willuhn
  * @N Node Objekte in GenericObjectNode und DBObjectNode aufgeteilt
  *

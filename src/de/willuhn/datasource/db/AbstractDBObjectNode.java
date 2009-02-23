@@ -1,8 +1,8 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.10 $
- * $Date: 2006/04/20 08:34:12 $
- * $Author: web0 $
+ * $Revision: 1.11 $
+ * $Date: 2009/02/23 22:13:49 $
+ * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
  *
@@ -218,10 +218,20 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     insertCheck();
   }
 
+  /**
+   * @see de.willuhn.datasource.rmi.DBObjectNode#setParent(de.willuhn.datasource.rmi.DBObjectNode)
+   */
+  public void setParent(DBObjectNode parent) throws RemoteException
+  {
+    setAttribute(getNodeField(),parent == null ? null : parent.getID());
+  }
 }
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.11  2009/02/23 22:13:49  willuhn
+ * @N setParent(DBObjectNode) in DBObjectNode
+ *
  * Revision 1.10  2006/04/20 08:34:12  web0
  * @C s/Childs/Children/
  *
