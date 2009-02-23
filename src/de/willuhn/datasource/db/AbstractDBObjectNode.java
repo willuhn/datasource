@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.13 $
- * $Date: 2009/02/23 22:31:08 $
+ * $Revision: 1.14 $
+ * $Date: 2009/02/23 22:42:05 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObjectNode;
+import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
 
 /**
@@ -87,8 +88,18 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     while (childs.hasNext())
     {
       count++;
-      if (count > 100) return false; // limit recursion
+      if (count > 10000)
+      {
+        Logger.error("max recursion limit reached for [" + this.getTableName() + ":" + this.getID() + "]");
+        return false; // limit recursion
+      }
       child = (GenericObjectNode) childs.next();
+
+      // Direktes Kind?
+      if (child.equals(object))
+        return true;
+      
+      // Kindes-Kinder checken
       if (child.hasChild(object))
         return true;
     }
@@ -229,6 +240,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.14  2009/02/23 22:42:05  willuhn
+ * @B Falscher Check in hasChild
+ *
  * Revision 1.13  2009/02/23 22:31:08  willuhn
  * *** empty log message ***
  *
