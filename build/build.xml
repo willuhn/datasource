@@ -61,13 +61,7 @@
 		<javac debug="true" debuglevel="lines,vars,source" source="1.4" target="1.4" encoding="ISO-8859-1" deprecation="true" destdir="${class.dir}" srcdir="${src.dir}">
 			<classpath refid="compilepath" />
 		</javac>
-
-		<rmic verify="true" base="${class.dir}">
-			<include name="**/*.class" />
-			<classpath refid="compilepath" />
-		</rmic>
 	</target>
-
 
 
 	<target depends="compile" name="cvstag" description="tags the source in the CVS">
