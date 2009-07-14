@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/types/TypeByteArray.java,v $
- * $Revision: 1.3 $
- * $Date: 2009/06/28 22:04:09 $
+ * $Revision: 1.4 $
+ * $Date: 2009/07/14 12:00:47 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -50,6 +50,8 @@ public class TypeByteArray extends TypeGeneric
       Blob b = (Blob) value;
       is = b.getBinaryStream();
     }
+    else if (value instanceof byte[])
+      return value;
 
     if (is == null)
     {
@@ -100,6 +102,9 @@ public class TypeByteArray extends TypeGeneric
 
 /*********************************************************************
  * $Log: TypeByteArray.java,v $
+ * Revision 1.4  2009/07/14 12:00:47  willuhn
+ * @C byte[] unveraendert zurueckliefern
+ *
  * Revision 1.3  2009/06/28 22:04:09  willuhn
  * @C java.sql.Blob in Byte-Array kopieren (Heiners Patch)
  *
