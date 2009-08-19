@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.9 $
- * $Date: 2009/08/19 12:44:54 $
+ * $Revision: 1.10 $
+ * $Date: 2009/08/19 12:55:13 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.willuhn.logging.Logger;
@@ -180,11 +179,6 @@ public class BeanUtil
    */
   public static List<Field> getAnnotatedFields(Object bean, Class... a) throws Exception
   {
-    // Wir packen die gesuchten Annotations in eine List. In der kann man besser suchen
-    List onlyThis = null;
-    if (a != null && a.length > 0)
-      onlyThis = Arrays.asList(a);
-
     List<Field> found = new ArrayList<Field>();
     
     // Ich mag keine while(true)-Schleifen. Wenn die Abbruchbedingung
@@ -206,17 +200,31 @@ public class BeanUtil
           Annotation[] al = f.getAnnotations();
           
           // Aufrufer moechte das Member unabhaengig von der Art der Annotation haben
-          if (onlyThis == null)
+          if (a == null || a.length == 0)
           {
             found.add(f);
             continue;
           }
           
           // Aufrufer moechte nur Members mit bestimmten Annotations haben
+          boolean b = false;
           for (Annotation at:al)
           {
-            if (onlyThis.contains(at))
-              found.add(f); // Jepp, Annotation war gesucht
+            // Wir hoeren schon auf, wenn wir an dem Member nur eine
+            // der gesuchten Annotations gefunden haben. Sonst wuerde
+            // das Member mehrfach in der Ergebnisliste stehen
+            if (b)
+              break;
+            
+            for (Class test:a)
+            {
+              if (at.annotationType().isAssignableFrom(test))
+              {
+                found.add(f); // Jepp, Annotation war gesucht
+                b = true;
+                break;
+              }
+            }
           }
         }
       }
@@ -237,6 +245,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.10  2009/08/19 12:55:13  willuhn
+ * @B equals-Vergleich geaendert
+ *
  * Revision 1.9  2009/08/19 12:44:54  willuhn
  * *** empty log message ***
  *
