@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.7 $
- * $Date: 2009/08/19 12:23:33 $
+ * $Revision: 1.8 $
+ * $Date: 2009/08/19 12:43:09 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -178,10 +178,10 @@ public class BeanUtil
    * @return Liste der gefundenen Annotations.
    * @throws Exception
    */
-  public static Field[] getAnnotatedFields(Object bean, Annotation... a) throws Exception
+  public static Field[] getAnnotatedFields(Object bean, Class... a) throws Exception
   {
     // Wir packen die gesuchten Annotations in eine List. In der kann man besser suchen
-    List<Annotation> onlyThis = null;
+    List onlyThis = null;
     if (a != null && a.length > 0)
       onlyThis = Arrays.asList(a);
 
@@ -237,6 +237,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.8  2009/08/19 12:43:09  willuhn
+ * @B Annotation-Parameter falsch
+ *
  * Revision 1.7  2009/08/19 12:23:33  willuhn
  * @N Neue Methode zum Ermitteln von Field-Annotations in Beans, die auch in Superklassen sucht
  *
