@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.6 $
- * $Date: 2009/01/13 16:36:43 $
+ * $Revision: 1.7 $
+ * $Date: 2009/08/19 12:23:33 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,7 +14,12 @@
 package de.willuhn.datasource;
 
 import java.beans.Expression;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.willuhn.logging.Logger;
 
@@ -157,12 +162,84 @@ public class BeanUtil
     Expression ex = new Expression(bean,method,params);
     return ex.getValue();
   }
+  
+  /**
+   * Liefert alle Felder der Bean, die mit Annotations versehen sind - unabhaengig vom Modifier.
+   * Eigentlich koennte man hierzu auch {@link Class#getDeclaredAnnotations()}
+   * verwenden. Diese Funktion sucht aber nur in der konkreten Klasse und
+   * nicht in Super-Klassen.
+   * Genau diese Luecke schliesst diese Funktion.
+   * Sie liefert also alle Member mit Annotations, die einen public, protected, private oder
+   * defaulft-Modifier haben. Aus dieser Klasse und allen Super-Klassen.
+   * @param bean Bean, von der die Annotations gesucht werden sollen.
+   * @param a optionale Angabe von gesuchten Annotations.
+   * Wenn dieser Parameter angegeben ist, werden nur jene Properties zurueckgeliefert,
+   * bei denen mind. eine der genannten Annotations deklariert ist.
+   * @return Liste der gefundenen Annotations.
+   * @throws Exception
+   */
+  public static Field[] getAnnotatedFields(Object bean, Annotation... a) throws Exception
+  {
+    // Wir packen die gesuchten Annotations in eine List. In der kann man besser suchen
+    List<Annotation> onlyThis = null;
+    if (a != null && a.length > 0)
+      onlyThis = Arrays.asList(a);
+
+    List<Field> found = new ArrayList<Field>();
+    
+    // Ich mag keine while(true)-Schleifen. Wenn die Abbruchbedingung
+    // nicht erfuellt wird, haben wir eine Endlos-Schleife. Und da davon
+    // auszugehen ist, dass eine Klasse unmoeglich mehr als 100 Superklassen
+    // haben kann, limitieren wir das da.
+    // Hier eigentlich nur fuer den Fall, dass es irgend eine Java-Implementierung gibt,
+    // die bei Class#getSuperclass() nicht NULL liefert, wenn Class bereits ein
+    // "java.lang.Object" ist (wir also schon oben angekommen sind). Ich hab
+    // nirgends einen Hinweis gefunden, ob dieser spezifiziert ist. 
+    Class current = bean.getClass();
+    for (int i=0;i<100;++i)
+    {
+      Field[] fields = current.getDeclaredFields();
+      if (fields != null && fields.length > 0)
+      {
+        for (Field f:fields)
+        {
+          Annotation[] al = f.getAnnotations();
+          
+          // Aufrufer moechte das Member unabhaengig von der Art der Annotation haben
+          if (onlyThis == null)
+          {
+            found.add(f);
+            continue;
+          }
+          
+          // Aufrufer moechte nur Members mit bestimmten Annotations haben
+          for (Annotation at:al)
+          {
+            if (onlyThis.contains(at))
+              found.add(f); // Jepp, Annotation war gesucht
+          }
+        }
+      }
+      
+      Class superClass = current.getSuperclass();
+      if (superClass == null)
+        break; // Oben angekommen
+      
+      // Ansonsten mit der Super-Klasse weitermachen
+      current = superClass;
+    }
+    
+    return found.toArray(new Field[found.size()]);
+  }
 
 }
 
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.7  2009/08/19 12:23:33  willuhn
+ * @N Neue Methode zum Ermitteln von Field-Annotations in Beans, die auch in Superklassen sucht
+ *
  * Revision 1.6  2009/01/13 16:36:43  willuhn
  * @C Wenn benannter Getter einer Bean nicht existiert, dann keine NoSuchMethodException werfen sondern nur warning loggen
  *
