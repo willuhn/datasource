@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.8 $
- * $Date: 2009/08/19 12:43:09 $
+ * $Revision: 1.9 $
+ * $Date: 2009/08/19 12:44:54 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -178,7 +178,7 @@ public class BeanUtil
    * @return Liste der gefundenen Annotations.
    * @throws Exception
    */
-  public static Field[] getAnnotatedFields(Object bean, Class... a) throws Exception
+  public static List<Field> getAnnotatedFields(Object bean, Class... a) throws Exception
   {
     // Wir packen die gesuchten Annotations in eine List. In der kann man besser suchen
     List onlyThis = null;
@@ -229,7 +229,7 @@ public class BeanUtil
       current = superClass;
     }
     
-    return found.toArray(new Field[found.size()]);
+    return found;
   }
 
 }
@@ -237,6 +237,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.9  2009/08/19 12:44:54  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.8  2009/08/19 12:43:09  willuhn
  * @B Annotation-Parameter falsch
  *
