@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.14 $
- * $Date: 2009/02/23 22:42:05 $
+ * $Revision: 1.15 $
+ * $Date: 2009/11/09 10:34:18 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObjectNode;
+import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
 import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.logging.Logger;
@@ -59,6 +60,8 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
    */
   public GenericIterator getChildren() throws RemoteException
   {
+    if (this.isNewObject())
+      return PseudoIterator.fromArray(new GenericObjectNode[0]);
     DBIterator list = getList();
     list.addFilter(getNodeField() + " = " + this.getID());
     return list;
@@ -124,7 +127,8 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   public GenericIterator getPossibleParents() throws RemoteException
   {
     DBIterator list = this.getList();
-    list.addFilter(getIDField() + " != "+this.getID()); // Objekt darf nicht sich selbst als Eltern-Objekt haben
+    if (!this.isNewObject())
+      list.addFilter(getIDField() + " != "+this.getID()); // Objekt darf nicht sich selbst als Eltern-Objekt haben
     ArrayList array = new ArrayList();
 
 		GenericObjectNode element = null;
@@ -240,6 +244,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.15  2009/11/09 10:34:18  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.14  2009/02/23 22:42:05  willuhn
  * @B Falscher Check in hasChild
  *
