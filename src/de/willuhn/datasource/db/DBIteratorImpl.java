@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.27 $
- * $Date: 2007/04/02 23:00:42 $
+ * $Revision: 1.28 $
+ * $Date: 2010/05/04 10:38:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -39,6 +39,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   private String filter           = "";
   private String order            = "";
   private ArrayList params        = new ArrayList();
+  private String joins            = "";
 
   private ArrayList list          = new ArrayList();
   private int index               = 0;
@@ -140,6 +141,20 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   }
 
   /**
+   * @see de.willuhn.datasource.rmi.DBIterator#join(java.lang.String)
+   */
+  public void join(String table) throws RemoteException
+  {
+    if (this.initialized)
+      return; // allready initialized
+    
+    if (table == null)
+      return;
+
+    this.joins += ", " + table;
+  }
+
+  /**
    * Baut das SQL-Statement fuer die Liste zusammen.
    * @return das erzeugte Statement.
    */
@@ -157,7 +172,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     else if (filter != null && !"".equals(filter))
     {
       // ansonsten pappen wir den Filter so hinten dran, wie er kommt
-      sql += " where " + filter;
+      sql += joins + " where " + filter;
     }
 
     // Statement enthaelt noch kein Order - also koennen wir unseres noch dranschreiben
@@ -317,6 +332,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
+ * Revision 1.28  2010/05/04 10:38:14  willuhn
+ * @N rudimentaere Joins
+ *
  * Revision 1.27  2007/04/02 23:00:42  willuhn
  * @B falscher Parameter in BeanUtil#get
  * @N PseudoIterator#asList

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.6 $
- * $Date: 2006/08/23 09:31:34 $
+ * $Revision: 1.7 $
+ * $Date: 2010/05/04 10:38:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -54,6 +54,13 @@ public interface DBIterator extends GenericIterator
   public void addFilter(String filter, Object[] params) throws RemoteException;
   
   /**
+   * Fuegt eine Tabelle via Join hinzu.
+   * @param table zu joinende Tabelle.
+   * @throws RemoteException
+   */
+  public void join(String table) throws RemoteException;
+  
+  /**
    * Fuegt dem Iterator eine Sortierung hinzu.
    * @param order
    * @throws RemoteException
@@ -65,6 +72,9 @@ public interface DBIterator extends GenericIterator
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
+ * Revision 1.7  2010/05/04 10:38:14  willuhn
+ * @N rudimentaere Joins
+ *
  * Revision 1.6  2006/08/23 09:31:34  willuhn
  * @N DBIterator kann nun auch PreparedStatements verwenden
  *

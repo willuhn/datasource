@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.63 $
- * $Date: 2008/07/11 09:30:17 $
+ * $Revision: 1.64 $
+ * $Date: 2010/05/04 10:38:14 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -933,7 +933,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     if (this.upper)
       tableName = tableName.toUpperCase();
     
-    return "select * from " + tableName;
+    return "select " + tableName + ".* from " + tableName;
   }
 
 	/**
@@ -1319,6 +1319,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.64  2010/05/04 10:38:14  willuhn
+ * @N rudimentaere Joins
+ *
  * Revision 1.63  2008/07/11 09:30:17  willuhn
  * @N Support fuer Byte-Arrays
  * @N SQL-Typen sind jetzt erweiterbar
