@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.64 $
- * $Date: 2010/05/04 10:38:14 $
+ * $Revision: 1.65 $
+ * $Date: 2010/08/29 22:09:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -713,8 +713,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
   /**
    * Liefert das automatisch erzeugte SQL-Statement fuer ein Update.
-   * Kann bei Bedarf überschrieben um ein vom dynamisch erzeugten
-   * abweichendes Statement für die Speicherung zu verwenden.
+   * Kann bei Bedarf ï¿½berschrieben um ein vom dynamisch erzeugten
+   * abweichendes Statement fï¿½r die Speicherung zu verwenden.
    * Die Funktion darf <null> zurueckliefern, wenn nichts zu aendern ist.  
    * @return das erzeugte SQL-Statement.
    * @throws RemoteException wenn beim Erzugen des Statements ein Fehler auftrat.
@@ -785,8 +785,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   
   /**
    * Liefert das automatisch erzeugte SQL-Statement fuer ein Insert.
-   * Kann bei Bedarf überschrieben um ein vom dynamisch erzeugten
-   * abweichendes Statement für die Speicherung zu verwenden.  
+   * Kann bei Bedarf ï¿½berschrieben um ein vom dynamisch erzeugten
+   * abweichendes Statement fï¿½r die Speicherung zu verwenden.  
    * @return das erzeugte SQL-Statement.
    * @throws RemoteException Wenn beim Erzeugen des Statements ein Fehler auftrat.
    */
@@ -920,7 +920,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * ACHTUNG: Das Statement muss ein Feld mit der Bezeichnung zurueckgeben,
    * die <code>getIDField</code> auch liefert, da das von DBIteratorImpl gelesen wird.
    * Also z.Bsp. "select " + getIDField() + " from " + getTableName().
-   * Kann bei Bedarf überschrieben um ein abweichendes Statement zu verwenden.
+   * Kann bei Bedarf ï¿½berschrieben um ein abweichendes Statement zu verwenden.
    * Die Funktion muss das Statement nur dewegen als String zurueckliefern,
    * weil es typischerweise von DBIterator weiterverwendet wird und dort eventuell
    * noch weitere Filterkriterien hinzugefuegt werden koennen muessen.  
@@ -942,7 +942,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 	 * von <code>getID()</code> geliefert wird.
 	 * ACHTUNG: Das Statement muss alle Felder selecten (*).
 	 * Also z.Bsp. "select * from " + getTableName() + " where " + getIDField() + " = " + getID();
-	 * Kann bei Bedarf überschrieben um ein abweichendes Statement zu verwenden.
+	 * Kann bei Bedarf ï¿½berschrieben um ein abweichendes Statement zu verwenden.
 	 * @return das erzeugte SQL-Statement.
 	 * @throws RemoteException Wenn beim Erzeugen des Statements ein Fehler auftrat.
 	 */
@@ -1017,11 +1017,11 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
   /**
    * Diese Methode wird intern vor der Ausfuehrung von delete()
-   * aufgerufen. Sie muss überschrieben werden, damit das Fachobjekt
-   * vor dem Durchführen der Löschaktion Prüfungen vornehmen kann.
+   * aufgerufen. Sie muss ï¿½berschrieben werden, damit das Fachobjekt
+   * vor dem Durchfï¿½hren der Lï¿½schaktion Prï¿½fungen vornehmen kann.
    * Z.Bsp. ob eventuell noch Abhaengigkeiten existieren und
-   * das Objekt daher nicht gelöscht werden kann.
-   * @throws ApplicationException wenn das Objekt nicht gelöscht werden darf.
+   * das Objekt daher nicht gelï¿½scht werden kann.
+   * @throws ApplicationException wenn das Objekt nicht gelï¿½scht werden darf.
    */
   protected void deleteCheck() throws ApplicationException
   {
@@ -1029,9 +1029,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
   /**
    * Diese Methode wird intern vor der Ausfuehrung von insert()
-   * aufgerufen. Sie muss überschrieben werden, damit das Fachobjekt
-   * vor dem Durchführen der Speicherung Prüfungen vornehmen kann.
-   * Z.Bsp. ob alle Pflichtfelder ausgefüllt sind und korrekte Werte enthalten.
+   * aufgerufen. Sie muss ï¿½berschrieben werden, damit das Fachobjekt
+   * vor dem Durchfï¿½hren der Speicherung Prï¿½fungen vornehmen kann.
+   * Z.Bsp. ob alle Pflichtfelder ausgefï¿½llt sind und korrekte Werte enthalten.
    * @throws ApplicationException wenn das Objekt nicht gespeichert werden darf.
    */
   protected void insertCheck() throws ApplicationException
@@ -1040,9 +1040,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
   /**
    * Diese Methode wird intern vor der Ausfuehrung von update()
-   * aufgerufen. Sie muss überschrieben werden, damit das Fachobjekt
-   * vor dem Durchführen der Speicherung Prüfungen vornehmen kann.
-   * Z.Bsp. ob alle Pflichtfelder ausgefüllt sind und korrekte Werte enthalten.
+   * aufgerufen. Sie muss ï¿½berschrieben werden, damit das Fachobjekt
+   * vor dem Durchfï¿½hren der Speicherung Prï¿½fungen vornehmen kann.
+   * Z.Bsp. ob alle Pflichtfelder ausgefï¿½llt sind und korrekte Werte enthalten.
    * @throws ApplicationException wenn das Objekt nicht gespeichert werden darf.
    */
   protected void updateCheck() throws ApplicationException
@@ -1319,6 +1319,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
+ * Revision 1.65  2010/08/29 22:09:20  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.64  2010/05/04 10:38:14  willuhn
  * @N rudimentaere Joins
  *
