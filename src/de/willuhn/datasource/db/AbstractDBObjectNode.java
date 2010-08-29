@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.15 $
- * $Date: 2009/11/09 10:34:18 $
+ * $Revision: 1.16 $
+ * $Date: 2010/08/29 22:10:17 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -47,7 +47,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
   /**
    * Liefert den Namen der Spalte, in dem sich die ID des
-   * übergeordneten Objektes befindet.
+   * ï¿½bergeordneten Objektes befindet.
    * @return Spalten-Name mit der ID des uebergeordneten Objektes.
    */
   protected String getNodeField()
@@ -186,11 +186,11 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     try {
 			GenericIterator list = getChildren();
       if (list.hasNext())
-        throw new ApplicationException("Objekt kann nicht gelöscht werden da Abhängigkeiten existieren.");
+        throw new ApplicationException("Objekt kann nicht gelï¿½scht werden da Abhï¿½ngigkeiten existieren.");
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
+      throw new ApplicationException("Fehler beim Prï¿½fen der Abhï¿½ngigkeiten.");
     }
   }
 
@@ -220,7 +220,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
+      throw new ApplicationException("Fehler beim Prï¿½fen der Abhï¿½ngigkeiten.");
     }
     
   }
@@ -244,6 +244,9 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
+ * Revision 1.16  2010/08/29 22:10:17  willuhn
+ * *** empty log message ***
+ *
  * Revision 1.15  2009/11/09 10:34:18  willuhn
  * *** empty log message ***
  *
