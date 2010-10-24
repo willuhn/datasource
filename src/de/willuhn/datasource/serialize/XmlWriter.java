@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/XmlWriter.java,v $
- * $Revision: 1.1 $
- * $Date: 2008/01/22 12:03:09 $
+ * $Revision: 1.2 $
+ * $Date: 2010/10/24 22:05:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -16,6 +16,7 @@ package de.willuhn.datasource.serialize;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +77,20 @@ public class XmlWriter extends AbstractXmlIO implements Writer
   {
     this.os.close();
   }
+  
+  /**
+   * Liefert die Namen der zu serialisierenden Attributes des Objektes.
+   * Kann bei Bedarf ueberschrieben werden.
+   * Die Default-Implementierung ruft die Methode "getAttributeNames()"
+   * von GenericObject auf.
+   * @param object das zu serialisierende Objekt.
+   * @return die zu serialisierenden Attributes.
+   * @throws RemoteException
+   */
+  public String[] getAttributeNames(GenericObject object) throws RemoteException
+  {
+    return object.getAttributeNames();
+  }
 
   /**
    * @see de.willuhn.datasource.serialize.Writer#write(de.willuhn.datasource.GenericObject)
@@ -95,7 +110,7 @@ public class XmlWriter extends AbstractXmlIO implements Writer
     sb.append("\" id=\"");
     sb.append(object.getID());
     sb.append("\">\n");
-    String[] names = object.getAttributeNames();
+    String[] names = getAttributeNames(object);
     for (int i=0;i<names.length;++i)
     {
       Object o = object.getAttribute(names[i]);
@@ -154,6 +169,9 @@ public class XmlWriter extends AbstractXmlIO implements Writer
 
 /*********************************************************************
  * $Log: XmlWriter.java,v $
+ * Revision 1.2  2010/10/24 22:05:34  willuhn
+ * @N Alternative Loesung. Im Exporter kann die Liste der zu serialisierenden Attribute ueberschrieben werden.
+ *
  * Revision 1.1  2008/01/22 12:03:09  willuhn
  * @N Objekt-Serializer/-Deserializer fuer XML-Format
  *
