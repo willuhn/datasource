@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.66 $
- * $Date: 2010/10/24 21:50:21 $
+ * $Revision: 1.67 $
+ * $Date: 2010/10/24 22:00:25 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -555,7 +555,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   /**
    * @see de.willuhn.datasource.GenericObject#getAttributeNames()
    */
-  public String[] getAttributeNames() throws RemoteException
+  public final String[] getAttributeNames() throws RemoteException
   {
     Set s = properties.keySet();
     return (String[]) s.toArray(new String[s.size()]);
@@ -1319,7 +1319,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
- * Revision 1.66  2010/10/24 21:50:21  willuhn
+ * Revision 1.67  2010/10/24 22:00:25  willuhn
+ * @R UNDO - das sollte nicht geaendert werden duerfen, weil die Funktion die Parameter fuer die SQL-Queries liefert. Das Aendern der Attribut-Namen wuerde zu ungueltigen Statements fuehren.
+ *
+ * Revision 1.66  2010-10-24 21:50:21  willuhn
  * @C getAttributeNames() nicht mehr final
  *
  * Revision 1.65  2010-08-29 22:09:20  willuhn
