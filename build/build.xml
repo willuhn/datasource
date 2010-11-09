@@ -144,7 +144,7 @@
   </target>
 
   <target name="sign" description="signs the jar/zip file">
-    <checksum file="${project.release}/${define.jarfilename}" />
+    <checksum algorithm="SHA" file="${project.release}/${define.jarfilename}" />
     <echo message="Creating PGP signature" />
     <exec executable="gpg" failonerror="true" timeout="60000">
       <arg line="-asb --use-agent ${project.release}/${define.jarfilename}" />
@@ -152,7 +152,7 @@
   </target>
 
   <target name="signsrc" description="signs the source zip">
-    <checksum file="${project.release}/${define.srcfilename}" />
+    <checksum algorithm="SHA" file="${project.release}/${define.srcfilename}" />
     <echo message="Creating PGP signature" />
     <exec executable="gpg" failonerror="true" timeout="60000">
       <arg line="-asb --use-agent ${project.release}/${define.srcfilename}" />
