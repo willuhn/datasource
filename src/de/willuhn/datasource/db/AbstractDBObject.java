@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.69 $
- * $Date: 2010/11/24 12:38:48 $
+ * $Revision: 1.70 $
+ * $Date: 2010/11/24 12:39:34 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -642,7 +641,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
           if (rs.next())
             this.id = rs.getString(1);
         }
-        catch (SQLFeatureNotSupportedException e)
+        catch (SQLException e)
         {
           // Das darf passieren, wenn die Datenbank das nicht unterstuetzt
           // In dem Fall greifen dann die folgenden Zeilen mit getLastId()
@@ -1365,7 +1364,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
- * Revision 1.69  2010/11/24 12:38:48  willuhn
+ * Revision 1.70  2010/11/24 12:39:34  willuhn
+ * @R SQLFeatureNotSupportedException gibts erst in Java 1.6
+ *
+ * Revision 1.69  2010-11-24 12:38:48  willuhn
  * @N SQLFeatureNotSupportedException fangen
  *
  * Revision 1.68  2010-11-24 12:32:28  willuhn
