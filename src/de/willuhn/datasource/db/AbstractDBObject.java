@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.67 $
- * $Date: 2010/10/24 22:00:25 $
+ * $Revision: 1.68 $
+ * $Date: 2010/11/24 12:32:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -564,13 +564,16 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 	/**
    * Wird bei einem Insert aufgerufen, ermittelt die ID des erzeugten Datensatzes und speichert sie in diesem Objekt.
+   * @return die letzte ID.
+   * @throws SQLException
    * @throws RemoteException
    */
-  private void setLastId() throws RemoteException
+  private String getLastId() throws SQLException, RemoteException
 	{
     checkConnection();
 
 		Statement stmt = null;
+		ResultSet rs = null;
 		try {
 
       String tableName = getTableName();
@@ -582,13 +585,23 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       }
       
 			stmt = getConnection().createStatement();
-			ResultSet rs = stmt.executeQuery("select max(" + idField + ") from " + tableName);
-			rs.next();
-			this.id = rs.getString(1);
+			rs = stmt.executeQuery("select max(" + idField + ") from " + tableName);
+			if (!rs.next())
+        throw new SQLException("select max(id) returned empty resultset");
+			return rs.getString(1);
 		}
-		catch (Exception e)
+		finally
 		{
-			throw new RemoteException("unable to read id of last insert",e);
+		  if (rs != null) {
+		    try {
+		      rs.close();
+		    } catch (SQLException se) {/*useless*/}
+		  }
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException se) {/*useless*/}
+      }
 		}
 	}
 
@@ -612,25 +625,37 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     insertCheck();
 
 		PreparedStatement stmt = null;
+		ResultSet rs           = null;
     try {
       stmt = getInsertSQL();
-      stmt.execute();
+      stmt.executeUpdate();
       
-      // Wir tragen die ID nur dann ein, wenn sie nicht schon im getInsertSQL() ermittelt wurde
-      // oder wenn wir noch keine haben
-      // Dann wenn sie bereits bei getInsertSQL() erzeugt wurde, muessen wir sie nicht
-      // nochmal ermitteln
-      if (this.id == null || !getService().getInsertWithID())
-        setLastId();
+      // Wenn wir noch keine ID haben (das ist immer dann der Fall, wenn
+      // wir sie nicht explizit vor dem Insert angegeben haben - also der
+      // Normalfall), dann holen wir sie uns
+      if (this.id == null)
+      {
+        rs = stmt.getGeneratedKeys();
+        if (rs.next())
+          this.id = rs.getString(1);
+      }
+      
+      // Es kann sein, dass der Treiber "Statement.RETURN_GENERATED_KEYS"
+      // nicht unterstuetzt. In dem Fall muessen wir uns die ID selbst
+      // holen.
+      if (this.id == null)
+        this.id = getLastId();
       
       if (!this.inTransaction())
   			getConnection().commit();
+      
 			notify(storeListeners);
       this.created = true;
     }
     catch (SQLException e)
     {
-      this.id = null;
+      this.id = null; // Der Datensatz gilt als nicht gespeichert
+
       if (!this.inTransaction()) {
         try {
           getConnection().rollback();
@@ -643,11 +668,18 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       }
 			throw new RemoteException("insert failed",e);
     }
-		finally {
-			try {
-        if (stmt != null)
+		finally
+		{
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException se) {/*useless*/}
+      }
+      if (stmt != null) {
+        try {
           stmt.close();
-			} catch (SQLException se) {/*useless*/}
+        } catch (SQLException se) {/*useless*/}
+      }
 		}
   }
   
@@ -681,7 +713,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (affected != 1)
       {
         // Wenn nicht genau ein Datensatz geaendert wurde, ist was faul.
-        throw new SQLException();
+        throw new SQLException("update ambiguous");
       }
       if (!this.inTransaction())
         getConnection().commit();
@@ -785,8 +817,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   
   /**
    * Liefert das automatisch erzeugte SQL-Statement fuer ein Insert.
-   * Kann bei Bedarf �berschrieben um ein vom dynamisch erzeugten
-   * abweichendes Statement f�r die Speicherung zu verwenden.  
+   * Kann bei Bedarf ueberschrieben um ein vom dynamisch erzeugten
+   * abweichendes Statement fuer die Speicherung zu verwenden.  
    * @return das erzeugte SQL-Statement.
    * @throws RemoteException Wenn beim Erzeugen des Statements ein Fehler auftrat.
    */
@@ -857,7 +889,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       sql.append(names.toString());
       sql.append(values.toString());
 
-      PreparedStatement stmt = getConnection().prepareStatement(sql.toString());
+      PreparedStatement stmt = getConnection().prepareStatement(sql.toString(),Statement.RETURN_GENERATED_KEYS);
       for (int i=0;i<attributes.length;++i)
       {
         if (attributes[i] == null || attributes[i].length() == 0) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
@@ -906,11 +938,16 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     finally
     {
-      try {
-        rs.close();
-        stmt.close();
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException se) {/*useless*/}
       }
-      catch (SQLException e) { /* useless */}
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException se) {/*useless*/}
+      }
     }
   }
 
@@ -1319,7 +1356,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
- * Revision 1.67  2010/10/24 22:00:25  willuhn
+ * Revision 1.68  2010/11/24 12:32:28  willuhn
+ * @N Erzeugte ID eines neuen Datensatz beim Insert direkt ueber die JDBC-API holen (via Statement.RETURN_GENERATED_KEYS und stmt.getGeneratedKeys())
+ *
+ * Revision 1.67  2010-10-24 22:00:25  willuhn
  * @R UNDO - das sollte nicht geaendert werden duerfen, weil die Funktion die Parameter fuer die SQL-Queries liefert. Das Aendern der Attribut-Namen wuerde zu ungueltigen Statements fuehren.
  *
  * Revision 1.66  2010-10-24 21:50:21  willuhn
