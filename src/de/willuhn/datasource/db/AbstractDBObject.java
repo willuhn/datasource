@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.68 $
- * $Date: 2010/11/24 12:32:28 $
+ * $Revision: 1.69 $
+ * $Date: 2010/11/24 12:38:48 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -635,9 +636,17 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       // Normalfall), dann holen wir sie uns
       if (this.id == null)
       {
-        rs = stmt.getGeneratedKeys();
-        if (rs.next())
-          this.id = rs.getString(1);
+        try
+        {
+          rs = stmt.getGeneratedKeys();
+          if (rs.next())
+            this.id = rs.getString(1);
+        }
+        catch (SQLFeatureNotSupportedException e)
+        {
+          // Das darf passieren, wenn die Datenbank das nicht unterstuetzt
+          // In dem Fall greifen dann die folgenden Zeilen mit getLastId()
+        }
       }
       
       // Es kann sein, dass der Treiber "Statement.RETURN_GENERATED_KEYS"
@@ -1356,7 +1365,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
- * Revision 1.68  2010/11/24 12:32:28  willuhn
+ * Revision 1.69  2010/11/24 12:38:48  willuhn
+ * @N SQLFeatureNotSupportedException fangen
+ *
+ * Revision 1.68  2010-11-24 12:32:28  willuhn
  * @N Erzeugte ID eines neuen Datensatz beim Insert direkt ueber die JDBC-API holen (via Statement.RETURN_GENERATED_KEYS und stmt.getGeneratedKeys())
  *
  * Revision 1.67  2010-10-24 22:00:25  willuhn
