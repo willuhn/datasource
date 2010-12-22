@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.70 $
- * $Date: 2010/11/24 12:39:34 $
+ * $Revision: 1.71 $
+ * $Date: 2010/12/22 11:16:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -163,7 +163,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     
 		ResultSet meta = null;
 		try {
-			meta = getConnection().getMetaData().getColumns(null,null,tableName,null);
+		  
+		  String schema = System.getProperty(getService().getClass().getName() + ".schema",null); // BUGZILLA 960
+			meta = getConnection().getMetaData().getColumns(null,schema,tableName,null);
 			String field;
       if (!meta.next())
         throw new SQLException("unable to determine meta data for table " + tableName);
@@ -1364,7 +1366,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
- * Revision 1.70  2010/11/24 12:39:34  willuhn
+ * Revision 1.71  2010/12/22 11:16:04  willuhn
+ * @B BUGZILLA 960
+ *
+ * Revision 1.70  2010-11-24 12:39:34  willuhn
  * @R SQLFeatureNotSupportedException gibts erst in Java 1.6
  *
  * Revision 1.69  2010-11-24 12:38:48  willuhn
