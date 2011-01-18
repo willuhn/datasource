@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.28 $
- * $Date: 2010/05/04 10:38:14 $
+ * $Revision: 1.29 $
+ * $Date: 2011/01/18 12:02:56 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -332,163 +332,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
- * Revision 1.28  2010/05/04 10:38:14  willuhn
+ * Revision 1.29  2011/01/18 12:02:56  willuhn
+ * @R alte Commit-Kommentare entfernt
+ *
+ * Revision 1.28  2010-05-04 10:38:14  willuhn
  * @N rudimentaere Joins
- *
- * Revision 1.27  2007/04/02 23:00:42  willuhn
- * @B falscher Parameter in BeanUtil#get
- * @N PseudoIterator#asList
- *
- * Revision 1.26  2006/12/12 14:23:37  willuhn
- * @N dump sql query on error
- *
- * Revision 1.25  2006/11/06 22:38:20  willuhn
- * @R DeleteListener wieder entfernt - Overhead
- *
- * Revision 1.24  2006/10/23 22:27:33  willuhn
- * @N Experimentell: Laden der Objekte direkt beim Erzeugen der Liste
- *
- * Revision 1.23  2006/10/18 18:54:46  willuhn
- * @B Korrektur des Offsets
- *
- * Revision 1.22  2006/10/18 17:07:20  willuhn
- * @N DBIterator registriert einen DeleteListener, um sich selbst zu bereinigen, wenn Objekte aus ihr geloescht werden
- * @N deleteListener in AbstractDBObject
- *
- * Revision 1.21  2006/10/17 23:50:42  willuhn
- * *** empty log message ***
- *
- * Revision 1.20  2006/08/23 09:31:34  willuhn
- * @N DBIterator kann nun auch PreparedStatements verwenden
- *
- * Revision 1.19  2005/03/09 01:07:51  web0
- * @D javadoc fixes
- *
- * Revision 1.18  2004/11/12 18:21:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/08/31 18:14:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.16  2004/08/18 23:14:00  willuhn
- * @D Javadoc
- *
- * Revision 1.15  2004/08/11 20:55:53  willuhn
- * @N debug out
- *
- * Revision 1.14  2004/07/21 23:53:56  willuhn
- * @C massive Refactoring ;)
- *
- * Revision 1.13  2004/07/09 00:04:19  willuhn
- * @C Redesign
- *
- * Revision 1.12  2004/07/04 17:08:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2004/06/18 19:47:43  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2004/06/17 22:06:29  willuhn
- * @N PseudoIterator
- *
- * Revision 1.9  2004/06/17 00:05:50  willuhn
- * @N GenericObject, GenericIterator
- *
- * Revision 1.8  2004/06/10 20:22:40  willuhn
- * @D javadoc comments fixed
- *
- * Revision 1.7  2004/04/05 23:28:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2004/03/29 20:36:23  willuhn
- * *** empty log message ***
- *
- * Revision 1.5  2004/03/18 01:24:17  willuhn
- * @C refactoring
- *
- * Revision 1.4  2004/03/06 18:24:34  willuhn
- * @D javadoc
- *
- * Revision 1.3  2004/02/23 20:31:26  willuhn
- * @C refactoring in AbstractDialog
- *
- * Revision 1.2  2004/01/23 00:25:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/01/10 14:52:19  willuhn
- * @C package removings
- *
- * Revision 1.1  2004/01/08 20:46:44  willuhn
- * @N database stuff separated from jameica
- *
- * Revision 1.19  2004/01/03 18:08:05  willuhn
- * @N Exception logging
- * @C replaced bb.util xml parser with nanoxml
- *
- * Revision 1.18  2003/12/29 16:29:47  willuhn
- * @N javadoc
- *
- * Revision 1.17  2003/12/28 22:58:27  willuhn
- * @N synchronize mode
- *
- * Revision 1.16  2003/12/19 19:45:02  willuhn
- * *** empty log message ***
- *
- * Revision 1.15  2003/12/19 01:43:26  willuhn
- * @N added Tree
- *
- * Revision 1.14  2003/12/18 21:47:12  willuhn
- * @N AbstractDBObjectNode
- *
- * Revision 1.13  2003/12/16 02:27:44  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2003/12/11 21:00:54  willuhn
- * @C refactoring
- *
- * Revision 1.11  2003/12/10 23:51:55  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2003/12/10 01:12:55  willuhn
- * *** empty log message ***
- *
- * Revision 1.9  2003/12/10 00:47:12  willuhn
- * @N SearchDialog done
- * @N ErrorView
- *
- * Revision 1.8  2003/12/05 17:12:23  willuhn
- * @C SelectInput
- *
- * Revision 1.7  2003/12/01 23:02:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2003/12/01 20:28:58  willuhn
- * @B filter in DBIteratorImpl
- * @N InputFelder generalisiert
- *
- * Revision 1.5  2003/11/30 16:23:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2003/11/22 20:43:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2003/11/21 02:10:21  willuhn
- * @N prepared Statements in AbstractDBObject
- * @N a lot of new SWT parts
- *
- * Revision 1.2  2003/11/20 03:48:42  willuhn
- * @N first dialogues
- *
- * Revision 1.1  2003/11/05 22:46:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2003/10/29 20:56:49  willuhn
- * @N added transactionRollback
- *
- * Revision 1.2  2003/10/29 17:33:22  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/10/27 11:49:12  willuhn
- * @N added DBIterator
- *
  **********************************************************************/
