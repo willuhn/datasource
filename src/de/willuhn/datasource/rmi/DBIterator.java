@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.7 $
- * $Date: 2010/05/04 10:38:14 $
+ * $Revision: 1.8 $
+ * $Date: 2011/01/18 12:15:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -66,13 +66,23 @@ public interface DBIterator extends GenericIterator
    * @throws RemoteException
    */
   public void setOrder(String order) throws RemoteException;
+  
+  /**
+   * Fuegt ein "limit {i}" dem Statement hinzu.
+   * @param i Hoehe des Limit.
+   * @throws RemoteException
+   */
+  public void setLimit(int i) throws RemoteException;
 
 }
 
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
- * Revision 1.7  2010/05/04 10:38:14  willuhn
+ * Revision 1.8  2011/01/18 12:15:03  willuhn
+ * @N setLimit(int)
+ *
+ * Revision 1.7  2010-05-04 10:38:14  willuhn
  * @N rudimentaere Joins
  *
  * Revision 1.6  2006/08/23 09:31:34  willuhn

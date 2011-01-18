@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.29 $
- * $Date: 2011/01/18 12:02:56 $
+ * $Revision: 1.30 $
+ * $Date: 2011/01/18 12:15:03 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -38,6 +38,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
   private String filter           = "";
   private String order            = "";
+  private int limit               = -1;
   private ArrayList params        = new ArrayList();
   private String joins            = "";
 
@@ -102,6 +103,14 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
       return; // allready initialized
 
     this.order = " " + order;
+  }
+
+  /**
+   * @see de.willuhn.datasource.rmi.DBIterator#setLimit(int)
+   */
+  public void setLimit(int i) throws RemoteException
+  {
+    this.limit = i;
   }
 
   /**
@@ -177,9 +186,11 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
     // Statement enthaelt noch kein Order - also koennen wir unseres noch dranschreiben
     if (sql.indexOf(" order ") == -1)
-    {
       sql += order;
-    }
+    
+    if (sql.indexOf(" limit ") == -1 && this.limit > 0)
+      sql += " limit " + Integer.toString(this.limit);
+    
     return sql;
   }
 
@@ -332,7 +343,10 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
- * Revision 1.29  2011/01/18 12:02:56  willuhn
+ * Revision 1.30  2011/01/18 12:15:03  willuhn
+ * @N setLimit(int)
+ *
+ * Revision 1.29  2011-01-18 12:02:56  willuhn
  * @R alte Commit-Kommentare entfernt
  *
  * Revision 1.28  2010-05-04 10:38:14  willuhn
