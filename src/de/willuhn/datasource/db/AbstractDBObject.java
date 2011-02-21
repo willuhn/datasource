@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.71 $
- * $Date: 2010/12/22 11:16:04 $
+ * $Revision: 1.72 $
+ * $Date: 2011/02/21 09:54:04 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -899,7 +899,17 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       sql.append(names.toString());
       sql.append(values.toString());
 
-      PreparedStatement stmt = getConnection().prepareStatement(sql.toString(),Statement.RETURN_GENERATED_KEYS);
+      PreparedStatement stmt = null;
+      try
+      {
+        stmt = getConnection().prepareStatement(sql.toString(),Statement.RETURN_GENERATED_KEYS);
+      }
+      catch (SQLException e)
+      {
+        // BUGZILLA 995 - Die Datenbank unterstuetzt das nicht.
+        stmt = getConnection().prepareStatement(sql.toString());
+      }
+      
       for (int i=0;i<attributes.length;++i)
       {
         if (attributes[i] == null || attributes[i].length() == 0) // die sollte es zwar eigentlich nicht geben, aber sicher ist sicher ;)
@@ -1366,7 +1376,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
- * Revision 1.71  2010/12/22 11:16:04  willuhn
+ * Revision 1.72  2011/02/21 09:54:04  willuhn
+ * @B BUGZILLA 995
+ *
+ * Revision 1.71  2010-12-22 11:16:04  willuhn
  * @B BUGZILLA 960
  *
  * Revision 1.70  2010-11-24 12:39:34  willuhn
