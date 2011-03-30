@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.10 $
- * $Date: 2009/08/19 12:55:13 $
+ * $Revision: 1.11 $
+ * $Date: 2011/03/30 11:51:49 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,11 +14,7 @@
 package de.willuhn.datasource;
 
 import java.beans.Expression;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.willuhn.logging.Logger;
 
@@ -161,90 +157,14 @@ public class BeanUtil
     Expression ex = new Expression(bean,method,params);
     return ex.getValue();
   }
-  
-  /**
-   * Liefert alle Felder der Bean, die mit Annotations versehen sind - unabhaengig vom Modifier.
-   * Eigentlich koennte man hierzu auch {@link Class#getDeclaredAnnotations()}
-   * verwenden. Diese Funktion sucht aber nur in der konkreten Klasse und
-   * nicht in Super-Klassen.
-   * Genau diese Luecke schliesst diese Funktion.
-   * Sie liefert also alle Member mit Annotations, die einen public, protected, private oder
-   * defaulft-Modifier haben. Aus dieser Klasse und allen Super-Klassen.
-   * @param bean Bean, von der die Annotations gesucht werden sollen.
-   * @param a optionale Angabe von gesuchten Annotations.
-   * Wenn dieser Parameter angegeben ist, werden nur jene Properties zurueckgeliefert,
-   * bei denen mind. eine der genannten Annotations deklariert ist.
-   * @return Liste der gefundenen Annotations.
-   * @throws Exception
-   */
-  public static List<Field> getAnnotatedFields(Object bean, Class... a) throws Exception
-  {
-    List<Field> found = new ArrayList<Field>();
-    
-    // Ich mag keine while(true)-Schleifen. Wenn die Abbruchbedingung
-    // nicht erfuellt wird, haben wir eine Endlos-Schleife. Und da davon
-    // auszugehen ist, dass eine Klasse unmoeglich mehr als 100 Superklassen
-    // haben kann, limitieren wir das da.
-    // Hier eigentlich nur fuer den Fall, dass es irgend eine Java-Implementierung gibt,
-    // die bei Class#getSuperclass() nicht NULL liefert, wenn Class bereits ein
-    // "java.lang.Object" ist (wir also schon oben angekommen sind). Ich hab
-    // nirgends einen Hinweis gefunden, ob dieser spezifiziert ist. 
-    Class current = bean.getClass();
-    for (int i=0;i<100;++i)
-    {
-      Field[] fields = current.getDeclaredFields();
-      if (fields != null && fields.length > 0)
-      {
-        for (Field f:fields)
-        {
-          Annotation[] al = f.getAnnotations();
-          
-          // Aufrufer moechte das Member unabhaengig von der Art der Annotation haben
-          if (a == null || a.length == 0)
-          {
-            found.add(f);
-            continue;
-          }
-          
-          // Aufrufer moechte nur Members mit bestimmten Annotations haben
-          boolean b = false;
-          for (Annotation at:al)
-          {
-            // Wir hoeren schon auf, wenn wir an dem Member nur eine
-            // der gesuchten Annotations gefunden haben. Sonst wuerde
-            // das Member mehrfach in der Ergebnisliste stehen
-            if (b)
-              break;
-            
-            for (Class test:a)
-            {
-              if (at.annotationType().isAssignableFrom(test))
-              {
-                found.add(f); // Jepp, Annotation war gesucht
-                b = true;
-                break;
-              }
-            }
-          }
-        }
-      }
-      
-      Class superClass = current.getSuperclass();
-      if (superClass == null)
-        break; // Oben angekommen
-      
-      // Ansonsten mit der Super-Klasse weitermachen
-      current = superClass;
-    }
-    
-    return found;
-  }
-
 }
 
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.11  2011/03/30 11:51:49  willuhn
+ * @C Code verschoben in neuen Injector in de.willuhn.util
+ *
  * Revision 1.10  2009/08/19 12:55:13  willuhn
  * @B equals-Vergleich geaendert
  *
