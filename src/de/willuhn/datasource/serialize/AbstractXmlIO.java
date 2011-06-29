@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/AbstractXmlIO.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/09/29 14:18:00 $
+ * $Revision: 1.5 $
+ * $Date: 2011/06/29 19:56:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -40,6 +40,7 @@ public abstract class AbstractXmlIO implements IO
     valueMap.put("java.math.BigDecimal", new BigDecimalValue());
     valueMap.put("java.lang.Integer",    new IntegerValue());
     valueMap.put("java.lang.Long",       new LongValue());
+    valueMap.put("java.lang.Boolean",    new BooleanValue());
     valueMap.put("java.util.Date",       new DateValue());
     valueMap.put("java.sql.Date",        new SqlDateValue());
     valueMap.put("java.sql.Timestamp",   new TimestampValue());
@@ -147,6 +148,20 @@ public abstract class AbstractXmlIO implements IO
   }
   
   /**
+   * Implementierung fuer Boolean.
+   */
+  protected static class BooleanValue extends AbstractValue
+  {
+    /**
+     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
+     */
+    public Object unserialize(String s) throws IOException
+    {
+      return s != null && (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("1"));
+    }
+  }
+
+  /**
    * Implementierung fuer java.util.Date.
    */
   protected static class DateValue implements Value
@@ -242,8 +257,8 @@ public abstract class AbstractXmlIO implements IO
 
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/serialize/AbstractXmlIO.java,v $
- * $Revision: 1.4 $
- * $Date: 2008/09/29 14:18:00 $
+ * $Revision: 1.5 $
+ * $Date: 2011/06/29 19:56:45 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -254,6 +269,9 @@ public abstract class AbstractXmlIO implements IO
  **********************************************************************/
 /*********************************************************************
  * $Log: AbstractXmlIO.java,v $
+ * Revision 1.5  2011/06/29 19:56:45  willuhn
+ * @N Support fuer Boolean in XMLReader/XMLWriter
+ *
  * Revision 1.4  2008/09/29 14:18:00  willuhn
  * @N Support for NULL-values
  *
