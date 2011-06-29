@@ -63,7 +63,7 @@
 
   <target depends="init" name="compile" description="compiles everything">
     <mkdir dir="${class.dir}" />
-    <javac debug="true" debuglevel="lines,vars,source" deprecation="true"
+    <javac debug="true" debuglevel="lines,vars,source" deprecation="true" includeantruntime="false"
     	     source="${define.java.version}" target="${define.java.version}"
     	     encoding="${define.encoding}"
     	     srcdir="${src.dir}"
