@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/DBIterator.java,v $
- * $Revision: 1.8 $
- * $Date: 2011/01/18 12:15:03 $
+ * $Revision: 1.9 $
+ * $Date: 2011/06/29 11:11:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -44,14 +44,14 @@ public interface DBIterator extends GenericIterator
    * Mann kann also entweder schreiben:
    * <code>addFilter("kontonummer='200'");</code>
    * oder
-   * <code>addFilter("kontonummer=?",new Object[]{"200"});</code>
+   * <code>addFilter("kontonummer=?","200");</code>
    * Die Verwendung des PreparedStatements schuetzt vor SQL-Injections.
    * @see DBIterator#addFilter(String)
    * @param filter ein zusaetzlicher Filter.
    * @param params
    * @throws RemoteException
    */
-  public void addFilter(String filter, Object[] params) throws RemoteException;
+  public void addFilter(String filter, Object... params) throws RemoteException;
   
   /**
    * Fuegt eine Tabelle via Join hinzu.
@@ -79,7 +79,10 @@ public interface DBIterator extends GenericIterator
 
 /*********************************************************************
  * $Log: DBIterator.java,v $
- * Revision 1.8  2011/01/18 12:15:03  willuhn
+ * Revision 1.9  2011/06/29 11:11:28  willuhn
+ * @N varargs
+ *
+ * Revision 1.8  2011-01-18 12:15:03  willuhn
  * @N setLimit(int)
  *
  * Revision 1.7  2010-05-04 10:38:14  willuhn

@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.30 $
- * $Date: 2011/01/18 12:15:03 $
+ * $Revision: 1.31 $
+ * $Date: 2011/06/29 11:11:28 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -118,13 +118,13 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    */
   public void addFilter(String filter) throws RemoteException
   {
-    this.addFilter(filter,null);
+    this.addFilter(filter,(Object[]) null);
   }
 
   /**
    * @see de.willuhn.datasource.rmi.DBIterator#addFilter(java.lang.String, java.lang.Object[])
    */
-  public void addFilter(String filter, Object[] p) throws RemoteException
+  public void addFilter(String filter, Object... p) throws RemoteException
   {
     if (this.initialized)
       return; // allready initialized
@@ -142,9 +142,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
     if (p != null)
     {
-      for (int i=0;i<p.length;++i)
+      for (Object o:p)
       {
-        this.params.add(p[i]);
+        this.params.add(o);
       }
     }
   }
@@ -224,23 +224,9 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
       rs = stmt.executeQuery();
 			while (rs.next())
 			{
-//        final DBObject o = (DBObject) service.createObject(object.getClass(),rs.getString(object.getIDField()));
         final AbstractDBObject o = (AbstractDBObject) service.createObject(object.getClass(),null);
         o.setID(rs.getString(o.getIDField()));
         o.fill(rs);
-        
-//        o.addDeleteListener(new Listener() {
-//          public void handleEvent(Event e) throws RemoteException
-//          {
-//            int pos = list.indexOf(e.getObject());
-//            list.remove(pos);
-//
-//            // offset ggf. korrigieren
-//            if (index > pos)
-//              index--;
-//          }
-//        
-//        });
 				list.add(o);
 			}
       this.initialized = true;
@@ -252,8 +238,8 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 		}
 		finally {
 			try {
-				rs.close();
-				stmt.close();
+			  if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
 			} catch (Exception se) {/*useless*/}
 		}
 	}
@@ -343,7 +329,10 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
 
 /*********************************************************************
  * $Log: DBIteratorImpl.java,v $
- * Revision 1.30  2011/01/18 12:15:03  willuhn
+ * Revision 1.31  2011/06/29 11:11:28  willuhn
+ * @N varargs
+ *
+ * Revision 1.30  2011-01-18 12:15:03  willuhn
  * @N setLimit(int)
  *
  * Revision 1.29  2011-01-18 12:02:56  willuhn
