@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.11 $
- * $Date: 2011/03/30 11:51:49 $
+ * $Revision: 1.12 $
+ * $Date: 2011/07/11 16:00:20 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -34,6 +34,12 @@ public class BeanUtil
    */
   public static Object get(Object bean, String attribute) throws RemoteException
   {
+    if (bean == null)
+      return null;
+
+    if (attribute == null)
+      return toString(bean);
+    
     if (bean instanceof GenericObject)
       return ((GenericObject)bean).getAttribute(attribute);
     
@@ -47,8 +53,24 @@ public class BeanUtil
     }
     catch (NoSuchMethodException nme)
     {
-      Logger.warn(nme.getMessage());
-      return null;
+      // Fallback:
+      try
+      {
+        return invoke(bean,attribute,null);
+      }
+      catch (RemoteException re)
+      {
+        throw re;
+      }
+      catch (NoSuchMethodException nme2)
+      {
+        Logger.warn(nme.getMessage());
+        return null;
+      }
+      catch (Exception e)
+      {
+        throw new RemoteException("unable to get attribute " + attribute,e);
+      }
     }
     catch (Exception e)
     {
@@ -162,7 +184,10 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
- * Revision 1.11  2011/03/30 11:51:49  willuhn
+ * Revision 1.12  2011/07/11 16:00:20  willuhn
+ * @N diverse Fallbacks
+ *
+ * Revision 1.11  2011-03-30 11:51:49  willuhn
  * @C Code verschoben in neuen Injector in de.willuhn.util
  *
  * Revision 1.10  2009/08/19 12:55:13  willuhn
