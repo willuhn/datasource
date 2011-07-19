@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObject.java,v $
- * $Revision: 1.72 $
- * $Date: 2011/02/21 09:54:04 $
+ * $Revision: 1.73 $
+ * $Date: 2011/07/19 13:08:30 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -187,7 +187,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		}
 		finally {
 			try {
-				meta.close();
+			  if (meta != null)
+  				meta.close();
 			} catch (Exception e) {/*useless*/}
 		}
   	
@@ -270,10 +271,12 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		}
 		finally {
 			try {
-				data.close();
+			  if (data != null)
+  				data.close();
 			} catch (Throwable t) {/*useless*/}
 			try {
-				stmt.close();
+			  if (stmt != null)
+  				stmt.close();
 			} catch (Throwable t) {/*useless*/}
 		}
 	}
@@ -389,7 +392,8 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     finally {
 			try {
-				stmt.close();
+			  if (stmt != null)
+  				stmt.close();
 			} catch (SQLException se) {/*useless*/}
     }
   }
@@ -437,37 +441,31 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       return null;
     }
 
-    // wir checken erstmal, ob es sich um ein Objekt aus einer Fremdtabelle
+    // "o" kann auch vom Typ DBObject sein. Dann ist es schon ein aufgeloester Fremdschluessel
+    if (o instanceof DBObject)
+      return o;
+
+    // wir checken, ob es sich um ein Objekt aus einer Fremdtabelle
     // handelt. Wenn das der Fall ist, liefern wir das statt der
     // lokalen ID aus.
-    // "o" kann auch vom Typ DBObject sein. Naemlich dann, wenn es noch nicht
-    // in der Datenbank existiert. Weil dann setAttribute(String,Object) nicht
-    // etwa die ID des Objektes in "properties" speichert sondern das Objekt
-    // selbst. Die Faelle fischen wir mit dem "instanceof" raus
     Class foreign = getForeignObject(fieldName);
-    if (foreign != null && !(o instanceof DBObject))
+    if (foreign != null)
     {
+      String id = o.toString();
+      
       DBObject cachedObject = (DBObject) foreignObjectCache.get(foreign.getName() + fieldName);
       if (cachedObject != null)
       {
-        String value = o.toString();
-        if (!value.equals(cachedObject.getID()))
-          cachedObject.load(value);
+        // Wir haben das Objekt im Cache
+        // Wenn sich die ID geaendert hat, dann neu laden
+        if (!id.equals(cachedObject.getID()))
+          cachedObject.load(id);
       }
-      else {
-        try
-        {
-          cachedObject = (DBObject) service.createObject(foreign,o.toString());
-					foreignObjectCache.put(foreign.getName() + fieldName,cachedObject);
-        }
-        catch (RemoteException re)
-        {
-					throw re;
-        }
-        catch (Exception e)
-        {
-        	throw new RemoteException("unable to create foreign object",e);
-        }
+      else
+      {
+        // Haben wir noch nicht im Cache - neu laden und cachen
+        cachedObject = (DBObject) service.createObject(foreign,id);
+  			foreignObjectCache.put(foreign.getName() + fieldName,cachedObject);
       }
 			return cachedObject;
     }
@@ -510,11 +508,12 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   {
     Object o = this.origProperties.get(attribute);
     Object n = this.properties.get(attribute);
-    if ((o == null && n != null) || (o != null && n == null))
-      return true; // einer der beiden Werte ist jetzt null.
-
-    if (o == null && n == null)
-      return false; // immer noch leer
+    
+    if (o == n) // greift auch dann, wenn beide null sind
+      return false;
+    
+    if (o == null || n == null)
+      return true; // einer der beiden Werte ist jetzt null
 
     return !o.equals(n);
   }
@@ -535,22 +534,6 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   {
     if (fieldName == null)
       return null;
-
-		// Null-Werte fischen wir uns vorher raus, damit wir uns beim folgenden Code NPEs ersparen
-		if (value == null)
-			return properties.put(fieldName, null);
-		
-		if ((value instanceof DBObject) && value != null)
-		{
-			String id = ((DBObject)value).getID();
-			if (id != null && id.length() > 0)
-			try
-			{
-				value = new Integer(id);
-			}
-			catch (Exception e)
-			{/*ignore*/}
-		}
     return properties.put(fieldName, value);
   }
 
@@ -814,6 +797,13 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
           continue; // wurde nicht geaendert
         String type  = (String) types.get(attributes[i]);
         Object value = properties.get(attributes[i]);
+        
+        // Automatisch in ID aufloesen
+        if (value instanceof DBObject)
+        {
+          String id = ((DBObject)value).getID();
+          value = id != null ? Integer.parseInt(id) : null;
+        }
         setStmtValue(stmt,count++,type,value);
       }
 			Logger.debug("executing sql statement: " + stmt.toString());
@@ -917,6 +907,12 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
         
         String type  = (String) types.get(attributes[i]);
         Object value = properties.get(attributes[i]);
+        // Automatisch in ID aufloesen
+        if (value instanceof DBObject)
+        {
+          String id = ((DBObject)value).getID();
+          value = id != null ? Integer.parseInt(id) : null;
+        }
         setStmtValue(stmt,i,type,value);
       }
 			Logger.debug("executing sql statement: " + stmt.toString());
@@ -1376,7 +1372,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 /*********************************************************************
  * $Log: AbstractDBObject.java,v $
- * Revision 1.72  2011/02/21 09:54:04  willuhn
+ * Revision 1.73  2011/07/19 13:08:30  willuhn
+ * @N Fremdschluessel beim Speichern on-the-fly aufloesen - ich hoffe, die Aenderung hat keine Nebenwirkungen ;)
+ *
+ * Revision 1.72  2011-02-21 09:54:04  willuhn
  * @B BUGZILLA 995
  *
  * Revision 1.71  2010-12-22 11:16:04  willuhn
