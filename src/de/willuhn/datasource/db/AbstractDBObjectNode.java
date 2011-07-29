@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.16 $
- * $Date: 2010/08/29 22:10:17 $
+ * $Revision: 1.17 $
+ * $Date: 2011/07/29 08:46:00 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -186,11 +186,12 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     try {
 			GenericIterator list = getChildren();
       if (list.hasNext())
-        throw new ApplicationException("Objekt kann nicht gelï¿½scht werden da Abhï¿½ngigkeiten existieren.");
+        throw new ApplicationException("Objekt kann nicht gelöscht werden da Abhängigkeiten existieren.");
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler beim Prï¿½fen der Abhï¿½ngigkeiten.");
+      Logger.error("error while checking children",e);
+      throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
     }
   }
 
@@ -220,7 +221,8 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     }
     catch (RemoteException e)
     {
-      throw new ApplicationException("Fehler beim Prï¿½fen der Abhï¿½ngigkeiten.");
+      Logger.error("error while checking children",e);
+      throw new ApplicationException("Fehler beim Prüfen der Abhängigkeiten.");
     }
     
   }
@@ -244,7 +246,11 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
- * Revision 1.16  2010/08/29 22:10:17  willuhn
+ * Revision 1.17  2011/07/29 08:46:00  willuhn
+ * @B falsches Encoding
+ * @B fehlendes Log
+ *
+ * Revision 1.16  2010-08-29 22:10:17  willuhn
  * *** empty log message ***
  *
  * Revision 1.15  2009/11/09 10:34:18  willuhn
