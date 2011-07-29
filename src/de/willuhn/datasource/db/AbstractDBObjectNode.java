@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/AbstractDBObjectNode.java,v $
- * $Revision: 1.17 $
- * $Date: 2011/07/29 08:46:00 $
+ * $Revision: 1.18 $
+ * $Date: 2011/07/29 08:55:12 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -19,6 +19,7 @@ import de.willuhn.datasource.GenericIterator;
 import de.willuhn.datasource.GenericObjectNode;
 import de.willuhn.datasource.pseudo.PseudoIterator;
 import de.willuhn.datasource.rmi.DBIterator;
+import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBObjectNode;
 import de.willuhn.logging.Logger;
 import de.willuhn.util.ApplicationException;
@@ -115,7 +116,12 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
   public GenericObjectNode getParent() throws RemoteException
   {
     DBIterator list = getList();
-    list.addFilter(getIDField() + "=" + this.getAttribute(this.getNodeField()));
+    Object parent = this.getAttribute(this.getNodeField());
+    if (parent == null)
+      return null;
+    if (parent instanceof DBObject)
+      parent = ((DBObject) parent).getID();
+    list.addFilter(getIDField() + "=" + parent);
     if (!list.hasNext())
       return null;
     return (GenericObjectNode) list.next();
@@ -246,7 +252,10 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
 
 /*********************************************************************
  * $Log: AbstractDBObjectNode.java,v $
- * Revision 1.17  2011/07/29 08:46:00  willuhn
+ * Revision 1.18  2011/07/29 08:55:12  willuhn
+ * @B Das SQL-Statement fuer getParent() in AbstractDBObjectNode war ungueltig
+ *
+ * Revision 1.17  2011-07-29 08:46:00  willuhn
  * @B falsches Encoding
  * @B fehlendes Log
  *
