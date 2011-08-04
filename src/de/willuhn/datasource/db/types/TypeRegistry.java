@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/types/TypeRegistry.java,v $
- * $Revision: 1.3 $
- * $Date: 2008/07/15 11:02:31 $
+ * $Revision: 1.4 $
+ * $Date: 2011/08/04 08:35:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -49,6 +49,10 @@ public class TypeRegistry
     
     types.put("blob",        new TypeByteArray());
     types.put("longblob",    new TypeByteArray());
+    
+    // Daemliches PostgreSQL - muessen die denn ALLES anders machen? :(
+    types.put("bytea",       new TypeByteArray());
+    types.put("timestamptz", new TypeTimestamp());
   }
   
   /**
@@ -86,6 +90,9 @@ public class TypeRegistry
 
 /*********************************************************************
  * $Log: TypeRegistry.java,v $
+ * Revision 1.4  2011/08/04 08:35:51  willuhn
+ * @B daemliches PostgreSQL
+ *
  * Revision 1.3  2008/07/15 11:02:31  willuhn
  * @N Neuer Typ "TypeLongString", der aus den Feldern "TEXT", "LONGTEXT" und "LONGVARCHAR" bei Bedarf aus einem Reader liest (ist abhaengig vom JDBC-Treiber)
  *
