@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/types/TypeRegistry.java,v $
- * $Revision: 1.4 $
- * $Date: 2011/08/04 08:35:51 $
+ * $Revision: 1.3.2.1 $
+ * $Date: 2011/08/04 08:54:44 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -90,10 +90,10 @@ public class TypeRegistry
 
 /*********************************************************************
  * $Log: TypeRegistry.java,v $
- * Revision 1.4  2011/08/04 08:35:51  willuhn
- * @B daemliches PostgreSQL
+ * Revision 1.3.2.1  2011/08/04 08:54:44  willuhn
+ * @N Backports aus HEAD
  *
- * Revision 1.3  2008/07/15 11:02:31  willuhn
+ * Revision 1.3  2008-07-15 11:02:31  willuhn
  * @N Neuer Typ "TypeLongString", der aus den Feldern "TEXT", "LONGTEXT" und "LONGVARCHAR" bei Bedarf aus einem Reader liest (ist abhaengig vom JDBC-Treiber)
  *
  * Revision 1.2  2008/07/14 08:55:28  willuhn
