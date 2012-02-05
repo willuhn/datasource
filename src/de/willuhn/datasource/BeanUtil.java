@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.12 $
- * $Date: 2011/07/11 16:00:20 $
+ * $Revision: 1.13 $
+ * $Date: 2012/02/05 22:35:08 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -14,6 +14,7 @@
 package de.willuhn.datasource;
 
 import java.beans.Expression;
+import java.lang.reflect.ParameterizedType;
 import java.rmi.RemoteException;
 
 import de.willuhn.logging.Logger;
@@ -179,12 +180,28 @@ public class BeanUtil
     Expression ex = new Expression(bean,method,params);
     return ex.getValue();
   }
+  
+  /**
+   * Liefert die Typisierung einer Klasse.
+   * @param c die Klasse, deren Typisierung ermittelt werden soll.
+   * @return der konkrete Typ der Klasse oder NULL, wenn sie nicht typisiert ist.
+   */
+  public static Class getType(Class c)
+  {
+    // Gefunden in http://www.nautsch.net/2008/10/29/class-von-type-parameter-java-generics-gepimpt/
+    // Generics-Voodoo ;)
+    ParameterizedType types = (ParameterizedType) c.getGenericSuperclass();
+    return (Class) types.getActualTypeArguments()[0];
+  }
 }
 
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
- * Revision 1.12  2011/07/11 16:00:20  willuhn
+ * Revision 1.13  2012/02/05 22:35:08  willuhn
+ * @N getType()
+ *
+ * Revision 1.12  2011-07-11 16:00:20  willuhn
  * @N diverse Fallbacks
  *
  * Revision 1.11  2011-03-30 11:51:49  willuhn
