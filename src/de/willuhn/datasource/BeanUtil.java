@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.14 $
- * $Date: 2012/02/05 22:36:58 $
+ * $Revision: 1.15 $
+ * $Date: 2012/02/05 23:20:27 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -15,6 +15,7 @@ package de.willuhn.datasource;
 
 import java.beans.Expression;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.rmi.RemoteException;
 
 import de.willuhn.logging.Logger;
@@ -196,14 +197,28 @@ public class BeanUtil
     
     // Gefunden in http://www.nautsch.net/2008/10/29/class-von-type-parameter-java-generics-gepimpt/
     // Generics-Voodoo ;)
-    ParameterizedType types = (ParameterizedType) c.getGenericSuperclass();
-    return (Class) types.getActualTypeArguments()[0];
+    Type type = c.getGenericSuperclass();
+    if (type == null || !(type instanceof ParameterizedType))
+      return null;
+
+    ParameterizedType pType = (ParameterizedType) type;
+    Type[] types = pType.getActualTypeArguments();
+    if (types == null || types.length == 0)
+      return null;
+    
+    if (!(types[0] instanceof Class))
+      return null;
+    
+    return (Class) types[0];
   }
 }
 
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.15  2012/02/05 23:20:27  willuhn
+ * @N null check
+ *
  * Revision 1.14  2012/02/05 22:36:58  willuhn
  * @N null check
  *
