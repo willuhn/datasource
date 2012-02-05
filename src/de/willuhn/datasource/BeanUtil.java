@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.13 $
- * $Date: 2012/02/05 22:35:08 $
+ * $Revision: 1.14 $
+ * $Date: 2012/02/05 22:36:58 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -188,6 +188,12 @@ public class BeanUtil
    */
   public static Class getType(Class c)
   {
+    if (c == null)
+    {
+      Logger.warn("no (typed) class given");
+      return null;
+    }
+    
     // Gefunden in http://www.nautsch.net/2008/10/29/class-von-type-parameter-java-generics-gepimpt/
     // Generics-Voodoo ;)
     ParameterizedType types = (ParameterizedType) c.getGenericSuperclass();
@@ -198,6 +204,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.14  2012/02/05 22:36:58  willuhn
+ * @N null check
+ *
  * Revision 1.13  2012/02/05 22:35:08  willuhn
  * @N getType()
  *
