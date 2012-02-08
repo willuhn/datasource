@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.15 $
- * $Date: 2012/02/05 23:20:27 $
+ * $Revision: 1.16 $
+ * $Date: 2012/02/08 23:10:51 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -197,8 +197,37 @@ public class BeanUtil
     
     // Gefunden in http://www.nautsch.net/2008/10/29/class-von-type-parameter-java-generics-gepimpt/
     // Generics-Voodoo ;)
-    Type type = c.getGenericSuperclass();
-    if (type == null || !(type instanceof ParameterizedType))
+    
+    // 1. check super class
+    Class ct = getActualType(c.getGenericSuperclass());
+    if (ct != null)
+      return ct;
+    
+    // 2. check interfaces
+    Type[] interfaces = c.getGenericInterfaces();
+    if (interfaces == null || interfaces.length == 0)
+      return null; // keine Interfaces
+    for (Type t:interfaces)
+    {
+      ct = getActualType(t);
+      if (ct != null)
+        return ct;
+    }
+    
+    return null; // kein Typ gefunden
+  }
+  
+  /**
+   * Liefert die konkrete Typisierung des Typs.
+   * @param type der zu pruefende Typ.
+   * @return der konkrete Typ oder NULL.
+   */
+  private static Class getActualType(Type type)
+  {
+    if (type instanceof Class)
+      return (Class) type; // ist schon der Typ
+    
+    if (!(type instanceof ParameterizedType))
       return null;
 
     ParameterizedType pType = (ParameterizedType) type;
@@ -216,6 +245,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.16  2012/02/08 23:10:51  willuhn
+ * @N auch in Interfaces nach Typ suchen
+ *
  * Revision 1.15  2012/02/05 23:20:27  willuhn
  * @N null check
  *
