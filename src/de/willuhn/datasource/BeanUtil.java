@@ -1,7 +1,7 @@
 /**********************************************************************
  * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.16 $
- * $Date: 2012/02/08 23:10:51 $
+ * $Revision: 1.17 $
+ * $Date: 2012/02/08 23:17:50 $
  * $Author: willuhn $
  * $Locker:  $
  * $State: Exp $
@@ -224,9 +224,6 @@ public class BeanUtil
    */
   private static Class getActualType(Type type)
   {
-    if (type instanceof Class)
-      return (Class) type; // ist schon der Typ
-    
     if (!(type instanceof ParameterizedType))
       return null;
 
@@ -245,6 +242,9 @@ public class BeanUtil
 
 /**********************************************************************
  * $Log: BeanUtil.java,v $
+ * Revision 1.17  2012/02/08 23:17:50  willuhn
+ * @R entfernt - sonst wurde selbst Class<Object> gefunden
+ *
  * Revision 1.16  2012/02/08 23:10:51  willuhn
  * @N auch in Interfaces nach Typ suchen
  *
