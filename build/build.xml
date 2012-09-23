@@ -33,7 +33,7 @@
     <property name="tag" value="V_${mytag}_BUILD_${build.number}" />
 
     <echo message="VERSION: ${appversion}" />
-    <echo message="CVS-Tag: ${tag}" />
+    <echo message="Tag    : ${tag}" />
     <echo message="BUILD  : ${build.number}" />
     <echo message="JVM    : ${java.version} ${java.vendor}" />
 
@@ -74,9 +74,9 @@
 
 
 
-  <target depends="compile" name="cvstag" description="tags the source in the CVS">
-    <exec executable="cvs" failonerror="true" dir="${basedir}">
-      <arg line="tag ${tag}" />
+  <target depends="compile" name="tag" description="tags the source in the scm">
+    <exec executable="git" failonerror="true" dir="${basedir}">
+      <arg line="tag -s ${tag}" />
     </exec>
   </target>
 
@@ -160,7 +160,7 @@
   </target>
 
 
-  <target depends="init,compile,cvstag,jar,src,sign,signsrc,clean" description="build an official release" name="all" />
+  <target depends="init,compile,tag,jar,src,sign,signsrc,clean" description="build an official release" name="all" />
 
 
 

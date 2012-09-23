@@ -16,7 +16,9 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Hilfsklasse da java.sql.DriverManager nur Driver akzeptiert,
@@ -92,6 +94,14 @@ public class MyDriver implements Driver
     throws SQLException
   {
     return driver.getPropertyInfo(url,info);
+  }
+
+  /**
+   * @see java.sql.Driver#getParentLogger()
+   */
+  public Logger getParentLogger() throws SQLFeatureNotSupportedException
+  {
+    return this.driver.getParentLogger();
   }
 
 }
