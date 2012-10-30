@@ -97,11 +97,14 @@ public class MyDriver implements Driver
   }
 
   /**
+   * @since Java 7
    * @see java.sql.Driver#getParentLogger()
    */
+  @SuppressWarnings("javadoc")
   public Logger getParentLogger() throws SQLFeatureNotSupportedException
   {
-    return this.driver.getParentLogger();
+    // FeatureNotSupportedException werfen, damits auch in Java 6 noch compiliert.
+    throw new SQLFeatureNotSupportedException("getParentLogger not supported");
   }
 
 }
