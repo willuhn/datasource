@@ -47,7 +47,7 @@ public class BeanUtil
     
     try
     {
-      return invoke(bean,toMethod("get",attribute),null);
+      return invoke(bean,toGetMethod(attribute),null);
     }
     catch (RemoteException re)
     {
@@ -103,7 +103,7 @@ public class BeanUtil
   {
     try
     {
-      invoke(bean,toMethod("set",attribute),params);
+      invoke(bean,toSetMethod(attribute),params);
     }
     catch (RemoteException re)
     {
@@ -158,16 +158,37 @@ public class BeanUtil
   }
   
   /**
-   * Macht aus einem Attribut-Namen einen Getter oder Setter.
-   * @param getSet String "get" oder "set".
+   * Macht aus einem Attribut-Namen einen Getter.
    * @param attribute Name des Attributes. 
    * @return der erzeugte Methodenname.
    */
-  private static String toMethod(String getSet, String attribute)
+  public static String toGetMethod(String attribute)
   {
-    return getSet + attribute.substring(0,1).toUpperCase() + attribute.substring(1);
+    return "get" + attribute.substring(0,1).toUpperCase() + attribute.substring(1);
   }
 
+  /**
+   * Macht aus einem Attribut-Namen einen Setter.
+   * @param attribute Name des Attributes. 
+   * @return der erzeugte Methodenname.
+   */
+  public static String toSetMethod(String attribute)
+  {
+    return "set" + attribute.substring(0,1).toUpperCase() + attribute.substring(1);
+  }
+  
+  /**
+   * Macht aus einem Getter/Setter den Attribut-Namen.
+   * @param method der Methoden-Name.
+   * @return der Attribut-Name.
+   */
+  public static String toProperty(String method)
+  {
+    if (method.length() > 3 && (method.startsWith("get") || method.startsWith("set")))
+      return method.substring(3,4).toLowerCase() + method.substring(4);
+    return method;
+  }
+  
   /**
    * Fuehrt auf der uebergebenen Bean genannte Methode aus.
    * @param bean die Bean.
