@@ -14,9 +14,13 @@
 package de.willuhn.datasource;
 
 import java.beans.Expression;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.willuhn.logging.Logger;
 
@@ -26,7 +30,39 @@ import de.willuhn.logging.Logger;
  */
 public class BeanUtil
 {
-
+  /**
+   * Liefert die Property-Namen einer Bean.
+   * @param bean die Bean.
+   * @return die Property-Namen gemaess Bean-Spec. Das sind die Namen der Properties basierend auf
+   * den gefundenen public Getter-Methoden.
+   * @throws RemoteException
+   */
+  public static List<String> getProperties(Object bean) throws RemoteException
+  {
+    List<String> result = new ArrayList<String>();
+    if (bean == null)
+      return result;
+    
+    if (bean instanceof GenericObject)
+    {
+      GenericObject o = (GenericObject) bean;
+      result.addAll(Arrays.asList(o.getAttributeNames()));
+      return result;
+    }
+    
+    Method[] methods = bean.getClass().getMethods();
+    if (methods == null || methods.length == 0)
+      return result;
+    
+    for (Method m:methods)
+    {
+      String name = m.getName();
+      if (name.startsWith("get") && name.length() > 3)
+        result.add(toProperty(name));
+    }
+    return result;
+  }
+  
   /**
    * Fuehrt auf der uebergebenen Bean die zugehoerige Getter-Methode zum genannten Attibut aus.
    * @param bean die Bean.
