@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/BeanUtil.java,v $
- * $Revision: 1.17 $
- * $Date: 2012/02/08 23:17:50 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn software & services
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -102,7 +96,7 @@ public class BeanUtil
       }
       catch (NoSuchMethodException nme2)
       {
-        Logger.warn(nme.getMessage());
+        Logger.trace(nme.getMessage());
         return null;
       }
       catch (Exception e)
@@ -295,60 +289,3 @@ public class BeanUtil
     return (Class) types[0];
   }
 }
-
-
-/**********************************************************************
- * $Log: BeanUtil.java,v $
- * Revision 1.17  2012/02/08 23:17:50  willuhn
- * @R entfernt - sonst wurde selbst Class<Object> gefunden
- *
- * Revision 1.16  2012/02/08 23:10:51  willuhn
- * @N auch in Interfaces nach Typ suchen
- *
- * Revision 1.15  2012/02/05 23:20:27  willuhn
- * @N null check
- *
- * Revision 1.14  2012/02/05 22:36:58  willuhn
- * @N null check
- *
- * Revision 1.13  2012/02/05 22:35:08  willuhn
- * @N getType()
- *
- * Revision 1.12  2011-07-11 16:00:20  willuhn
- * @N diverse Fallbacks
- *
- * Revision 1.11  2011-03-30 11:51:49  willuhn
- * @C Code verschoben in neuen Injector in de.willuhn.util
- *
- * Revision 1.10  2009/08/19 12:55:13  willuhn
- * @B equals-Vergleich geaendert
- *
- * Revision 1.9  2009/08/19 12:44:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2009/08/19 12:43:09  willuhn
- * @B Annotation-Parameter falsch
- *
- * Revision 1.7  2009/08/19 12:23:33  willuhn
- * @N Neue Methode zum Ermitteln von Field-Annotations in Beans, die auch in Superklassen sucht
- *
- * Revision 1.6  2009/01/13 16:36:43  willuhn
- * @C Wenn benannter Getter einer Bean nicht existiert, dann keine NoSuchMethodException werfen sondern nur warning loggen
- *
- * Revision 1.5  2008/06/16 10:56:26  willuhn
- * @C urspruengliche Exception des invoke nicht fangen
- *
- * Revision 1.4  2008/06/16 10:40:07  willuhn
- * @C BeanUtil#invoke ist jetzt public
- *
- * Revision 1.3  2007/04/10 22:44:48  willuhn
- * @N Additional equals method to honor GenericObjects
- *
- * Revision 1.2  2007/04/02 23:00:42  willuhn
- * @B falscher Parameter in BeanUtil#get
- * @N PseudoIterator#asList
- *
- * Revision 1.1  2007/03/29 23:06:04  willuhn
- * @N helper class for generic bean access
- *
- **********************************************************************/
