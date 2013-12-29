@@ -496,7 +496,22 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   protected boolean hasChanged()
   {
-    return !this.properties.equals(this.origProperties);
+    try
+    {
+      String[] names = this.getAttributeNames();
+      for (int i=0;i<names.length;++i)
+      {
+        if (this.hasChanged(names[i]))
+          return true;
+      }
+      
+      return false;
+    }
+    catch (RemoteException re)
+    {
+      Logger.error("unable to determine object change state",re);
+      return true;
+    }
   }
 
   /**
@@ -514,6 +529,24 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     
     if (o == null || n == null)
       return true; // einer der beiden Werte ist jetzt null
+
+    //////////
+    // BUGZILLA 1447
+    if (o instanceof AbstractDBObject)
+    {
+      String id = ((AbstractDBObject)o).id;
+      o = id != null ? Integer.parseInt(id) : null;
+    }
+    if (n instanceof AbstractDBObject)
+    {
+      String id = ((AbstractDBObject)n).id;
+      n = id != null ? Integer.parseInt(id) : null;
+    }
+    // Muessen wir hier nochmal machen - fuer den Fall, dass bei einem der beiden Objekte keine ID vorhanden ist
+    if (o == n) return false;
+    if (o == null || n == null) return true;
+    //
+    //////////
 
     return !o.equals(n);
   }
@@ -738,7 +771,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
   /**
    * Liefert das automatisch erzeugte SQL-Statement fuer ein Update.
-   * Kann bei Bedarf �berschrieben um ein vom dynamisch erzeugten
+   * Kann bei Bedarf ueberschrieben um ein vom dynamisch erzeugten
    * abweichendes Statement f�r die Speicherung zu verwenden.
    * Die Funktion darf <null> zurueckliefern, wenn nichts zu aendern ist.  
    * @return das erzeugte SQL-Statement.
