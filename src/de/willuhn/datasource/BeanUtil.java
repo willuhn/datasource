@@ -71,6 +71,19 @@ public class BeanUtil
 
     if (attribute == null)
       return toString(bean);
+
+    for (int i=0;i<10;++i) // Rekursion in die Kind-Beans - maximal aber 10 Stufen. Wenn es mehr sind, ist irgendwas faul ;)
+    {
+      int dot = attribute.indexOf(".");
+      if (dot == -1)
+        break;
+      
+      String s = attribute.substring(0,dot);
+      bean = get(bean,s);
+      if (bean == null)
+        return null; // Hier gehts nicht mehr weiter
+      attribute = attribute.substring(dot+1);
+    }
     
     if (bean instanceof GenericObject)
       return ((GenericObject)bean).getAttribute(attribute);
