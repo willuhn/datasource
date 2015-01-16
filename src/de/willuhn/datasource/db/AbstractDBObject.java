@@ -217,7 +217,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   {
     synchronized(transactions)
     {
-      Transaction t = (Transaction) getTransaction();
+      Transaction t = getTransaction();
       return (t != null && t.count > 0);
     }
   }
@@ -672,11 +672,17 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       if (this.id == null)
         this.id = getLastId();
       
-      if (!this.inTransaction())
-  			getConnection().commit();
+      boolean tx = this.inTransaction();
+      this.created = tx; // Rollback-Markierung nur setzen, wenn wir in einer Transaktion sind
+
+      // Sonst auto-commit
+      if (!tx)
+      {
+        getConnection().commit();
+      }
       
 			notify(storeListeners);
-      this.created = true;
+
     }
     catch (SQLException e)
     {
@@ -1249,6 +1255,10 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       try {
         Logger.debug("[commit] transaction commit");
         getConnection().commit();
+        
+        // Transaktion ist durch. Egal, ob das Ojekt gerade erstellt wurde oder
+        // schon existierte. Jetzt ist es auf jeden Fall nicht mehr frisch.
+        this.created = false;
       }
       catch (SQLException se)
       {
