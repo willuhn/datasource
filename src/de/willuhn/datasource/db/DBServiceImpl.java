@@ -361,9 +361,9 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
    * @return das erzeugte Objekt.
    * @throws Exception wenn beim Erzeugen des Objektes ein Fehler auftrat.
    */
-  private DBObject create(Class c) throws Exception
+  private <T extends DBObject> T create(Class<? extends DBObject> c) throws Exception
   {
-    Class clazz = c;
+    Class<? extends DBObject> clazz = c;
     if (this.finder != null)
     {
       Class[] found = finder.findImplementors(c);
@@ -377,13 +377,13 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     AbstractDBObject o = (AbstractDBObject) ct.newInstance(new Object[] {});
     o.setService(this);
     o.init();
-    return o;
+    return (T)o;
   }
 
   /**
    * @see de.willuhn.datasource.rmi.DBService#createObject(java.lang.Class, java.lang.String)
    */
-  public DBObject createObject(Class c, String identifier) throws RemoteException
+  public <T extends DBObject> T createObject(Class<? extends DBObject> c, String identifier) throws RemoteException
   {
 		checkStarted();
     try {
@@ -392,7 +392,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     catch (ServerNotActiveException soe) {}
 
     try {
-      DBObject o = create(c);
+      T o = create(c);
       o.load(identifier);
       return o;
     }
@@ -410,7 +410,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   /**
    * @see de.willuhn.datasource.rmi.DBService#createList(java.lang.Class)
    */
-  public DBIterator createList(Class c) throws RemoteException
+  public <T extends DBObject> DBIterator<T> createList(Class<? extends DBObject> c) throws RemoteException
 	{
 		checkStarted();
     try {
@@ -419,7 +419,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     catch (ServerNotActiveException soe) {}
 
 		try {
-      DBObject o = create(c);
+      T o = create(c);
 			return new DBIteratorImpl((AbstractDBObject)o,this);
 		}
 		catch (RemoteException re)
@@ -600,212 +600,3 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     return true;
   }
 }
-
-/*********************************************************************
- * $Log: DBServiceImpl.java,v $
- * Revision 1.40  2008/02/08 00:26:51  willuhn
- * @R temporaeres UNDO
- *
- * Revision 1.37  2007/07/17 12:40:23  willuhn
- * *** empty log message ***
- *
- * Revision 1.36  2007/04/02 23:00:42  willuhn
- * @B falscher Parameter in BeanUtil#get
- * @N PseudoIterator#asList
- *
- * Revision 1.35  2007/03/02 15:25:03  willuhn
- * @N getInsertWithID um festlegen zu koennen, ob INSERTs mit ID erzeugt werden sollen
- * @C last_insert_id() nur aufrufen, wenn nach dem INSERT noch keine ID vorhanden ist
- *
- * Revision 1.34  2007/01/30 23:17:25  willuhn
- * @D typo
- *
- * Revision 1.33  2006/12/12 13:05:08  willuhn
- * @N connection commit on close
- *
- * Revision 1.32  2006/11/20 22:58:41  willuhn
- * @N autocommit and transaction isolation level are now configurable
- * @N rmi clients can now be disconnected
- *
- * Revision 1.31  2006/09/05 20:52:24  willuhn
- * @N Added ResultsetExtractor (portiert aus Syntax)
- *
- * Revision 1.30  2006/06/19 22:22:48  willuhn
- * @N Ueberschreibbare Getter fuer JDBC-Daten
- *
- * Revision 1.29  2006/03/27 16:26:48  web0
- * @C replaced Session with Hashtable
- *
- * Revision 1.28  2006/03/23 10:23:08  web0
- * @N connections are now created per client host
- * @N checkConnection()
- * @N connections now have a 5 minute timeout
- *
- * Revision 1.27  2005/03/09 01:07:51  web0
- * @D javadoc fixes
- *
- * Revision 1.26  2004/12/07 01:27:58  willuhn
- * @N Dummy Driver
- *
- * Revision 1.25  2004/11/12 18:21:56  willuhn
- * *** empty log message ***
- *
- * Revision 1.24  2004/11/04 17:48:04  willuhn
- * *** empty log message ***
- *
- * Revision 1.23  2004/11/04 17:47:09  willuhn
- * *** empty log message ***
- *
- * Revision 1.22  2004/09/15 22:31:20  willuhn
- * *** empty log message ***
- *
- * Revision 1.21  2004/09/14 23:27:32  willuhn
- * @C redesign of service handling
- *
- * Revision 1.20  2004/09/13 23:26:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.19  2004/08/31 18:14:00  willuhn
- * *** empty log message ***
- *
- * Revision 1.18  2004/08/31 17:33:10  willuhn
- * *** empty log message ***
- *
- * Revision 1.17  2004/08/26 23:19:33  willuhn
- * @N added ObjectNotFoundException
- *
- * Revision 1.16  2004/08/18 23:14:00  willuhn
- * @D Javadoc
- *
- * Revision 1.15  2004/08/11 22:23:51  willuhn
- * @N AbstractDBObject.getLoadQuery
- *
- * Revision 1.14  2004/07/23 16:24:05  willuhn
- * *** empty log message ***
- *
- * Revision 1.13  2004/07/23 15:51:07  willuhn
- * @C Rest des Refactorings
- *
- * Revision 1.12  2004/07/21 23:53:56  willuhn
- * @C massive Refactoring ;)
- *
- * Revision 1.11  2004/06/30 20:58:07  willuhn
- * @C some refactoring
- *
- * Revision 1.10  2004/06/17 00:05:50  willuhn
- * @N GenericObject, GenericIterator
- *
- * Revision 1.9  2004/05/04 23:05:25  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2004/03/19 18:56:47  willuhn
- * @R removed ping() from within open()
- *
- * Revision 1.7  2004/03/18 01:24:17  willuhn
- * @C refactoring
- *
- * Revision 1.6  2004/03/06 18:24:34  willuhn
- * @D javadoc
- *
- * Revision 1.5  2004/02/27 01:09:51  willuhn
- * *** empty log message ***
- *
- * Revision 1.4  2004/01/29 00:13:11  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2004/01/25 18:39:49  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2004/01/23 00:25:52  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2004/01/10 14:52:19  willuhn
- * @C package removings
- *
- * Revision 1.1  2004/01/08 20:46:43  willuhn
- * @N database stuff separated from jameica
- *
- * Revision 1.14  2004/01/05 18:04:46  willuhn
- * @N added MultipleClassLoader
- *
- * Revision 1.13  2004/01/03 18:08:05  willuhn
- * @N Exception logging
- * @C replaced bb.util xml parser with nanoxml
- *
- * Revision 1.12  2003/12/30 17:44:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.11  2003/12/29 16:29:47  willuhn
- * @N javadoc
- *
- * Revision 1.10  2003/12/27 21:23:33  willuhn
- * @N object serialization
- *
- * Revision 1.9  2003/12/22 21:00:34  willuhn
- * *** empty log message ***
- *
- * Revision 1.8  2003/12/15 19:08:01  willuhn
- * *** empty log message ***
- *
- * Revision 1.7  2003/12/13 20:05:21  willuhn
- * *** empty log message ***
- *
- * Revision 1.6  2003/12/12 21:11:29  willuhn
- * @N ObjectMetaCache
- *
- * Revision 1.5  2003/12/11 21:00:54  willuhn
- * @C refactoring
- *
- * Revision 1.4  2003/11/27 00:22:17  willuhn
- * @B paar Bugfixes aus Kombination RMI + Reflection
- * @N insertCheck(), deleteCheck(), updateCheck()
- * @R AbstractDBObject#toString() da in RemoteObject ueberschrieben (RMI-Konflikt)
- *
- * Revision 1.3  2003/11/20 03:48:42  willuhn
- * @N first dialogues
- *
- * Revision 1.2  2003/11/12 00:58:54  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/11/05 22:46:19  willuhn
- * *** empty log message ***
- *
- * Revision 1.12  2003/10/28 11:43:02  willuhn
- * @N default DBService and PrinterHub
- *
- * Revision 1.11  2003/10/27 23:42:31  willuhn
- * *** empty log message ***
- *
- * Revision 1.10  2003/10/27 23:36:39  willuhn
- * @N debug messages
- *
- * Revision 1.9  2003/10/27 21:08:38  willuhn
- * @N button to change language
- * @N application.changeLanguageTo()
- * @C DBServiceImpl auto reconnect
- *
- * Revision 1.8  2003/10/27 18:50:57  willuhn
- * @N all service have to implement open() and close() now
- *
- * Revision 1.7  2003/10/27 18:21:57  willuhn
- * @B RMI fixes in business objects
- *
- * Revision 1.6  2003/10/27 11:49:12  willuhn
- * @N added DBIterator
- *
- * Revision 1.5  2003/10/26 17:46:30  willuhn
- * @N DBObject
- *
- * Revision 1.4  2003/10/25 19:49:47  willuhn
- * *** empty log message ***
- *
- * Revision 1.3  2003/10/25 19:25:30  willuhn
- * *** empty log message ***
- *
- * Revision 1.2  2003/10/25 17:44:36  willuhn
- * *** empty log message ***
- *
- * Revision 1.1  2003/10/25 17:17:51  willuhn
- * @N added Empfaenger
- *
- **********************************************************************/

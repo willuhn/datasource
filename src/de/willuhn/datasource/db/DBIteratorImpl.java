@@ -1,12 +1,6 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/DBIteratorImpl.java,v $
- * $Revision: 1.31 $
- * $Date: 2011/06/29 11:11:28 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
+ * Copyright (c) by Olaf Willuhn
  * All rights reserved
  *
  **********************************************************************/
@@ -19,22 +13,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.List;
 
-import de.willuhn.datasource.GenericObject;
 import de.willuhn.datasource.rmi.DBIterator;
-import de.willuhn.datasource.rmi.DBObject;
 import de.willuhn.datasource.rmi.DBService;
 import de.willuhn.logging.Logger;
 
 /**
- * @author willuhn
  * Kleiner Hilfsiterator zum Holen von Listen von Objekten aus der Datenbank.
+ * @param <T> der konkrete Typ.
  */
-public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
+public class DBIteratorImpl<T extends AbstractDBObject> extends UnicastRemoteObject implements DBIterator<T> {
 
 	private DBService service       = null;
 	private Connection conn         = null;
-	private AbstractDBObject object = null;
+	private T object                = null;
 
   private String filter           = "";
   private String order            = "";
@@ -42,7 +35,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   private ArrayList params        = new ArrayList();
   private String joins            = "";
 
-  private ArrayList list          = new ArrayList();
+  private List<T> list            = new ArrayList<T>();
   private int index               = 0;
 
   private boolean initialized     = false;
@@ -53,7 +46,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * @param service der Datenbankservice.
    * @throws RemoteException
    */
-  DBIteratorImpl(AbstractDBObject object, DBServiceImpl service) throws RemoteException
+  DBIteratorImpl(T object, DBServiceImpl service) throws RemoteException
 	{
 		if (object == null)
 			throw new RemoteException("given object type is null");
@@ -74,7 +67,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
    * @param service der Datenbank-Service.
    * @throws RemoteException
    */
-  DBIteratorImpl(AbstractDBObject object, ArrayList list, DBServiceImpl service) throws RemoteException
+  DBIteratorImpl(T object, ArrayList list, DBServiceImpl service) throws RemoteException
   {
 		this(object,service);
 
@@ -84,7 +77,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     try {
       for (int i=0;i<list.size();++i)
       {
-        DBObject o = (DBObject) service.createObject(object.getClass(),(String)list.get(i));
+        T o = service.createObject(object.getClass(),(String)list.get(i));
         this.list.add(o);
       }
     }
@@ -224,7 +217,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
       rs = stmt.executeQuery();
 			while (rs.next())
 			{
-        final AbstractDBObject o = (AbstractDBObject) service.createObject(object.getClass(),null);
+        final T o = service.createObject(object.getClass(),null);
         o.setID(rs.getString(o.getIDField()));
         o.fill(rs);
 				list.add(o);
@@ -256,11 +249,11 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   /**
    * @see de.willuhn.datasource.GenericIterator#next()
    */
-  public GenericObject next() throws RemoteException
+  public T next() throws RemoteException
 	{
     init();
     try {
-      return (GenericObject) list.get(index++);
+      return list.get(index++);
     }
     catch (Exception e)
     {
@@ -271,11 +264,11 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   /**
    * @see de.willuhn.datasource.GenericIterator#previous()
    */
-  public GenericObject previous() throws RemoteException
+  public T previous() throws RemoteException
   {
     init();
     try {
-      return (GenericObject) list.get(index--);
+      return list.get(index--);
     }
     catch (Exception e)
     {
@@ -303,7 +296,7 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
   /**
    * @see de.willuhn.datasource.GenericIterator#contains(de.willuhn.datasource.GenericObject)
    */
-  public GenericObject contains(GenericObject other) throws RemoteException
+  public T contains(T other) throws RemoteException
   {
     init();
 
@@ -313,10 +306,10 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     if (!other.getClass().equals(object.getClass()))
       return null; // wir koennen uns die Iteration sparen.
 
-    GenericObject object = null;
+    T object = null;
     for (int i=0;i<list.size();++i)
     {
-      object = (GenericObject) list.get(i);
+      object = list.get(i);
       if (object.equals(other))
         return object;
     }
@@ -325,19 +318,3 @@ public class DBIteratorImpl extends UnicastRemoteObject implements DBIterator {
     
   }
 }
-
-
-/*********************************************************************
- * $Log: DBIteratorImpl.java,v $
- * Revision 1.31  2011/06/29 11:11:28  willuhn
- * @N varargs
- *
- * Revision 1.30  2011-01-18 12:15:03  willuhn
- * @N setLimit(int)
- *
- * Revision 1.29  2011-01-18 12:02:56  willuhn
- * @R alte Commit-Kommentare entfernt
- *
- * Revision 1.28  2010-05-04 10:38:14  willuhn
- * @N rudimentaere Joins
- **********************************************************************/

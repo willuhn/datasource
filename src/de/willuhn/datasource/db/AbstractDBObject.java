@@ -464,7 +464,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
       else
       {
         // Haben wir noch nicht im Cache - neu laden und cachen
-        cachedObject = (DBObject) service.createObject(foreign,id);
+        cachedObject = service.createObject(foreign,id);
   			foreignObjectCache.put(foreign.getName() + fieldName,cachedObject);
       }
 			return cachedObject;
