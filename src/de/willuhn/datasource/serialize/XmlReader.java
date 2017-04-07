@@ -67,7 +67,9 @@ public class XmlReader extends AbstractXmlIO implements Reader
     
     NamedNodeMap attributes = current.getAttributes();
     String type = attributes.getNamedItem("type").getNodeValue();
-    String id   = attributes.getNamedItem("id").getNodeValue();
+    
+    Node nid = attributes.getNamedItem("id");
+    String id = nid != null ? nid.getNodeValue() : null;
     
     HashMap values = new HashMap();
     NodeList list = current.getChildNodes();
