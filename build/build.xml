@@ -99,7 +99,7 @@
       <fileset dir="${class.dir}" />
     </jar>
 
-    <copy file="${build.dir}/COPYING" tofile="${project.release}/COPYING" />
+    <copy file="LICENSE" tofile="${project.release}/LICENSE" />
     <copy file="${build.dir}/README" tofile="${project.release}/README" />
 
   </target>
