@@ -1,13 +1,11 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/db/EmbeddedDatabase.java,v $
- * $Revision: 1.27 $
- * $Date: 2006/11/20 22:57:35 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) 2004 Olaf Willuhn
+ * All rights reserved.
+ * 
+ * This software is copyrighted work licensed under the terms of the
+ * GNU LESSER GENERAL PUBLIC LICENSE 2.1.
+ * Please consult the file "LICENSE" for details. 
  *
  **********************************************************************/
 

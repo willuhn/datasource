@@ -1,14 +1,17 @@
 /**********************************************************************
  *
- * Copyright (c) by Olaf Willuhn
- * All rights reserved
+ * Copyright (c) 2004 Olaf Willuhn
+ * All rights reserved.
+ * 
+ * This software is copyrighted work licensed under the terms of the
+ * GNU LESSER GENERAL PUBLIC LICENSE 2.1.
+ * Please consult the file "LICENSE" for details. 
  *
  **********************************************************************/
 
 package de.willuhn.datasource;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

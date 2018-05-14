@@ -1,13 +1,11 @@
 /**********************************************************************
- * $Source: /cvsroot/jameica/datasource/src/de/willuhn/datasource/rmi/Event.java,v $
- * $Revision: 1.1 $
- * $Date: 2004/10/25 17:58:37 $
- * $Author: willuhn $
- * $Locker:  $
- * $State: Exp $
  *
- * Copyright (c) by willuhn.webdesign
- * All rights reserved
+ * Copyright (c) 2004 Olaf Willuhn
+ * All rights reserved.
+ * 
+ * This software is copyrighted work licensed under the terms of the
+ * GNU LESSER GENERAL PUBLIC LICENSE 2.1.
+ * Please consult the file "LICENSE" for details. 
  *
  **********************************************************************/
 package de.willuhn.datasource.rmi;
