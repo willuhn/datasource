@@ -25,10 +25,10 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'com.mckoi', name: 'mckoisqldb', version: '1.0.5'
+    implementation libs.mckoisqldb
     implementation project(':lib:util')
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation libs.junit
 }
 
 // solange noch die Logik des ANT-Builds benötigt wird, nutze einen Unterordner
