@@ -1,7 +1,7 @@
 plugins {
-    id 'java-library'
-    id 'eclipse'
-    id 'idea'
+    id 'my.java-library-conventions'
+    id 'my.java-oldschool-project-structure'
+    id 'my.encoding.8859-1'
 }
 
 group 'de.willuhn.jameica'
@@ -13,53 +13,17 @@ java {
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'ISO-8859-1'
-}
-tasks.withType(Javadoc) {
-    options.encoding = 'ISO-8859-1'
-}
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation libs.mckoisqldb
-    implementation project(':lib:util')
+    // Dependencies appearing in the api configurations will be transitively
+    // exposed to consumers of the library, and as such will appear on the
+    // compile classpath of consumers.
+    api project(':lib:util')
 
-    testImplementation libs.junit
+    implementation libs.mckoisqldb
 }
 
 // solange noch die Logik des ANT-Builds benötigt wird, nutze einen Unterordner
 buildDir = file("./build/gradle/")
 jar {
     baseName "de_willuhn_${project.name}"
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-        }
-    }
-
-    test {
-        java {
-            srcDirs = ['test']
-        }
-    }
-}
-
-eclipse {
-    classpath {
-        downloadJavadoc = true
-        downloadSources = false
-    }
-}
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = false
-    }
 }
