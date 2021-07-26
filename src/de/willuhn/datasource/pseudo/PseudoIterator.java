@@ -69,49 +69,37 @@ public class PseudoIterator extends UnicastRemoteObject implements GenericIterat
     return list;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericIterator#hasNext()
-   */
+  @Override
   public boolean hasNext() throws RemoteException
   {
     return (list.size() > index && list.size() > 0);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericIterator#next()
-   */
+  @Override
   public GenericObject next() throws RemoteException
   {
     return (GenericObject) list.get(index++);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericIterator#previous()
-   */
+  @Override
   public GenericObject previous() throws RemoteException
   {
     return (GenericObject) list.get(index--);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericIterator#begin()
-   */
+  @Override
   public void begin() throws RemoteException
   {
 		index = 0;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericIterator#size()
-   */
+  @Override
   public int size() throws RemoteException
   {
     return list.size();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericIterator#contains(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public GenericObject contains(GenericObject o) throws RemoteException
   {
 		if (o == null)

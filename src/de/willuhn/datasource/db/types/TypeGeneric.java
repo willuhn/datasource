@@ -21,17 +21,13 @@ import java.sql.Types;
  */
 public class TypeGeneric implements Type
 {
-  /**
-   * @see de.willuhn.datasource.db.types.Type#get(java.sql.ResultSet, java.lang.String)
-   */
+  @Override
   public Object get(ResultSet rs, String name) throws SQLException
   {
     return rs.getObject(name);
   }
 
-  /**
-   * @see de.willuhn.datasource.db.types.Type#set(java.sql.PreparedStatement, int, java.lang.Object)
-   */
+  @Override
   public void set(PreparedStatement stmt, int index, Object value) throws SQLException
   {
     if (value == null)

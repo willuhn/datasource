@@ -240,9 +240,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#load(java.lang.String)
-   */
+  @Override
   public final void load(String id) throws RemoteException
 	{
     checkConnection();
@@ -305,9 +303,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     this.origProperties.putAll(this.properties);
   }
   
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#store()
-   */
+  @Override
   public void store() throws RemoteException, ApplicationException
   {
     if (isNewObject())
@@ -317,9 +313,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#clear()
-   */
+  @Override
   public final void clear() throws RemoteException
   {
     if (!isInitialized())
@@ -333,9 +327,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
   }
   
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#delete()
-   */
+  @Override
   public void delete() throws RemoteException, ApplicationException
   {
     if (isNewObject())
@@ -404,9 +396,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getID()
-   */
+  @Override
   public final String getID() throws RemoteException
   {
     return id;
@@ -425,9 +415,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     this.id = id;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttribute(java.lang.String)
-   */
+  @Override
   public Object getAttribute(String fieldName) throws RemoteException
   {
     if (!isInitialized())
@@ -479,9 +467,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     return o;
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#getAttributeType(java.lang.String)
-   */
+  @Override
   public final String getAttributeType(String attributeName) throws RemoteException
   {
     if (!isInitialized())
@@ -576,9 +562,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     return properties.put(fieldName, value);
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getAttributeNames()
-   */
+  @Override
   public final String[] getAttributeNames() throws RemoteException
   {
     Set s = properties.keySet();
@@ -1083,9 +1067,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     t.set(stmt,index,value);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#isNewObject()
-   */
+  @Override
   public final boolean isNewObject() throws  RemoteException
   {
     return getID() == null;
@@ -1108,9 +1090,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    */
   protected abstract String getTableName();
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#getPrimaryAttribute()
-   */
+  @Override
   public abstract String getPrimaryAttribute() throws RemoteException;
 
   /**
@@ -1160,9 +1140,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     return null;
   }
   
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#transactionBegin()
-   */
+  @Override
   public final void transactionBegin() throws RemoteException
   {
     synchronized(transactions)
@@ -1182,9 +1160,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   
   private boolean created = false;
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#transactionRollback()
-   */
+  @Override
   public final void transactionRollback() throws RemoteException
   {
     synchronized(transactions)
@@ -1230,9 +1206,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
   }  
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#transactionCommit()
-   */
+  @Override
   public final void transactionCommit() throws RemoteException
   {
     synchronized(transactions)
@@ -1280,17 +1254,13 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#getList()
-   */
+  @Override
   public DBIterator getList() throws RemoteException
   {
     return new DBIteratorImpl(this,service);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#overwrite(de.willuhn.datasource.rmi.DBObject)
-   */
+  @Override
   public void overwrite(DBObject object) throws RemoteException
   {
     if (object == null)
@@ -1317,9 +1287,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObject#equals(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public boolean equals(GenericObject other) throws RemoteException
   {
     if (other == null)
@@ -1343,9 +1311,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#addDeleteListener(de.willuhn.datasource.rmi.Listener)
-   */
+  @Override
   public synchronized void addDeleteListener(Listener l) throws RemoteException
   {
   	if (deleteListeners == null)
@@ -1353,9 +1319,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   	deleteListeners.add(l);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#addStoreListener(de.willuhn.datasource.rmi.Listener)
-   */
+  @Override
   public synchronized void addStoreListener(Listener l) throws RemoteException
   {
   	if (storeListeners == null)
@@ -1363,9 +1327,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   	storeListeners.add(l);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#removeDeleteListener(de.willuhn.datasource.rmi.Listener)
-   */
+  @Override
   public void removeDeleteListener(Listener l) throws RemoteException
   {
     if (deleteListeners == null)
@@ -1373,9 +1335,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     deleteListeners.remove(l);
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObject#removeStoreListener(de.willuhn.datasource.rmi.Listener)
-   */
+  @Override
   public void removeStoreListener(Listener l) throws RemoteException
   {
     if (storeListeners == null)

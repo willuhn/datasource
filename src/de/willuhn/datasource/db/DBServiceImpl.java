@@ -248,17 +248,13 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		this.loader = loader;
 	}
 
-	/**
-   * @see de.willuhn.datasource.Service#isStartable()
-   */
+  @Override
   public synchronized boolean isStartable() throws RemoteException
 	{
 		return startable;
 	}
 
-  /**
-   * @see de.willuhn.datasource.Service#start()
-   */
+  @Override
   public synchronized void start() throws RemoteException
   {
 		if (isStarted()) return;
@@ -300,9 +296,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   }
 
 
-  /**
-   * @see de.willuhn.datasource.Service#stop(boolean)
-   */
+  @Override
   public synchronized void stop(boolean restartAllowed) throws RemoteException
   {
     if (!started)
@@ -378,9 +372,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     return (T)o;
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBService#createObject(java.lang.Class, java.lang.String)
-   */
+  @Override
   public <T extends DBObject> T createObject(Class<? extends DBObject> c, String identifier) throws RemoteException
   {
 		checkStarted();
@@ -405,9 +397,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBService#createList(java.lang.Class)
-   */
+  @Override
   public <T extends DBObject> DBIterator<T> createList(Class<? extends DBObject> c) throws RemoteException
 	{
 		checkStarted();
@@ -431,9 +421,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 		}
 	}
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBService#execute(java.lang.String, java.lang.Object[], de.willuhn.datasource.rmi.ResultSetExtractor)
-   */
+  @Override
   public Object execute(String sql, Object[] params, ResultSetExtractor extractor) throws RemoteException
   {
     checkStarted();
@@ -500,17 +488,13 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 			throw new RemoteException("db service not started");
 	}
 
-  /**
-   * @see de.willuhn.datasource.Service#isStarted()
-   */
+  @Override
   public synchronized boolean isStarted() throws RemoteException
   {
     return started;
   }
 
-  /**
-   * @see de.willuhn.datasource.Service#getName()
-   */
+  @Override
   public String getName() throws RemoteException
   {
     return "database service";
