@@ -34,7 +34,6 @@ import de.willuhn.util.ClassFinder;
 
 /**
  * Diese Klasse implementiert eine ueber RMI erreichbaren Datenbank. 
- * @author willuhn
  */
 public class DBServiceImpl extends UnicastRemoteObject implements DBService
 {
