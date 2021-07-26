@@ -50,8 +50,8 @@ public class XmlWriter extends AbstractXmlIO implements Writer
     {
       /**
        * Ueberschrieben, um das Schluss-Tag zu schreiben.
-       * @see java.io.FilterOutputStream#close()
        */
+      @Override
       public void close() throws IOException
       {
         try
@@ -68,9 +68,7 @@ public class XmlWriter extends AbstractXmlIO implements Writer
     };
   }
   
-  /**
-   * @see de.willuhn.datasource.serialize.IO#close()
-   */
+  @Override
   public void close() throws IOException
   {
     this.os.close();
@@ -90,9 +88,7 @@ public class XmlWriter extends AbstractXmlIO implements Writer
     return object.getAttributeNames();
   }
 
-  /**
-   * @see de.willuhn.datasource.serialize.Writer#write(de.willuhn.datasource.GenericObject)
-   */
+  @Override
   public synchronized void write(GenericObject object) throws IOException
   {
     if (!headerWritten)

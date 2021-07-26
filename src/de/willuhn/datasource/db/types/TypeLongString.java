@@ -24,9 +24,7 @@ import java.sql.Types;
 public class TypeLongString extends TypeGeneric
 {
   
-  /**
-   * @see de.willuhn.datasource.db.types.TypeGeneric#get(java.sql.ResultSet, java.lang.String)
-   */
+  @Override
   public Object get(ResultSet rs, String name) throws SQLException
   {
     Object value = rs.getObject(name);
@@ -64,9 +62,7 @@ public class TypeLongString extends TypeGeneric
     return value;
   }
 
-  /**
-   * @see de.willuhn.datasource.db.types.TypeGeneric#set(java.sql.PreparedStatement, int, java.lang.Object)
-   */
+  @Override
   public void set(PreparedStatement stmt, int index, Object value) throws SQLException
   {
     if (value == null)

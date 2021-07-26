@@ -54,9 +54,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     return "parent_id";
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getChildren()
-   */
+  @Override
   public GenericIterator getChildren() throws RemoteException
   {
     if (this.isNewObject())
@@ -66,9 +64,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     return list;
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#getTopLevelList()
-   */
+  @Override
   public GenericIterator getTopLevelList() throws RemoteException
   {
     DBIterator list = getList();
@@ -76,9 +72,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     return list;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#hasChild(de.willuhn.datasource.GenericObjectNode)
-   */
+  @Override
   public boolean hasChild(GenericObjectNode object) throws RemoteException
   {
     if (object == null)
@@ -108,9 +102,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     return false;
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getParent()
-   */
+  @Override
   public GenericObjectNode getParent() throws RemoteException
   {
     DBIterator list = getList();
@@ -125,9 +117,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     return (GenericObjectNode) list.next();
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPossibleParents()
-   */
+  @Override
   public GenericIterator getPossibleParents() throws RemoteException
   {
     DBIterator list = this.getList();
@@ -148,9 +138,7 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     return new DBIteratorImpl(this,array,getService());
   }
 
-  /**
-   * @see de.willuhn.datasource.GenericObjectNode#getPath()
-   */
+  @Override
   public GenericIterator getPath() throws RemoteException
   {
     ArrayList objectArray = new ArrayList();
@@ -183,8 +171,8 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
    * Checks koennen wir bereits hier durchfuehren. Zum Beispiel
    * ist es nicht moeglich, ein Objekt zu loeschen, wenn es
    * Kind-Objekte hat.
-   * @see de.willuhn.datasource.db.AbstractDBObject#deleteCheck()
    */
+  @Override
   protected void deleteCheck() throws ApplicationException
   {
     try {
@@ -203,8 +191,8 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
    * Prueft, ob das angegebene Eltern-Objekt (insofern vorhanden) erlaubt ist.
    * Sprich: Es wird geprueft, ob es nicht auf sich selbst zurueckzeigt
    * und ob das Eltern-Element nicht gleichzeitig ein Kind-Element ist. 
-   * @see de.willuhn.datasource.db.AbstractDBObject#insertCheck()
    */
+  @Override
   protected void insertCheck() throws ApplicationException
   {
     // Wir pruefen, ob das Objekt an gueltiger Stelle eingehaengt wurde.
@@ -231,17 +219,13 @@ public abstract class AbstractDBObjectNode extends AbstractDBObject implements D
     
   }
 
-  /**
-   * @see de.willuhn.datasource.db.AbstractDBObject#updateCheck()
-   */
+  @Override
   protected void updateCheck() throws ApplicationException
   {
     insertCheck();
   }
 
-  /**
-   * @see de.willuhn.datasource.rmi.DBObjectNode#setParent(de.willuhn.datasource.rmi.DBObjectNode)
-   */
+  @Override
   public void setParent(DBObjectNode parent) throws RemoteException
   {
     setAttribute(getNodeField(),parent);
