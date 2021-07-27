@@ -134,7 +134,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     
     if (isInitialized())
-      return; // allready initialized
+      return; // already initialized
     
     // Checken, ob die Datenbank Uppercase ist
     this.upper = Boolean.getBoolean(getService().getClass().getName() + ".uppercase");
@@ -563,9 +563,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * @param fieldName Name des Feldes.
    * @param value neuer Wert des Feldes.
    * Muss vom Typ String, Date, Timestamp, Double, Integer oder DBObject sein.<br>
-   * Ist der Parameter vom Typ <code>dbObject</code> nimmt die Funktion an, dass
+   * Ist der Parameter vom Typ {@link DBObject} nimmt die Funktion an, dass
    * es sich um einen Fremdschluessel handelt und speichert automatisch statt
-   * des Objektes selbst nur dessen ID mittels <code>new Integer(((DBObject)value).getID())</code>.
+   * des Objektes selbst nur dessen ID mittels {@code new Integer(((DBObject)value).getID())}.
    * @return vorheriger Wert des Feldes.
    * @throws RemoteException
    */
@@ -637,7 +637,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * durchaus fehlschlagen, wenn ein Objekt mit dieser ID bereits in
    * der Datenbank existiert.
    * @throws RemoteException Wenn beim Speichern Fehler aufgetreten sind.
-   * @throws ApplicationException Durch <code>insertCheck()</code> erzeugte Benutzerfehler.
+   * @throws ApplicationException Durch {@link #insertCheck()} erzeugte Benutzerfehler.
    */
   public void insert() throws RemoteException, ApplicationException
   {
@@ -725,7 +725,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Aktualisiert das Objekt explizit in der Datenbank.
    * Wenn es sich um ein neues Objekt handelt, wird das Update fehlschlagen.
    * @throws RemoteException Wenn beim Update Fehler aufgetreten sind.
-   * @throws ApplicationException durch <code>updateCheck()</code> erzeugte Benutzer-Fehler.
+   * @throws ApplicationException durch {@link #updateCheck()} erzeugte Benutzer-Fehler.
    */
   private void update() throws RemoteException, ApplicationException
   {
@@ -785,7 +785,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Liefert das automatisch erzeugte SQL-Statement fuer ein Update.
    * Kann bei Bedarf ueberschrieben um ein vom dynamisch erzeugten
    * abweichendes Statement f�r die Speicherung zu verwenden.
-   * Die Funktion darf <null> zurueckliefern, wenn nichts zu aendern ist.  
+   * Die Funktion darf {@code null} zurueckliefern, wenn nichts zu aendern ist.
    * @return das erzeugte SQL-Statement.
    * @throws RemoteException wenn beim Erzugen des Statements ein Fehler auftrat.
    */
@@ -1013,15 +1013,18 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * Liefert das automatisch erzeugte SQL-Statement fuer die Erzeugung einer Liste
-   * dieses Typs.
-   * ACHTUNG: Das Statement muss ein Feld mit der Bezeichnung zurueckgeben,
-   * die <code>getIDField</code> auch liefert, da das von DBIteratorImpl gelesen wird.
-   * Also z.Bsp. "select " + getIDField() + " from " + getTableName().
-   * Kann bei Bedarf �berschrieben um ein abweichendes Statement zu verwenden.
-   * Die Funktion muss das Statement nur dewegen als String zurueckliefern,
-   * weil es typischerweise von DBIterator weiterverwendet wird und dort eventuell
-   * noch weitere Filterkriterien hinzugefuegt werden koennen muessen.  
+   * Liefert das automatisch erzeugte SQL-Statement fuer die Erzeugung einer Liste dieses Typs.
+   *
+   * <p>ACHTUNG: Das Statement muss ein Feld mit der Bezeichnung zurueckgeben, die {@link #getIDField()} auch liefert,
+   * da das von {@link DBIteratorImpl} gelesen wird.
+   * Also z.Bsp. {@code "select " + getIDField() + " from " + getTableName()}.
+   *
+   * <p>Kann bei Bedarf �berschrieben werden, um ein abweichendes Statement zu verwenden.
+   *
+   * <p>Die Funktion muss das Statement nur dewegen als String zurueckliefern, weil es typischerweise von
+   * {@link DBIterator} weiterverwendet wird und dort eventuell noch weitere Filterkriterien hinzugefuegt werden
+   * koennen muessen.
+   *
    * @return das erzeugte SQL-Statement.
    */
   protected String getListQuery()
@@ -1036,11 +1039,15 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
 	/**
 	 * Liefert das automatisch erzeugte SQL-Statement zum Laden des Objektes.
-	 * Hierbei werden die Eigenschaften des Objektes geladen, dessen ID aktuell
-	 * von <code>getID()</code> geliefert wird.
-	 * ACHTUNG: Das Statement muss alle Felder selecten (*).
-	 * Also z.Bsp. "select * from " + getTableName() + " where " + getIDField() + " = " + getID();
-	 * Kann bei Bedarf �berschrieben um ein abweichendes Statement zu verwenden.
+	 *
+	 * <p>Hierbei werden die Eigenschaften des Objektes geladen, dessen ID aktuell
+	 * von {@link #getID()} geliefert wird.
+	 *
+	 * <p>ACHTUNG: Das Statement muss alle Felder selecten (*).
+	 * Also z.Bsp. {@code "select * from " + getTableName() + " where " + getIDField() + " = " + getID();}
+	 *
+	 * <p>Kann bei Bedarf �berschrieben werden, um ein abweichendes Statement zu verwenden.
+	 *
 	 * @return das erzeugte SQL-Statement.
 	 * @throws RemoteException Wenn beim Erzeugen des Statements ein Fehler auftrat.
 	 */
@@ -1065,11 +1072,11 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
   /**
    * Macht sozusagen das Typ-Mapping bei Insert und Update.
-   * Hintergrund: Die Funktionen <code>getInsertSQL()</code> und
-   * <code>getUpdateSQL()</code> erzeugen ja die Statements fuer
-   * Insert und Update. Da ein PreparedStatement ja typsichere
-   * Werte haben muss, rufen beide Funktion diese hier auf, um
-   * hier die Werte korrekt setzen zu lassen.
+   *
+   * <p>Hintergrund: Die Funktionen {@link #getInsertSQL()} und {@link #getUpdateSQL()} erzeugen die Statements fuer
+   * Insert und Update. Da ein {@link PreparedStatement} typsichere Werte haben muss, rufen beide Funktion diese hier
+   * auf, um hier die Werte korrekt setzen zu lassen.
+   *
    * @param stmt das PreparedStatement.
    * @param index der Index im Statement.
    * @param type Bezeichnung des Feld-Typs entspechend der types-Mappingtabelle.
@@ -1114,7 +1121,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   public abstract String getPrimaryAttribute() throws RemoteException;
 
   /**
-   * Diese Methode wird intern vor der Ausfuehrung von delete()
+   * Diese Methode wird intern vor der Ausfuehrung von {@link #delete()}
    * aufgerufen. Sie muss �berschrieben werden, damit das Fachobjekt
    * vor dem Durchf�hren der L�schaktion Pr�fungen vornehmen kann.
    * Z.Bsp. ob eventuell noch Abhaengigkeiten existieren und
@@ -1126,7 +1133,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * Diese Methode wird intern vor der Ausfuehrung von insert()
+   * Diese Methode wird intern vor der Ausfuehrung von {@link #insert()}
    * aufgerufen. Sie muss �berschrieben werden, damit das Fachobjekt
    * vor dem Durchf�hren der Speicherung Pr�fungen vornehmen kann.
    * Z.Bsp. ob alle Pflichtfelder ausgef�llt sind und korrekte Werte enthalten.
@@ -1137,7 +1144,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   }
 
   /**
-   * Diese Methode wird intern vor der Ausfuehrung von update()
+   * Diese Methode wird intern vor der Ausfuehrung von {@link #update()}
    * aufgerufen. Sie muss �berschrieben werden, damit das Fachobjekt
    * vor dem Durchf�hren der Speicherung Pr�fungen vornehmen kann.
    * Z.Bsp. ob alle Pflichtfelder ausgef�llt sind und korrekte Werte enthalten.
@@ -1150,9 +1157,9 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
   /**
    * Prueft, ob das angegebene Feld ein Fremschluessel zu einer
    * anderen Tabelle ist. Wenn das der Fall ist, liefert es die
-   * Klasse, die die Fremd-Tabelle abbildet. Andernfalls null.
+   * Klasse, die die Fremd-Tabelle abbildet.
    * @param field das zu pruefende Feld.
-   * @return Klasse (abgeleitet von DBObject) welche den Fremdschluessel abbildet oder null. 
+   * @return Klasse (abgeleitet von DBObject) welche den Fremdschluessel abbildet oder {@code null}.
    * @throws RemoteException im Fehlerfall.
    */
   protected Class getForeignObject(String field) throws RemoteException
@@ -1200,7 +1207,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
       if (!this.inTransaction())
       {
-        Logger.debug("[rollback] rollback without begin or transaction allready rolled back");
+        Logger.debug("[rollback] rollback without begin or transaction already rolled back");
         return;
       }
       
@@ -1239,7 +1246,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     {
       if (!this.inTransaction())
       {
-        Logger.debug("[commit] transaction commit without begin or transaction allready commited, skipping");
+        Logger.debug("[commit] transaction commit without begin or transaction already commited, skipping");
         return;
       }
 

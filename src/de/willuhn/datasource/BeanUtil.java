@@ -24,7 +24,8 @@ import de.willuhn.logging.Logger;
 
 
 /**
- * Hilfsklasse, um auf gemeinsame Weise sowhl GenericObjects als auch regulaere Beans generisch nutzen zu koennen.
+ * Hilfsklasse, um auf gemeinsame Weise sowohl {@link GenericObject}
+ * als auch regulaere Beans generisch nutzen zu koennen.
  */
 public class BeanUtil
 {
@@ -164,7 +165,9 @@ public class BeanUtil
 
   /**
    * Liefert eine toString-Repraesentation des Objektes.
-   * Handelt es sich um ein GenericObject, wird der Wert des Primaer-Attributes zurueckgeliefert.
+   *
+   * <p>Handelt es sich um ein {@link GenericObject}, wird der Wert des Primaer-Attributes zurueckgeliefert.
+   *
    * @param bean die Bean.
    * @return die String-Repraesentation.
    * @throws RemoteException
@@ -185,10 +188,12 @@ public class BeanUtil
   
   /**
    * Vergleicht zwei Objekte.
-   * Handelt es sich um Objekte des Typs GenericObject, werden deren equals-Methoden verwendet.
+   *
+   * <p>Handelt es sich um Objekte des Typs {@link GenericObject}, werden deren equals-Methoden verwendet.
+   *
    * @param a Objekt a.
    * @param b Objekt b.
-   * @return True, wenn beide Objekte gleich sind.
+   * @return {@code true}, wenn beide Objekte gleich sind.
    * @throws RemoteException
    */
   public static boolean equals(Object a, Object b) throws RemoteException

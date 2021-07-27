@@ -29,13 +29,13 @@ public interface Service extends Remote
   /**
    * Prueft, ob dieser Service gestartet ist.
    * @throws RemoteException
-   * @return true wenn er gestartet ist, sonst false.
+   * @return {@code true} wenn er gestartet ist, sonst {@code false}.
    */
   public boolean isStarted() throws RemoteException;
 
 	/**
 	 * Prueft, ob der Service gestartet werden darf.
-   * @return true, wenn er gestartet werden darf, sonst false.
+   * @return {@code true}, wenn er gestartet werden darf, sonst {@code false}.
    * @throws RemoteException
    */
   public boolean isStartable() throws RemoteException;

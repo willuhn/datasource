@@ -19,15 +19,17 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- * Hilfsklasse da java.sql.DriverManager nur Driver akzeptiert,
- * die vom Systemclassloader geladen worden.
- * Siehe: http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
+ * Hilfsklasse da {@link java.sql.DriverManager} nur Driver akzeptiert,
+ * die vom System-Classloader geladen worden.
+ *
  * Sprich: Bringt zum Beispiel ein Jameica-Plugin eigene JDBC-Treiber
- * mit, wuerde java.sql.DriverManager die nicht haben wollen, weil
+ * mit, wuerde {@link java.sql.DriverManager} die nicht haben wollen, weil
  * sie nicht vom System-Classloader kommen. Daher zimmern wir
  * uns einen Wrapper um den eigentlichen Driver. Hauptsache MyDriver
  * ist vom SystemClassloader geladen. Wo der tatsaechliche Treiber
  * herkommt, interessiert den DriverManager nicht ;).
+ *
+ * @see <a href="http://www.kfu.com/~nsayer/Java/dyn-jdbc.html" target="_top">http://www.kfu.com/~nsayer/Java/dyn-jdbc.html</a>
  */
 public class MyDriver implements Driver
 {

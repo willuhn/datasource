@@ -48,19 +48,23 @@ public interface Changeable
 
 	/**
 	 * Prueft, ob es sich um ein neues Objekt oder ein bereits in der Datenbank existierendes handelt.
-	 * @return true, wenn es neu ist, andernfalls false.
+	 * @return {@code true}, wenn es neu ist, andernfalls {@code false}.
 	 * @throws RemoteException im Fehlerfall.
 	 */
 	public boolean isNewObject() throws RemoteException;
 
   /**
    * Ueberschreibt dieses Objekt mit den Attributen des uebergebenen.
-   * Dabei werden nur die Werte der Attribute ueberschrieben - nichts anderes.
+   *
+   * <p>Dabei werden nur die Werte der Attribute ueberschrieben - nichts anderes.
    * Also auch keine Meta-Daten oder aehnliches.
-   * Handelt es sich bei der Quelle um ein Objekt fremden Typs, wird nichts ueberschrieben.
-   * Hinweis: Es werden nur die Attribute ueberschrieben, es wird jedoch
+   *
+   * <p>Handelt es sich bei der Quelle um ein Objekt fremden Typs, wird nichts ueberschrieben.
+   *
+   * <p>Hinweis: Es werden nur die Attribute ueberschrieben, es wird jedoch
    * noch nicht gespeichert. Sollen die Aenderungen also dauerhaft uebernommen
-   * werden, muss anschliessend noch ein <code>store()</code> aufgerufen werden.
+   * werden, muss anschliessend noch ein {@link #store()} aufgerufen werden.
+   *
    * @param object das Objekt, welches als Quelle verwendet werden soll.
    * @throws RemoteException im Fehlerfall.
    */

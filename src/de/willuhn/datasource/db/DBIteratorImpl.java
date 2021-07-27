@@ -97,7 +97,7 @@ public class DBIteratorImpl<T extends AbstractDBObject> extends UnicastRemoteObj
    */
   public void setOrder(String order) throws RemoteException {
     if (this.initialized)
-      return; // allready initialized
+      return; // already initialized
 
     this.order = " " + order;
   }
@@ -124,7 +124,7 @@ public class DBIteratorImpl<T extends AbstractDBObject> extends UnicastRemoteObj
   public void addFilter(String filter, Object... p) throws RemoteException
   {
     if (this.initialized)
-      return; // allready initialized
+      return; // already initialized
 
     if (filter == null)
       return; // no filter given
@@ -152,7 +152,7 @@ public class DBIteratorImpl<T extends AbstractDBObject> extends UnicastRemoteObj
   public void join(String table) throws RemoteException
   {
     if (this.initialized)
-      return; // allready initialized
+      return; // already initialized
     
     if (table == null)
       return;
@@ -197,7 +197,7 @@ public class DBIteratorImpl<T extends AbstractDBObject> extends UnicastRemoteObj
    */
   private void init() throws RemoteException {
     if (this.initialized)
-      return; // allready initialzed
+      return; // already initialzed
 
 		PreparedStatement stmt = null;
     String sql             = null;

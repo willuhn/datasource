@@ -76,7 +76,7 @@ public abstract class AbstractXmlIO implements IO
   }
   
   /**
-   * Implementierung fuer Strings.
+   * Implementierung fuer {@link java.lang.String}.
    */
   protected static class StringValue extends AbstractValue
   {
@@ -90,7 +90,7 @@ public abstract class AbstractXmlIO implements IO
   }
 
   /**
-   * Implementierung fuer Double.
+   * Implementierung fuer {@link java.lang.Double}.
    */
   protected static class DoubleValue extends AbstractValue
   {
@@ -104,7 +104,7 @@ public abstract class AbstractXmlIO implements IO
   }
   
   /**
-   * Implementierung fuer BigDecimal.
+   * Implementierung fuer {@link java.math.BigDecimal}.
    */
   protected static class BigDecimalValue extends AbstractValue
   {
@@ -118,7 +118,7 @@ public abstract class AbstractXmlIO implements IO
   }
 
   /**
-   * Implementierung fuer Integer.
+   * Implementierung fuer {@link java.lang.Integer}.
    */
   protected static class IntegerValue extends AbstractValue
   {
@@ -132,7 +132,7 @@ public abstract class AbstractXmlIO implements IO
   }
 
   /**
-   * Implementierung fuer Long.
+   * Implementierung fuer {@link java.lang.Long}.
    */
   protected static class LongValue extends AbstractValue
   {
@@ -146,7 +146,7 @@ public abstract class AbstractXmlIO implements IO
   }
   
   /**
-   * Implementierung fuer Boolean.
+   * Implementierung fuer {@link java.lang.Boolean}.
    */
   protected static class BooleanValue extends AbstractValue
   {
@@ -160,7 +160,7 @@ public abstract class AbstractXmlIO implements IO
   }
 
   /**
-   * Implementierung fuer java.util.Date.
+   * Implementierung fuer {@link java.util.Date}.
    */
   protected static class DateValue implements Value
   {
@@ -194,7 +194,7 @@ public abstract class AbstractXmlIO implements IO
   }
   
   /**
-   * Implementierung fuer java.sql.Date.
+   * Implementierung fuer {@link java.sql.Date}.
    */
   protected static class SqlDateValue extends DateValue
   {
@@ -209,7 +209,7 @@ public abstract class AbstractXmlIO implements IO
   }
 
   /**
-   * Implementierung fuer java.sql.Timestamp.
+   * Implementierung fuer {@link java.sql.Timestamp}.
    */
   protected static class TimestampValue extends DateValue
   {
@@ -224,7 +224,7 @@ public abstract class AbstractXmlIO implements IO
   }
   
   /**
-   * Implementierung fuer Byte-Arrays.
+   * Implementierung fuer {@link java.lang.Byte}-Arrays.
    */
   protected static class ByteArrayValue implements Value
   {

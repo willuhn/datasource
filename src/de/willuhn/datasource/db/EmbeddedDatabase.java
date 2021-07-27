@@ -174,7 +174,7 @@ public class EmbeddedDatabase
 
 	/**
 	 * Fuehrt das uebergebene File mit SQL-Kommandos auf der Datenbank aus.
-	 * Die Funktion liefert kein DBIteratorImpl zurueck, weil sie typischerweise
+	 * Die Funktion liefert kein {@link DBIteratorImpl} zurueck, weil sie typischerweise
 	 * fuer die Erstellung der Tabellen verwendet werden sollte. Wenn das
 	 * Plugin also bei der Installation seine SQL-Tabellen erstellen will,
 	 * kann es das am besten hier machen.
@@ -302,7 +302,7 @@ public class EmbeddedDatabase
   /**
    * Repariert die Datenbank.
    * @param terminal Terminal, welches zur Ausgabe und Interaktion verwendet werden soll.
-   * <code>UserTerminal</code> ist ein Interface und muss vom Benutzer implementiert werden.
+   * {@link UserTerminal} ist ein Interface und muss vom Benutzer implementiert werden.
    */
   public void repair(UserTerminal terminal)
 	{

@@ -22,8 +22,8 @@ public interface GenericIterator<T extends GenericObject> extends Remote
 {
 
 	/**
-	 * Liefert true, wenn weitere Elemente in diesem Iterator existieren.
-	 * @return true, wenn weitere Elemente vorhanden sind.
+	 * Prueft, ob weitere Elemente in diesem Iterator existieren.
+	 * @return {@code true}, wenn weitere Elemente vorhanden sind.
 	 * @throws RemoteException
 	 */
 	public boolean hasNext() throws RemoteException;
@@ -59,7 +59,7 @@ public interface GenericIterator<T extends GenericObject> extends Remote
   /**
    * Prueft, ob das uebergebene Objekt in der aktuellen Liste vorhanden ist.
    * @param o das zu pruefende Objekt.
-   * @return null wenn kein Objekt uebereinstimmt, andernfalls das ueberinstimmende Objekt aus dieser Liste.
+   * @return {@code null} wenn kein Objekt uebereinstimmt, andernfalls das ueberinstimmende Objekt aus dieser Liste.
    * @throws RemoteException
    */
   public T contains(T o) throws RemoteException;

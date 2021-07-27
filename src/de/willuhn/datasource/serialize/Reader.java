@@ -16,14 +16,15 @@ import java.io.IOException;
 import de.willuhn.datasource.GenericObject;
 
 /**
- * Interface zum Lesen von Objekten des Typs GenericObject.
+ * Interface zum Lesen von Objekten des Typs {@link GenericObject}.
  */
 public interface Reader extends IO
 {
   /**
    * Liest das naechste Objekt aus dem Reader.
+   *
    * @return das naechste verfuegbare Objekt.
-   * Wenn die Funktion <code>null</code> liefert,
+   * Wenn die Funktion {@code null} liefert,
    * ist der Reader "am Ende angekommen".
    * @throws IOException
    */
