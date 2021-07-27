@@ -20,20 +20,22 @@ public interface Transactionable
 
   /**
    * Damit kann man manuell eine Transaktion starten.
-   * Normalerweise wir bei store() oder delete() sofort
+   *
+   * <p>Normalerweise wird bei {@code store()} oder {@code delete()} sofort
    * bei Erfolg ein commit gemacht. Wenn man aber von
    * aussen das Transaktionsverhalten beeinflussen will,
    * kann man diese Methode aufrufen. Hat man dies
-   * getan, werden store() und delete() erst dann in
+   * getan, werden {@code store()} oder {@code delete()} erst dann in
    * der Datenbank ausgefuehrt, wenn man anschliessend
-   * transactionCommit() aufruft.
+   * {@link #transactionCommit()} aufruft.
    * @throws RemoteException im Fehlerfall.
    */
   public void transactionBegin() throws RemoteException;
   
   /**
    * Beendet eine manuell gestartete Transaktion.
-   * Wenn vorher kein <code>transactionBegin()</code> aufgerufen wurde,
+   *
+   * <p>Wenn vorher kein {@link #transactionBegin()} aufgerufen wurde,
    * wird dieser Aufruf ignoriert.
    * @throws RemoteException im Fehlerfall.
    */

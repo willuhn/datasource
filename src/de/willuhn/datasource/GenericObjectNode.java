@@ -13,7 +13,7 @@ package de.willuhn.datasource;
 import java.rmi.RemoteException;
 
 /**
- * Generisches RMI-faehiges Objekt, welches von genericObject
+ * Generisches RMI-faehiges Objekt, welches von {@link GenericObject}
  * abgeleitet ist, jedoch noch Funktionen zur Abbildung einer Baumstruktur mitbringt.
  */ 
 public interface GenericObjectNode extends GenericObject
@@ -39,9 +39,9 @@ public interface GenericObjectNode extends GenericObject
 
 
   /**
-   * Liefert das Eltern-Element des aktuellen oder null, wenn es sich
-   * bereits auf oberster Ebene befindet.
-   * @return das Eltern-Objekt oder null.
+   * Liefert das Eltern-Element des aktuellen Elements
+   *
+   * @return das Eltern-Objekt oder {@code null}, wenn es sich bereits auf oberster Ebene befindet.
    * @throws RemoteException
    */
   public GenericObjectNode getParent() throws RemoteException;

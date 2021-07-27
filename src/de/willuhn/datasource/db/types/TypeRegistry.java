@@ -58,7 +58,7 @@ public class TypeRegistry
    * Die Funktion beruecksichtigt KEINE Gross-Kleinschreibung.
    * @param name Name des Feld-Typs.
    * @return Implementierung des Typs. Die Funktion liefert nie
-   * <code>null</code> sondern hoechstens TYPE_DEFAULT.
+   * {@code null} sondern hoechstens {@link #TYPE_DEFAULT}.
    */
   public static Type getType(String name)
   {

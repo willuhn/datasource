@@ -11,6 +11,7 @@
 package de.willuhn.datasource.rmi;
 
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
 
 import de.willuhn.datasource.Service;
 
@@ -32,7 +33,7 @@ public interface DBService extends Service
 	 * Erzeugt ein neues Objekt des angegebenen Typs.
 	 * @param clazz Name der Klasse des zu erzeugenden Objektes.
 	 * @param identifier der eindeutige Identifier des Objektes.
-	 * Kann null sein, wenn ein neues Objekt erzeugt werden soll.
+	 * Kann {@code null} sein, wenn ein neues Objekt erzeugt werden soll.
 	 * Andernfalls wird das mit dem genannten Identifier geladen.
 	 * @return Das erzeugte Objekt
 	 * @throws RemoteException
@@ -40,7 +41,7 @@ public interface DBService extends Service
 	public <T extends DBObject> T createObject(Class<? extends DBObject> clazz, String identifier) throws RemoteException;
 
   /**
-   * Fuehrt ein SQL-Statement aus und uebergibt das Resultset an den Extractor.
+   * Fuehrt ein SQL-Statement aus und uebergibt das {@link ResultSet} an den Extractor.
    * @param sql das Statement.
    * @param params die Parameter zur Erzeugung des PreparedStatements.
    * @param extractor der Extractor.

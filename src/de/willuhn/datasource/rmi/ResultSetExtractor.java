@@ -22,7 +22,7 @@ import java.sql.SQLException;
 public interface ResultSetExtractor extends Remote
 {
   /**
-   * Wird vom DBService aufgerufen.
+   * Wird vom {@link DBService} aufgerufen.
    * @param rs das erzeugte Resultset.
    * @return das extrahierte Objekt.
    * @throws RemoteException

@@ -24,12 +24,12 @@ public interface DBIterator<T extends DBObject> extends GenericIterator<T>
 
   /**
    * Fuegt dem Iterator einen zusaetzlichen Filter hinzu, der
-   * sich auf die Anzahl der Treffer auswirkt. Bsp:
-   * addFilter("kontonummer='2020'");
-   * Bewirkt, dass eine zusaetzliche Where-Klausel "where kontonummer='2020'"
+   * sich auf die Anzahl der Treffer auswirkt.
+   *
+   * <p>Bsp: {@code addFilter("kontonummer='2020'");} bewirkt, dass
+   * eine zusaetzliche Where-Klausel "where kontonummer='2020'"
    * hinzugefuegt wird.
    * @param filter ein zusaetzlicher SQL-Filter.
-   * Z.Bsp.: "konto_id = 20".
    * @throws RemoteException
    */
   public void addFilter(String filter) throws RemoteException;
@@ -39,15 +39,18 @@ public interface DBIterator<T extends DBObject> extends GenericIterator<T>
    * Unterschied, dass ueber das Objekt-Array zusaetzliche Parameter
    * angegeben werden koennen, mit denen dann ein PreparedStatement
    * gefuellt wird.
-   * Mann kann also entweder schreiben:
-   * <code>addFilter("kontonummer='200'");</code>
+   *
+   * <p>Man kann also entweder schreiben:
+   * {@code addFilter("kontonummer='200'");}
    * oder
-   * <code>addFilter("kontonummer=?","200");</code>
-   * Die Verwendung des PreparedStatements schuetzt vor SQL-Injections.
-   * @see DBIterator#addFilter(String)
+   * {@code addFilter("kontonummer=?","200");}
+   *
+   * <p><b>Die Verwendung des PreparedStatements schuetzt vor SQL-Injections.</b>
+   *
    * @param filter ein zusaetzlicher Filter.
-   * @param params
+   * @param params die Werte für den Filter
    * @throws RemoteException
+   * @see DBIterator#addFilter(String)
    */
   public void addFilter(String filter, Object... params) throws RemoteException;
   
@@ -66,7 +69,7 @@ public interface DBIterator<T extends DBObject> extends GenericIterator<T>
   public void setOrder(String order) throws RemoteException;
   
   /**
-   * Fuegt ein "limit {i}" dem Statement hinzu.
+   * Fuegt ein "{@code limit {i}}" dem Statement hinzu.
    * @param i Hoehe des Limit.
    * @throws RemoteException
    */

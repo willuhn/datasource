@@ -144,7 +144,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 	}
   
   /**
-   * Liefert den Client-Host oder <code>null</code>.
+   * Liefert den Client-Host oder {@code null}.
    * @return ein Client-Identifier.
    */
   private String getClientIdentifier()
@@ -214,7 +214,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   /**
    * Kann von abgeleiteten Klassen ueberschrieben werden, um die Connection
    * zu testen.
-   * @param conn die zu testende Connection. Ist nie <code>null</code>.
+   * @param conn die zu testende Connection. Ist nie {@code null}.
    * @throws SQLException
    */
   protected void checkConnection(Connection conn) throws SQLException
@@ -224,13 +224,16 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   /**
    * Definiert einen optionalen Classfinder, der von dem Service
    * zum Laden von Objekten genommen werden soll.
-   * Konkret wird er in <code>creatObject</code> und  <code>createList</code>
+   *
+   * <p>Konkret wird er in {@link #createObject(Class, String)} und {@link #createList(Class)}
    * verwendet, um zum uebergebenen Interface eine passende Implementierung
-   * zu finden. Dabei wird die Funktion <code>findImplementor()</code> im
-   * ClassFinder befragt.<br>
-   * Wurde kein ClassFinder angegeben, versucht der Service direkt die
+   * zu finden. Dabei wird die Funktion {@link ClassFinder#findImplementors(Class)}
+   * befragt.
+   *
+   * <p>Wurde kein ClassFinder angegeben, versucht der Service direkt die
    * uebergebene Klasse zu instanziieren. Ist dies der Fall, koennen den
    * beiden create-Methoden natuerliche keine Interfaces-Klassen uebergeben werden.
+   *
    * @param finder zu verwendender ClassFinder.
    */
   protected void setClassFinder(ClassFinder finder)
@@ -240,7 +243,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
 	/**
 	 * Definiert einen optionalen benutzerdefinierten Classloader.
-	 * Wird er nicht gesetzt, wird <code>Class.forName()</code> benutzt.
+	 * Wird er nicht gesetzt, wird {@link Class#forName(String)} benutzt.
    * @param loader Benutzerdefinierter Classloader.
    */
   protected void setClassloader(ClassLoader loader)
@@ -559,7 +562,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
 
   /**
    * Liefert den Transaction-Isolation-Level.
-   * @return transactionIsolationLevel Transaction-Isolation-Level (Default:-1). 
+   * @return Transaction-Isolation-Level (Default:-1).
    * @see Connection#TRANSACTION_NONE
    * @see Connection#TRANSACTION_READ_COMMITTED
    * @see Connection#TRANSACTION_READ_UNCOMMITTED
@@ -573,9 +576,10 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   }
   
   /**
-   * Liefert true, wenn autocommit aktiv sein soll.
-   * Default: false.
-   * @return Autocommit.
+   * Status von Auto-Commit.
+   *
+   * <p>Default: false.
+   * @return {@code true}, wenn Auto-Commit aktiv ist.
    * @throws RemoteException
    */
   protected boolean getAutoCommit() throws RemoteException
@@ -584,13 +588,16 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   }
   
   /**
-   * Liefert true, wenn der DB-Service bei INSERT-Queries <b>vorher</b> die zu verwendende ID ermitteln soll.
-   * MySQL zum besitzt eine auto_increment-Funktion, mit der es nicht notwendig ist, die ID beim
+   * Muss der DB-Service bei INSERT-Queries <b>vorher</b> die zu verwendende ID ermitteln?
+   *
+   * <p>MySQL zum besitzt eine {@code auto_increment}-Funktion, mit der es nicht notwendig ist, die ID beim
    * Insert mit anzugeben. Falls die Datenbank das jedoch nicht korrekt kann (z.Bsp. McKoi), dann
-   * kann die Funktion true liefern. In dem Fall wird vor dem Insert ein "select max(id)+1 from table"
+   * kann die Funktion {@code true} liefern. In dem Fall wird vor dem Insert ein "{@code select max(id)+1 from table}"
    * ausgefuehrt und diese ID fuer das Insert verwendet.
-   * <b>Standard-Wert: TRUE</b>
-   * @return true, wenn bei Inserts vorher die ID ermittelt werden soll.
+   *
+   * <p>Standard-Wert: {@code true}
+   *
+   * @return {@code true}, wenn bei Inserts vorher die ID ermittelt werden soll.
    * @throws RemoteException
    */
   protected boolean getInsertWithID() throws RemoteException

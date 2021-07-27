@@ -18,7 +18,7 @@ import de.willuhn.util.Session;
 /**
  * Diese Klasse ist (wie der Name schon sagt ;) ein Cache.
  * Und zwar fuer die Meta-Daten der Business-Objekte. Und zwar:
- * AbstractDBObject ist ja die Basisklasse aller Business-Objekte.
+ * {@link AbstractDBObject} ist ja die Basisklasse aller Business-Objekte.
  * Und diese ermittelt die Eigenschaften der Objekte "on the fly"
  * aus den Meta-Daten der SQL-Tabelle. Dies ist ein zeitraubender
  * Prozess, der nicht fuer jede Instanziierung eines Objektes neu
@@ -39,7 +39,7 @@ public class ObjectMetaCache
   private static long all = 0;
 
   /**
-   * Liefert die Meta-Daten einer Klasse oder null.
+   * Liefert die Meta-Daten einer Klasse oder {@code null}.
    * @param service Klasse des Service.
    * @param objectType Klasse des Objekt-Typs.
    * @return Die Metadaten.
@@ -60,7 +60,7 @@ public class ObjectMetaCache
   }
 
   /**
-   * Fuegt dem Cache die Meta-Daten einer DBObject-Klasse hinzu.
+   * Fuegt dem Cache die Meta-Daten einer {@link de.willuhn.datasource.rmi.DBObject}-Klasse hinzu.
    * @param service Klasse des Service.
    * @param objectType Klasse des Objekt-Typs.
    * @param fields Hashmap mit den Metadaten (key=Feldnamen,value=Datentyp).
