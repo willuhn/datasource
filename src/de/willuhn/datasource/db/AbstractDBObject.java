@@ -134,7 +134,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     }
     
     if (isInitialized())
-      return; // allready initialized
+      return; // already initialized
     
     // Checken, ob die Datenbank Uppercase ist
     this.upper = Boolean.getBoolean(getService().getClass().getName() + ".uppercase");
@@ -1200,7 +1200,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 
       if (!this.inTransaction())
       {
-        Logger.debug("[rollback] rollback without begin or transaction allready rolled back");
+        Logger.debug("[rollback] rollback without begin or transaction already rolled back");
         return;
       }
       
@@ -1239,7 +1239,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
     {
       if (!this.inTransaction())
       {
-        Logger.debug("[commit] transaction commit without begin or transaction allready commited, skipping");
+        Logger.debug("[commit] transaction commit without begin or transaction already commited, skipping");
         return;
       }
 

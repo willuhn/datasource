@@ -307,7 +307,7 @@ public class DBServiceImpl extends UnicastRemoteObject implements DBService
   {
     if (!started)
     {
-    	Logger.info("service allready stopped");
+      Logger.info("service already stopped");
 			return;
     }
 
