@@ -785,7 +785,7 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
    * Liefert das automatisch erzeugte SQL-Statement fuer ein Update.
    * Kann bei Bedarf ueberschrieben um ein vom dynamisch erzeugten
    * abweichendes Statement f�r die Speicherung zu verwenden.
-   * Die Funktion darf <null> zurueckliefern, wenn nichts zu aendern ist.  
+   * Die Funktion darf {@code null} zurueckliefern, wenn nichts zu aendern ist.
    * @return das erzeugte SQL-Statement.
    * @throws RemoteException wenn beim Erzugen des Statements ein Fehler auftrat.
    */
