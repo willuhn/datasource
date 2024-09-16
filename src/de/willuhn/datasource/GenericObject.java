@@ -15,9 +15,10 @@ import java.rmi.RemoteException;
 
 /**
  * Generisches RMI-faehiges Objekt, welches Attribute besitzt.
- * Das kann also so ziemlich alles sein, vom Kalendereintrag bis
+ *
+ * <p>Das kann also so ziemlich alles sein, vom Kalendereintrag bis
  * zum Datensatz in einer Datenbank. Entscheidendes Merkmal ist,
- * dass es eine Funktion getAttribute(AliasName) besitzt,
+ * dass es eine Funktion {@link #getAttribute(String)} besitzt,
  * mit der die Werte der Attribute ueber Aliasnamen abgefragt
  * werden koennen. 
  */
@@ -49,9 +50,12 @@ public interface GenericObject extends Remote {
 
 	/**
 	 * Liefert den Namen des Primaer-Attributes dieses Objektes.
-	 * Hintergrund: Wenn man z.Bsp. in einer Select-Box nur einen Wert
+	 *
+	 * <p>Hintergrund: Wenn man z.Bsp. in einer Select-Box nur einen Wert
 	 * anzeigen kann, dann wird dieser genommen.
-	 * Achtung: Die Funktion liefert nicht den Wert des Attributes sondern nur dessen Namen.
+	 *
+	 * <p>Achtung: Die Funktion liefert nicht den Wert des Attributes sondern nur dessen Namen.
+	 *
 	 * @return Name des Primaer-Attributes.
 	 * @throws RemoteException im Fehlerfall.
 	 */
@@ -59,7 +63,8 @@ public interface GenericObject extends Remote {
 
 	/**
 	 * Vergleicht dieses Objekt mit dem uebergebenen.
-	 * Achtung: Wir ueberschreiben hier nicht die equals-Funktion von <code>Object</code>
+	 *
+	 * <p>Achtung: Wir ueberschreiben hier nicht {@link Object#equals(Object)},
 	 * da das via RMI nicht geht.
 	 * @param other das zu vergleichende Objekt.
 	 * @return true, die Objekte gleiche Eigenschaften besitzen.

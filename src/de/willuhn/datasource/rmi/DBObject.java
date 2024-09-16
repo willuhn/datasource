@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 import de.willuhn.datasource.GenericObject;
 
 /**
- * Erweiterung des GenericObjects um Datenbank-Funktionalitaet.
+ * Erweiterung von {@link GenericObject} um Datenbank-Funktionalitaet.
  */
 public interface DBObject extends GenericObject, Transactionable, Changeable
 {
@@ -30,13 +30,14 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
 
   /**
    * Liefert den Wert des angegebenen Attributes.
-   * Aber die Funktion ist richtig schlau ;)
-   * Sie checkt naemlich den Typ des Feldes in der Datenbank und
-   * liefert nicht nur einen String sondern den korrespondierenden
-   * Java-Typ. Insofern die Businessklasse die Funktion
-   * getForeignObject(String field) sinnvoll uberschrieben hat, liefert
-   * die Funktion bei Fremdschluesseln sogar gleich das entsprechende
-   * Objekt aus der Verknuepfungstabelle.
+   *
+   * <p>Aber die Funktion ist richtig schlau ;)
+   * Sie checkt naemlich den Typ des Feldes in der Datenbank und liefert nicht nur einen String sondern den
+   * korrespondierenden Java-Typ.
+   * Insofern die Businessklasse die Funktion {@link de.willuhn.datasource.db.AbstractDBObject#getForeignObject(String)}
+   * sinnvoll uberschrieben hat, liefert die Funktion bei Fremdschluesseln sogar gleich das entsprechende Objekt aus der
+   * Verknuepfungstabelle.
+   *
    * @param name Name des Feldes.
    * @return Wert des Feldes.
    * @throws RemoteException im Fehlerfall.
@@ -46,10 +47,10 @@ public interface DBObject extends GenericObject, Transactionable, Changeable
 
   /**
    * Liefert den Attributtyp des uebergebenen Feldes.
-   * Siehe DBObject.ATTRIBUTETYPE_*.
    * @param attributeName Name des Attributes.
-   * @return Konstante fuer den Attributtyp. Siehe DBObject.ATTRIBUTETYPE_*.
+   * @return Konstante fuer den Attributtyp.
    * @throws RemoteException im Fehlerfall.
+   * @see de.willuhn.datasource.db.AbstractDBObject#setAttribute(String, Object)
    */
   public String getAttributeType(String attributeName) throws RemoteException;
 

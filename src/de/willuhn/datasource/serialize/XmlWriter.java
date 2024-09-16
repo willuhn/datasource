@@ -78,9 +78,12 @@ public class XmlWriter extends AbstractXmlIO implements Writer
   
   /**
    * Liefert die Namen der zu serialisierenden Attributes des Objektes.
-   * Kann bei Bedarf ueberschrieben werden.
-   * Die Default-Implementierung ruft die Methode "getAttributeNames()"
-   * von GenericObject auf.
+   *
+   * <p>Kann bei Bedarf ueberschrieben werden.
+   *
+   * <p>Die Default-Implementierung ruft die Methode
+   * {@link GenericObject#getAttributeNames()} auf.
+   *
    * @param object das zu serialisierende Objekt.
    * @return die zu serialisierenden Attributes.
    * @throws RemoteException

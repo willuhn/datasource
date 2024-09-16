@@ -14,12 +14,12 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Ein Listener, der ueber Aenderungen an DBObjects benachrichtigt wird.
+ * Ein Listener, der ueber Aenderungen an {@link DBObject}s benachrichtigt wird.
  */
 public interface Listener extends Remote
 {
 	/**
-	 * Wird bei Aenderungen des DBObjects aufgerufen.
+	 * Wird bei Aenderungen des {@link DBObject}s aufgerufen.
    * @param e das ausgeloeste Event.
    * @throws RemoteException
    */

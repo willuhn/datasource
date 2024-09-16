@@ -16,7 +16,7 @@ import java.io.IOException;
 import de.willuhn.datasource.GenericObject;
 
 /**
- * Interface zum Schreiben von Objekten des Typs GenericObject.
+ * Interface zum Schreiben von Objekten des Typs {@link GenericObject}.
  */
 public interface Writer extends IO
 {
