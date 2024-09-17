@@ -21,9 +21,7 @@ import java.sql.Types;
 public class TypeInteger extends TypeGeneric
 {
 
-  /**
-   * @see de.willuhn.datasource.db.types.TypeGeneric#set(java.sql.PreparedStatement, int, java.lang.Object)
-   */
+  @Override
   public void set(PreparedStatement stmt, int index, Object value) throws SQLException
   {
     if (value == null)

@@ -28,9 +28,7 @@ import de.willuhn.logging.Logger;
 public class TypeByteArray extends TypeGeneric
 {
   
-  /**
-   * @see de.willuhn.datasource.db.types.TypeGeneric#get(java.sql.ResultSet, java.lang.String)
-   */
+  @Override
   public Object get(ResultSet rs, String name) throws SQLException
   {
     Object value = super.get(rs, name);
@@ -85,9 +83,7 @@ public class TypeByteArray extends TypeGeneric
     }
   }
 
-  /**
-   * @see de.willuhn.datasource.db.types.TypeGeneric#set(java.sql.PreparedStatement, int, java.lang.Object)
-   */
+  @Override
   public void set(PreparedStatement stmt, int index, Object value) throws SQLException
   {
     if (value == null)
