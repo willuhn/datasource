@@ -28,7 +28,6 @@ import de.willuhn.util.Session;
  * in einer Liste die Metadaten der verwendeten Objekte zu sammeln,
  * damit sie bei der naechsten Erzeugung eines Objektes "recycled"
  * werden koennen.
- * @author willuhn
  */
 public class ObjectMetaCache
 {
