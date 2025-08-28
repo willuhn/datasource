@@ -165,12 +165,14 @@ public abstract class AbstractDBObject extends UnicastRemoteObject implements DB
 		  String schema = System.getProperty(getService().getClass().getName() + ".schema",null); // BUGZILLA 960
 		  try
 		  {
-	      meta = getConnection().getMetaData().getColumns(null,schema,tableName,null);
+        meta = getConnection().getMetaData().getColumns(conn.getCatalog(),
+            schema, tableName, null);
 		  }
 		  catch (Exception e)
 		  {
 		    Logger.trace("unable to fetch table meta-data using NULL column name pattern, trying '%', see https://bugs.mysql.com/bug.php?id=81105");
-        meta = getConnection().getMetaData().getColumns(null,schema,tableName,"%");
+        meta = getConnection().getMetaData().getColumns(conn.getCatalog(),
+            schema, tableName, "%");
 		  }
 			String field;
       if (!meta.next())
