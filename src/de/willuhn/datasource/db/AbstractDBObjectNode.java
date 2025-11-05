@@ -31,7 +31,6 @@ import de.willuhn.util.ApplicationException;
  * der GUI-Komponente "Tree" darstellen.
  * Hinweis: Objekte, die sich bereits auf der obersten Ebene des Baumes
  * befinden, muessen den Wert "0" im Feld fuer das Eltern-Objekt besitzen.
- * @author willuhn
  */
 public abstract class AbstractDBObjectNode extends AbstractDBObject implements DBObjectNode
 {

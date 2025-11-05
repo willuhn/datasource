@@ -36,7 +36,6 @@ import de.willuhn.util.Session;
 
 /**
  * Basisklasse fuer alle Business-Objekte 
- * @author willuhn
  */
 public abstract class AbstractDBObject extends UnicastRemoteObject implements DBObject 
 {

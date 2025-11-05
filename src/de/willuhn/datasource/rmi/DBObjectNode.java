@@ -24,7 +24,6 @@ import de.willuhn.datasource.GenericObjectNode;
  * der GUI-Komponente "Tree" darstellen.
  * Hinweis: Objekte, die sich bereits auf der obersten Ebene des Baumes
  * befinden, muessen den Wert "0" im Feld fuer das Eltern-Objekt besitzen.
- * @author willuhn
  */
 public interface DBObjectNode extends DBObject, GenericObjectNode
 {

@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 
 /**
  * Basis-Interface aller Services, die via RMI genutzt werden koennen.
- * @author willuhn
  */
 public interface Service extends Remote 
 {
