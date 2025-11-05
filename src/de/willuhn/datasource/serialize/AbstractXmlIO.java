@@ -66,9 +66,7 @@ public abstract class AbstractXmlIO implements IO
   
   protected static abstract class AbstractValue implements Value
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#serialize(java.lang.Object)
-     */
+    @Override
     public String serialize(Object o) throws IOException
     {
       return o == null ? "" : o.toString();
@@ -80,9 +78,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class StringValue extends AbstractValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       return s == null ? "" : s;
@@ -94,9 +90,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class DoubleValue extends AbstractValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       return (s == null || s.length() == 0) ? null : new Double(s);
@@ -108,9 +102,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class BigDecimalValue extends AbstractValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       return (s == null || s.length() == 0) ? null : new BigDecimal(s);
@@ -122,9 +114,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class IntegerValue extends AbstractValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       return (s == null || s.length() == 0) ? null : new Integer(s);
@@ -136,9 +126,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class LongValue extends AbstractValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       return (s == null || s.length() == 0) ? null : new Long(s);
@@ -150,9 +138,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class BooleanValue extends AbstractValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       return s != null && (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("1"));
@@ -166,9 +152,7 @@ public abstract class AbstractXmlIO implements IO
   {
     private final static DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       if (s == null || s.length() == 0)
@@ -184,9 +168,7 @@ public abstract class AbstractXmlIO implements IO
       } 
     }
 
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#serialize(java.lang.Object)
-     */
+    @Override
     public String serialize(Object o) throws IOException
     {
       return o == null ? "" : format.format((Date)o);
@@ -198,9 +180,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class SqlDateValue extends DateValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       Date date = (Date) super.unserialize(s);
@@ -213,9 +193,7 @@ public abstract class AbstractXmlIO implements IO
    */
   protected static class TimestampValue extends DateValue
   {
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException
     {
       Date date = (Date) super.unserialize(s);
@@ -229,9 +207,7 @@ public abstract class AbstractXmlIO implements IO
   protected static class ByteArrayValue implements Value
   {
 
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#serialize(java.lang.Object)
-     */
+    @Override
     public String serialize(Object o) throws IOException {
       if (o == null)
         return "";
@@ -240,9 +216,7 @@ public abstract class AbstractXmlIO implements IO
       return Base64.encode((byte[])o);
     }
 
-    /**
-     * @see de.willuhn.datasource.serialize.AbstractXmlIO.Value#unserialize(java.lang.String)
-     */
+    @Override
     public Object unserialize(String s) throws IOException {
       if (s == null || s.length() == 0)
         return null;

@@ -45,60 +45,44 @@ public class MyDriver implements Driver
     driver = (Driver) loader.loadClass(driverClass).newInstance();
   }
 
-  /**
-   * @see java.sql.Driver#getMajorVersion()
-   */
+  @Override
   public int getMajorVersion()
   {
     return driver.getMajorVersion();
   }
 
-  /**
-   * @see java.sql.Driver#getMinorVersion()
-   */
+  @Override
   public int getMinorVersion()
   {
     return driver.getMinorVersion();
   }
 
-  /**
-   * @see java.sql.Driver#jdbcCompliant()
-   */
+  @Override
   public boolean jdbcCompliant()
   {
     return driver.jdbcCompliant();
   }
 
-  /**
-   * @see java.sql.Driver#acceptsURL(java.lang.String)
-   */
+  @Override
   public boolean acceptsURL(String url) throws SQLException
   {
     return driver.acceptsURL(url);
   }
 
-  /**
-   * @see java.sql.Driver#connect(java.lang.String, java.util.Properties)
-   */
+  @Override
   public Connection connect(String url, Properties info) throws SQLException
   {
     return driver.connect(url,info);
   }
 
-  /**
-   * @see java.sql.Driver#getPropertyInfo(java.lang.String, java.util.Properties)
-   */
+  @Override
   public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
     throws SQLException
   {
     return driver.getPropertyInfo(url,info);
   }
 
-  /**
-   * @since Java 7
-   * @see java.sql.Driver#getParentLogger()
-   */
-  @SuppressWarnings("javadoc")
+  @Override
   public Logger getParentLogger() throws SQLFeatureNotSupportedException
   {
     // FeatureNotSupportedException werfen, damits auch in Java 6 noch compiliert.

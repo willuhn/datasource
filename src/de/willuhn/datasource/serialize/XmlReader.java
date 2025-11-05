@@ -49,9 +49,7 @@ public class XmlReader extends AbstractXmlIO implements Reader
     this.doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
   }
 
-  /**
-   * @see de.willuhn.datasource.serialize.Reader#read()
-   */
+  @Override
   public GenericObject read() throws IOException
   {
     NodeList objects  = this.doc.getElementsByTagName("object");
@@ -110,9 +108,7 @@ public class XmlReader extends AbstractXmlIO implements Reader
     }
   }
   
-  /**
-   * @see de.willuhn.datasource.serialize.IO#close()
-   */
+  @Override
   public void close() throws IOException
   {
     this.is.close();
