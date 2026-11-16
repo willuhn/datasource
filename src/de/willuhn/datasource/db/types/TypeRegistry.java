@@ -47,6 +47,7 @@ public class TypeRegistry
     
     types.put("blob",        new TypeByteArray());
     types.put("longblob",    new TypeByteArray());
+    types.put("binary large object", new TypeByteArray());
     
     // Daemliches PostgreSQL - muessen die denn ALLES anders machen? :(
     types.put("bytea",       new TypeByteArray());
